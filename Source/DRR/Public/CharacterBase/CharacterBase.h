@@ -26,53 +26,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	
-protected:
-
-	//Set Capsule Value-Kwakhyunbin
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Capsule")
-	float CapsuleSize;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Capsule")
-	float CapsuleHeight;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Capsule")
-	FString CapsuleProfileName;
-
-	//Set Mesh Value-Kwakhyunbin
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
-	FVector MeshVector;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
-	FRotator MeshRotator;
-
-	//Set Movement Value-Kwakhyunbin
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	bool CharacterbOrientRotationToMovement;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	FRotator CharacterRotationRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float CharacterJumpZVelocity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float CharacterAirControl;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float CharacterMaxWalkSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float CharacterMinAnalogWalkSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float CharacterBrakingDecelerationWalking;
-
-	//Set Mesh and Anim BP-Kwakhyunbin
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
-	TObjectPtr<class USkeletalMesh> CharacterMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim")
-	TSubclassOf<class UAnimInstance> CharacterAnimBP;
 
 
 };
