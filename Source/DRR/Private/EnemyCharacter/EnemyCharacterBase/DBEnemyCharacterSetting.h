@@ -58,6 +58,16 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim")
     TSubclassOf<class UAnimInstance> CharacterAnimBP;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Senssing")
+    float ShigtRadius;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Senssing")
+    float ShightLenge;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Senssing")
+    float SoundCheckLenge;
+
 };
 
 UCLASS()

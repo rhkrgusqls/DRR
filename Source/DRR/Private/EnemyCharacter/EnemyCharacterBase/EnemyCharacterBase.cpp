@@ -4,13 +4,14 @@
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "DBEnemyCharacterSetting.h"
 #include "Components/CapsuleComponent.h"
+#include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	static ConstructorHelpers::FObjectFinder<UDBEnemyCharacterSetting> EnemyDataAssetRef(TEXT("/Game/Blueprints/DataAsset/EnemeyData/EnemeyCharacter.EnemeyCharacter"));
 	UDBEnemyCharacterSetting* EnemyDataAsset = nullptr;
 
@@ -68,4 +69,8 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	//Set Mesh and Anim BP-Kwakhyunbin
 	GetMesh()->SetSkeletalMesh(CharacterMesh);
 	GetMesh()->SetAnimInstanceClass(CharacterAnimBP);
+}
+
+void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
+{
 }

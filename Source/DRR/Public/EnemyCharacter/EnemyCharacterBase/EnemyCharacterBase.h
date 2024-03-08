@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CharacterBase/CharacterBase.h"
+#include "Perception/AiPerceptionComponent.h"
 #include "EnemyCharacterBase.generated.h"
 
 /**
@@ -66,5 +67,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim")
 	TSubclassOf<class UAnimInstance> CharacterAnimBP;
+	
+	UAIPerceptionComponent* AIPerceptionComponent;
 
+	class UAISensingConfig_Sight* Sight;
+
+public:
+	void OnPerception(AActor* Actor, FAIStimulus stimulus);
 };
