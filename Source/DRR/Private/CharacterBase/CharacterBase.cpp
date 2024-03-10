@@ -19,7 +19,7 @@ void ACharacterBase::BeginPlay()
 }
 
 
-// Called to bind functionality to input 
+// Called to bind functionality to input
 void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
