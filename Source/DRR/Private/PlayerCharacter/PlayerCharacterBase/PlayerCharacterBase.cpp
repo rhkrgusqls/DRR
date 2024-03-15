@@ -12,7 +12,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	// Create Capsule-Kwakhyunbin
 	GetCapsuleComponent()->InitCapsuleSize(500.0f, 100.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 	// Set Mesh-Kwakhyunbin
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
