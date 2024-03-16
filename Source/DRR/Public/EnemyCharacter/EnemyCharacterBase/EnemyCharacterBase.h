@@ -15,9 +15,13 @@ class AEnemyCharacterBase : public ACharacterBase
 {
 	GENERATED_BODY()
 	
+public:
 	AEnemyCharacterBase();
+	AEnemyCharacterBase(int Type);
 
 protected:
+
+	uint16 EnemyType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Name")
 	FString EnemyName;
@@ -72,6 +76,13 @@ protected:
 
 	class UAISensingConfig_Sight* Sight;
 
+	uint16 Level;
+
+	float HPRegenHandle;
+
 public:
 	void OnPerception(AActor* Actor, FAIStimulus stimulus);
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
 };

@@ -14,18 +14,37 @@ class DRR_API ACharacterBase : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ACharacterBase();
+	//ACharacterBase(int Type = 0);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 public:	
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float MaxHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float CurrentHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float physicsAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float MagicAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float physicsDef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float MagicDef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float HPRegenSpeed;
+
 
 
 };
