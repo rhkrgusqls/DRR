@@ -14,9 +14,9 @@ UCLASS()
 class DRR_API ANormalAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
 protected:
-public:
+
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* AIPerceptionComponent;
 
@@ -24,6 +24,9 @@ public:
 
 public:
 	ANormalAIController(const FObjectInitializer& ObjectInitializer);
+
+	void RunAI();
+	void StopAI();
 
 	UPROPERTY(BlueprintReadWrite)
 	class ACharacterBase* Agent;
@@ -37,5 +40,11 @@ public:
 	class UAISenseConfig_Sight* Sight;
 
 	virtual void OnPossess(APawn* InPawn) override;
+
+	UPROPERTY()
+	TObjectPtr<class UBlackboardData> BBAsset;
+
+	UPROPERTY()
+	TObjectPtr<class UBehaviorTree> BTAsset;
 
 };

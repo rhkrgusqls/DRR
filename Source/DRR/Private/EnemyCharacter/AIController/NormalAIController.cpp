@@ -4,6 +4,9 @@
 #include "EnemyCharacter/AIController/NormalAIController.h"
 #include "CharacterBase/CharacterBase.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BlackboardData.h"
 
 void ANormalAIController::BeginPlay()
 {
@@ -13,10 +16,22 @@ void ANormalAIController::BeginPlay()
 	{
 		Agent = Character;
 	}
+
 }
 
 ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitializer)
 {
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(TEXT("/Game/Blueprints/AI/Normal/BBNormalMelee.BBNormalMelee"));
+	if (BBAssetRef.Object)
+	{
+		BBAsset = BBAssetRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(TEXT("/Game/Blueprints/AI/Normal/BTNormalMeleeAI.BTNormalMeleeAI"));
+	if (BTAssetRef.Object)
+	{
+		BTAsset = BTAssetRef.Object;
+	}
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
 
@@ -45,4 +60,27 @@ void ANormalAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ANormalAIController::OnPerception);
+
+	RunAI();
+}
+
+void ANormalAIController::RunAI()
+{
+	UBlackboardComponent* BlackBoardPtr = Blackboard.Get();
+	if (UseBlackboard(BBAsset, BlackBoardPtr))
+	{
+		Blackboard->SetValueAsVector(TEXT("StartPoint"), GetPawn()->GetActorLocation());
+
+		bool RunResult = RunBehaviorTree(BTAsset);
+		ensure(RunResult);
+	}
+}
+
+void ANormalAIController::StopAI()
+{
+	UBehaviorTreeComponent* BTComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (BTComponent)
+	{
+		BTComponent->StopTree();
+	}
 }
