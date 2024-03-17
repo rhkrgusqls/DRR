@@ -6,7 +6,7 @@
 ADRRGameModeBase::ADRRGameModeBase()
 {
 	//Super::AGameModeBase();
-	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT(""));
+	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/DRR.PlayerCharacterBase"));
 	//DefaultPawnClass Setting
 	if (DefaultPawnClassRef.Class)
 	{
@@ -14,7 +14,7 @@ ADRRGameModeBase::ADRRGameModeBase()
 	}
 
 	//PlayerControllerClass Setting
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT(""));
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT("/Script/DRR.ABPlayerController"));
 	if (PlayerControllerClassRef.Class)
 	{
 		PlayerControllerClass = PlayerControllerClassRef.Class;
