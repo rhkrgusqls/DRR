@@ -21,6 +21,8 @@ public:
 	void StartTimer(UWorld* World);
 	void StopTimer();
 	void UpdateTimer();
+
+	float ReturnLevel();
 	
 private:
 	FTimerHandle TimerHandle;

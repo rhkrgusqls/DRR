@@ -4,6 +4,7 @@
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "DBEnemyCharacterSetting.h"
 #include "Components/CapsuleComponent.h"
+#include "GameManager/GameManager.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -91,8 +92,16 @@ void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	Level = 1;
-	MaxHP = MaxHP*(100+Level);
+	UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
+	if (GameInstance)
+	{
+		Level = GameInstance->ReturnLevel()/difficulty;
+	}
+	else
+	{
+		Level = 1;
+	}
+	MaxHP = MaxHP * (100 + Level);
 	CurrentHP = MaxHP;
 	physicsAttack = physicsAttack * (100 + Level);
 	MagicAttack = MagicAttack * (100 + Level);

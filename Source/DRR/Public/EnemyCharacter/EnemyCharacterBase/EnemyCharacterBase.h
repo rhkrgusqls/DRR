@@ -78,6 +78,8 @@ protected:
 
 	uint16 Level;
 
+	float difficulty=20;
+
 public:
 	void OnPerception(AActor* Actor, FAIStimulus stimulus);
 	virtual void BeginPlay() override;

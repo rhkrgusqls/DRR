@@ -27,3 +27,8 @@ void UGameManager::UpdateTimer()
 {
 	ElapsedTimer += 1.f;
 }
+
+float UGameManager::ReturnLevel()
+{
+	return ElapsedTimer;
+}
