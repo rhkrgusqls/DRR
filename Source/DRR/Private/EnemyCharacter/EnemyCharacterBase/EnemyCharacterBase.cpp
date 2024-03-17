@@ -7,11 +7,26 @@
 #include "GameManager/GameManager.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
 
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// UI Widget
+	EnemyHPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHPBar"));
+	EnemyHPBar->SetupAttachment(GetMesh());
+	EnemyHPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> EnemyHPBarWidgetRef(TEXT("/Game/Asset/UI/WBP_EnemyHPBar.WBP_EnemyHPBar"));
+	if (EnemyHPBarWidgetRef.Class)
+	{
+		EnemyHPBar->SetWidgetClass(EnemyHPBarWidgetRef.Class);
+		EnemyHPBar->SetWidgetSpace(EWidgetSpace::Screen);
+		EnemyHPBar->SetDrawSize(FVector2D(150.0f, 20.0f));
+		EnemyHPBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 
 }
 
