@@ -36,3 +36,7 @@ void ACharacterBase::Tick(float DeltaTime)
 		HPRegenHandle = 0;
 	}
 }
+
+void ACharacterBase::UpdateHP(float NewHP)
+{
+}
