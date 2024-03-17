@@ -42,7 +42,7 @@ ACharacterBase::ACharacterBase()
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UCharacterControlDataAsset> QuaterDataAssetRef(TEXT(""));
+	static ConstructorHelpers::FObjectFinder<UPlayerControlDataAsset> QuaterDataAssetRef(TEXT("/Game/Asset/Character/CharacterControlData/DA_CCQuater.DA_CCQuater"));
 	if (QuaterDataAssetRef.Object)
 	{
 		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataAssetRef.Object);
@@ -56,17 +56,17 @@ ACharacterBase::ACharacterBase()
 	}
 }
 
-void ACharacterBase::SetCharacterControlData(const UCharacterControlDataAsset* CharacterControlData)
+void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
 {
 	//pawn
-	//bUseControllerRotationPitch = CharacterControlData->bUseControlRotationPitch;
-	//bUseControllerRotationYaw = CharacterControlData->bUseControlRotationYaw;
-	//bUseControllerRotationRoll = CharacterControlData->bUseControlRotationRoll;
+	bUseControllerRotationPitch = CharacterControlData->bUseControlRotationPitch;
+	bUseControllerRotationYaw = CharacterControlData->bUseControlRotationYaw;
+	bUseControllerRotationRoll = CharacterControlData->bUseControlRotationRoll;
 
 	//Movement
-	//GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
-	//GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
-	//GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
+	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
+	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 }
 
 void ACharacterBase::Tick(float DeltaTime)

@@ -22,11 +22,12 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
-protected:
-	virtual void SetCharacterControlData(const class UCharacterControlDataAsset* CharacterControlData);
 
 protected:
-	TMap< ECharacterControlType, class UCharacterControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
+	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
+
+protected:
+	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
 
 public:		
 	virtual void Tick(float DeltaTime) override;

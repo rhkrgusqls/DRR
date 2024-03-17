@@ -14,6 +14,7 @@
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
+
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//Camera Boom
@@ -25,8 +26,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom);
 	FollowCamera->bUsePawnControlRotation = false;
-
-	
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -46,7 +45,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 }
 
-void APlayerCharacterBase::SetCharacterControlData(const UCharacterControlDataAsset* CharacterControlData)
+void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
 {
 	Super::SetCharacterControlData(CharacterControlData);
 
@@ -55,22 +54,22 @@ void APlayerCharacterBase::SetCharacterControlData(const UCharacterControlDataAs
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 	if (nullptr != Subsystem)
 	{
-		//Subsystem->ClearAllMappings();
-		//if (CharacterControlData->InputMappingContext)
-		//{
-		//	Subsystem->AddMappingContext(CharacterControlData->InputMappingContext, 0);
-		//}
+		Subsystem->ClearAllMappings();
+		if (CharacterControlData->InputMappingContext)
+		{
+			Subsystem->AddMappingContext(CharacterControlData->InputMappingContext, 0);
+		}
 		//Subsystem->RemoveMappingContext(DefaultMappingContext);
 	}
 
 	//Camera
-	//CameraBoom->TargetArmLength = CharacterControlData->TargetArmLength;
-	//CameraBoom->SetRelativeRotation(CharacterControlData->RelativeRotation);
-	//CameraBoom->bUsePawnControlRotation = CharacterControlData->bUsePawnControlRotation;
-	//CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
-	//CameraBoom->bInheritPitch = CharacterControlData->bInheritPitch;
-	//CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
-	//CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
+	CameraBoom->TargetArmLength = CharacterControlData->TargetArmLength;
+	CameraBoom->SetRelativeRotation(CharacterControlData->RelativeRotation);
+	CameraBoom->bUsePawnControlRotation = CharacterControlData->bUsePawnControlRotation;
+	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
+	CameraBoom->bInheritPitch = CharacterControlData->bInheritPitch;
+	CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
+	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -93,6 +92,6 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 
 void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType)
 {
-	UCharacterControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
+	UPlayerControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
 	SetCharacterControlData(NewCharacterControlData);
 }
