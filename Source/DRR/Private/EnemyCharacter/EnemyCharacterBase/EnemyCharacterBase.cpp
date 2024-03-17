@@ -49,9 +49,9 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 		CharacterAnimBP = EnemyData.CharacterAnimBP;
 		MaxHP = EnemyData.HP;
 		physicsAttack = EnemyData.PhysicsAttackCoefficient;
-		MagicAttack = EnemyData.MagicAttackCoefficient;
+	//	MagicAttack = EnemyData.MagicAttackCoefficient;
 		physicsDef = EnemyData.PhysicsDefCoefficient;
-		MagicDef = EnemyData.MagicDefCoefficient;
+//		MagicDef = EnemyData.MagicDefCoefficient;
 		HPRegenSpeed = EnemyData.HPRegenerationSpeed;
 
 	}
@@ -104,9 +104,9 @@ void AEnemyCharacterBase::BeginPlay()
 	MaxHP = MaxHP * (100 + Level);
 	CurrentHP = MaxHP;
 	physicsAttack = physicsAttack * (100 + Level);
-	MagicAttack = MagicAttack * (100 + Level);
+	//MagicAttack = MagicAttack * (100 + Level);
 	physicsDef = physicsAttack * (100 + Level);
-	MagicDef = MagicDef * (100 + Level);
+//	MagicDef = MagicDef * (100 + Level);
 }
 
 void AEnemyCharacterBase::Tick(float DeltaTime)

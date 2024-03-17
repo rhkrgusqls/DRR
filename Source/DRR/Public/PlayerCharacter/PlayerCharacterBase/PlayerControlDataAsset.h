@@ -6,9 +6,6 @@
 #include "Engine/DataAsset.h"
 #include "PlayerControlDataAsset.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DRR_API UPlayerControlDataAsset : public UDataAsset
 {
