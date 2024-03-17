@@ -8,7 +8,7 @@
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
-
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -26,3 +26,13 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void ACharacterBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	HPRegenHandle++;
+	if (HPRegenHandle == 9)
+	{
+		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01;
+		HPRegenHandle = 0;
+	}
+}

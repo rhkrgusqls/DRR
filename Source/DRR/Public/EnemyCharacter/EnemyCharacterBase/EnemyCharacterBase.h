@@ -78,8 +78,6 @@ protected:
 
 	uint16 Level;
 
-	float HPRegenHandle;
-
 public:
 	void OnPerception(AActor* Actor, FAIStimulus stimulus);
 	virtual void BeginPlay() override;

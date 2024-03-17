@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
-#include "MeleeGoblin.generated.h"
+#include "NormalMonster.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DRR_API AMeleeGoblin : public AEnemyCharacterBase
+class DRR_API ANormalMonster : public AEnemyCharacterBase
 {
 	GENERATED_BODY()
 
-	AMeleeGoblin();
+	ANormalMonster();
 	
 };

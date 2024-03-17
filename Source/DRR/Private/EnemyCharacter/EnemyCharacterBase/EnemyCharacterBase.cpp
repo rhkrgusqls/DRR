@@ -103,10 +103,5 @@ void AEnemyCharacterBase::BeginPlay()
 void AEnemyCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	HPRegenHandle++;
-	if(HPRegenHandle==9)
-	{
-		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01;
-		HPRegenHandle = 0;
-	}
+
 }
