@@ -106,7 +106,7 @@ void AEnemyCharacterBase::BeginPlay()
 	physicsAttack = physicsAttack * (100 + Level);
 	//MagicAttack = MagicAttack * (100 + Level);
 	physicsDef = physicsAttack * (100 + Level);
-//	MagicDef = MagicDef * (100 + Level);
+	//MagicDef = MagicDef * (100 + Level);
 }
 
 void AEnemyCharacterBase::Tick(float DeltaTime)
