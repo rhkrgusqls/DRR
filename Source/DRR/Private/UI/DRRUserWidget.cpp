@@ -4,6 +4,10 @@
 #include "UI/DRRUserWidget.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
 
+void UDRRUserWidget::UpdateHP(float NewHP)
+{
+}
+
 void UDRRUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
