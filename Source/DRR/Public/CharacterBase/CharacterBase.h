@@ -26,6 +26,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	FORCEINLINE void SetMaxHP(float NewHP) { MaxHP = NewHP; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
 
