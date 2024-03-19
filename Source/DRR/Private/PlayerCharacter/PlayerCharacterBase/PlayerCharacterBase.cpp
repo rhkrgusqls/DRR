@@ -3,6 +3,10 @@
 
 #include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
 #include "Components/CapsuleComponent.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "GameManager/GameManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
@@ -46,4 +50,103 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
 	}
+	
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> nputActionShoulderLookRef(TEXT("/Game/Blueprints/Character/IMC_Default.IMC_Default"));
+	if (nputActionShoulderLookRef.Object)
+	{
+		Controller = nputActionShoulderLookRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionQuaterMoveRef(TEXT("/Game/Blueprints/Character/Actions/IA_CreateSession.IA_CreateSession"));
+	if (InputActionQuaterMoveRef.Object)
+	{
+		QuaterMoveAction = InputActionQuaterMoveRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionShoulderMoveRef(TEXT("/Game/Blueprints/Character/Actions/IA_FindSession.IA_FindSession"));
+	if (InputActionShoulderMoveRef.Object)
+	{
+		ShoulderMoveAction = InputActionShoulderMoveRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionShoulderLookRef(TEXT("/Game/Blueprints/Character/Actions/IA_Jump.IA_Jump"));
+	if (InputActionShoulderLookRef.Object)
+	{
+		ShoulderLookAction = InputActionShoulderLookRef.Object;
+	}
+
+}
+
+
+void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked <UEnhancedInputComponent>(PlayerInputComponent);
+	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::CreateSession);
+	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::FindSession);
+	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::Jump);
+}
+void APlayerCharacterBase::BeginPlay()
+{
+	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+	if (nullptr != Subsystem)
+	{
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(Controller, 0);
+	}
+}
+
+void APlayerCharacterBase::CreateSession()
+{
+	if (!bQuaterMoveActionPressed)
+	{
+		bQuaterMoveActionPressed = true;
+
+
+		UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
+		if (GameInstance)
+		{
+			GameInstance->CreateGameSession();
+		}
+	}
+}
+
+void APlayerCharacterBase::FindSession()
+{
+	if (!bShoulderMoveActionPressed)
+	{
+		bShoulderMoveActionPressed = true;
+
+
+		 UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
+		if (GameInstance)
+		{
+			GameInstance->FindGameSessions();
+		} 
+	}
+}
+
+void APlayerCharacterBase::Jump()
+{
+	if (!bShoulderLookActionPressed)
+	{
+		bShoulderLookActionPressed = true;
+
+
+	}
+}
+
+void APlayerCharacterBase::ReleaseQuaterMoveAction()
+{
+	bQuaterMoveActionPressed = false;
+}
+
+void APlayerCharacterBase::ReleaseShoulderMoveAction()
+{
+	bShoulderMoveActionPressed = false;
+}
+
+void APlayerCharacterBase::ReleaseShoulderLookAction()
+{
+	bShoulderLookActionPressed = false;
 }
