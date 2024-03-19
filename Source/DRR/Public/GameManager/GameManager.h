@@ -18,6 +18,10 @@ public:
 
 	UGameManager();
 
+	void CreateGameSession();
+	
+	void FindGameSessions();
+
 	void StartTimer(UWorld* World);
 	void StopTimer();
 	void UpdateTimer();
