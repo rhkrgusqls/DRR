@@ -129,3 +129,8 @@ void AEnemyCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void AEnemyCharacterBase::SetHP(float NewHP)
+{
+	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
+}

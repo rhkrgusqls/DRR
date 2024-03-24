@@ -10,6 +10,10 @@
 /**
  * 
  */
+
+//DECLARE_MULTICAST_DELEGATE(FOnHPZeroDelegate);
+//DECLARE_MULTICAST_DELEGATE_OneParam(FOnHPChangeDelegate, float /*CurrentHP*/);
+
 UCLASS()
 class AEnemyCharacterBase : public ACharacterBase
 {
@@ -89,4 +93,9 @@ public:
 	// UI Widget Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetComponent> EnemyHPBar;
+
+	void SetHP(float NewHP);
+
+	//FOnHPZeroDelegate OnHPZero;
+	//FOnHPChangeDelegate OnHPChange;
 };
