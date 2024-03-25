@@ -4,17 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/DRRActorInterface.h"
 #include "CharacterBase.generated.h"
 
-
-UENUM()
-enum class ECharacterControlType : uint8
-{
-	Quater
-};
-
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter
+class DRR_API ACharacterBase : public ACharacter ,public IDRRActorInterface
 {
 	GENERATED_BODY()
 
@@ -22,37 +16,23 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
-
 protected:
-	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
+
+public:	
+	//추가 사항2
+	virtual void Act() override;
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	
 protected:
-	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
 
-public:		
-	virtual void Tick(float DeltaTime) override;
+	//행동 컴포넌트. 추가사항1
+	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly, Category = Act, Meta = (AllowPrivateAccess = "true"));
+	TObjectPtr<class UDRRActComponent> ActComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float MaxHP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float CurrentHP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float physicsAttack;		
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float physicsDef;
-
-	//Not Use
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	//float MagicAttack;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	//float MagicDef;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float HPRegenSpeed;
-
-	float HPRegenHandle;
 
 };
