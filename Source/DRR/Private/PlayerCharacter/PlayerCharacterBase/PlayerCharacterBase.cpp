@@ -26,6 +26,38 @@ APlayerCharacterBase::APlayerCharacterBase()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	//Input
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionQuaterMoveRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_QuaterMove.IA_QuaterMove"));
+	if (InputActionQuaterMoveRef.Object)
+	{
+		QuaterMoveAction = InputActionQuaterMoveRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Jump.IA_Jump"));
+	if (InputActionJumpRef.Object)
+	{
+		JumpAction = InputActionJumpRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionSitRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Sit.IA_Sit"));
+	if (InputActionSitRef.Object)
+	{
+		SitAction = InputActionSitRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionAttackRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Attack.IA_Attack"));
+	if (InputActionJumpRef.Object)
+	{		
+		AttackAction = InputActionAttackRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionChangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
+	if (InputActionJumpRef.Object)
+	{
+		weaponChangeAction = InputActionChangeRef.Object;
+	}
+
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -37,12 +69,13 @@ void APlayerCharacterBase::BeginPlay()
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	//향상된 입력 시스템 사용
-	//입력매핑컨텍스트에서 액션과 함수
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked <UEnhancedInputComponent>(PlayerInputComponent);
-	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked <UEnhancedInputComponent>(PlayerInputComponent);	
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::Attack);
+	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::Sit);
+	EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::weaponChange);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -88,6 +121,20 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
+}
+
+void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
+	UE_LOG(LogTemp, Log, TEXT("Attack"));
+
+}
+
+void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
+	UE_LOG(LogTemp, Log, TEXT("Sit"));
+}
+
+void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
+	UE_LOG(LogTemp, Log, TEXT("Change"));
+	
 }
 
 void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType)

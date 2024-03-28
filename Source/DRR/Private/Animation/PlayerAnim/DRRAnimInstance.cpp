@@ -10,8 +10,7 @@
 
 UDRRAnimInstance::UDRRAnimInstance()
 {
-	MoveThreadshold = 3.0f;
-	
+	MoveThreadshold = 3.0f;	
 }
 
 void UDRRAnimInstance::NativeInitializeAnimation()

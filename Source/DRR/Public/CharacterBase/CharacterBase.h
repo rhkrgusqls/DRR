@@ -22,7 +22,6 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
-
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
 

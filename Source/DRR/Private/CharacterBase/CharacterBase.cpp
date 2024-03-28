@@ -43,6 +43,7 @@ ACharacterBase::ACharacterBase()
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 
+	//SetInputDataAsset
 	static ConstructorHelpers::FObjectFinder<UPlayerControlDataAsset> QuaterDataAssetRef(TEXT("/Game/Asset/Character/CharacterControlData/DA_CCQuater.DA_CCQuater"));
 	if (QuaterDataAssetRef.Object)
 	{
@@ -80,4 +81,3 @@ void ACharacterBase::Tick(float DeltaTime)
 		HPRegenHandle = 0;
 	}
 }
-

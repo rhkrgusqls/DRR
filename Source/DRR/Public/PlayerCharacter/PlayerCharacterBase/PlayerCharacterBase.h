@@ -23,6 +23,10 @@ protected:
 
 private:
 	void QuaterMove(const FInputActionValue& Value);
+	void Attack(const FInputActionValue& Value);
+	void Sit(const FInputActionValue& Value);
+	void weaponChange(const FInputActionValue& Value);
+
 	void SetCharacterControl(ECharacterControlType ControlType);
 
 protected:
@@ -37,12 +41,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> QuaterMoveAction;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> JumpAction;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> ChangeControlAction;
+	TObjectPtr<class UInputAction> SitAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> AttackAction;
