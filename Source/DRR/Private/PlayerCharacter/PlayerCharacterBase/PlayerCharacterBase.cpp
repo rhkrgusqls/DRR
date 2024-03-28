@@ -40,6 +40,24 @@ APlayerCharacterBase::APlayerCharacterBase()
 		JumpAction = InputActionJumpRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionSitRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Sit.IA_Sit"));
+	if (InputActionSitRef.Object)
+	{
+		SitAction = InputActionSitRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionAttackRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Attack.IA_Attack"));
+	if (InputActionJumpRef.Object)
+	{
+		AttackAction = InputActionAttackRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionChangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
+	if (InputActionJumpRef.Object)
+	{
+		weaponChangeAction = InputActionChangeRef.Object;
+	}
+
 }
 
 void APlayerCharacterBase::BeginPlay()
