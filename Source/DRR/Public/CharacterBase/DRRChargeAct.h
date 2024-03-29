@@ -13,8 +13,7 @@ class DRR_API DRRChargeAct : public DRRAct
 {
 public:
 
-	DRRChargeAct(IDRRActableInterface* Target);
-	~DRRChargeAct();
+	DRRChargeAct();
 	virtual void ActRelease() override;
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;

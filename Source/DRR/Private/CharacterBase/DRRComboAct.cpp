@@ -4,14 +4,11 @@
 #include "CharacterBase/DRRComboAct.h"
 #include "Interface/DRRActableInterface.h"
 
-DRRComboAct::DRRComboAct(IDRRActableInterface* Target) :DRRAct(Target)
+DRRComboAct::DRRComboAct() :DRRAct()
 {
 
 }
 
-DRRComboAct::~DRRComboAct()
-{
-}
 
 bool DRRComboAct::BeginAct()
 {

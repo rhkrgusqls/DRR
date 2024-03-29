@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class DRR_API UDA_WeaponData : public UDA_UseableData
+class DRR_API UDA_WeaponData : public UDA_ItemData
 {
 	GENERATED_BODY()
 	
@@ -18,6 +18,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = weapon)
 	// TSoftObjectPtr로딩을 미루고 나중에 필요할때 로딩
 	TSoftObjectPtr<class USkeletalMesh> WeaponMesh;
+	
+	//애님 인스턴스도 추가
+	TObjectPtr<class UAnimInstance> Anim;
+
 
 
 };

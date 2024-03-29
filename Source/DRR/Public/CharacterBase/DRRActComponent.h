@@ -68,6 +68,12 @@ public:
 
 private:
 
+	TObjectPtr<class DRRComboAct> ComboActor;
+	TObjectPtr<class DRRCastAct> CastActor;
+	TObjectPtr<class DRRShortShotAct> ShortShotActor;
+	TObjectPtr<class DRRChargeAct> ChargeActor;
+
+
 
 	UPROPERTY()
 	TArray<FOnActDelegateWrapper> ActActions;

@@ -12,6 +12,11 @@
 				"Engine",
 				"AIModule"
 			]
+		},
+		{
+			"Name": "Utilities",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

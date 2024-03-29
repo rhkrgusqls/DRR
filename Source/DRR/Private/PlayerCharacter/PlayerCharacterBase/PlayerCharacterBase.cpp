@@ -17,7 +17,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Utilities/UtilityList.h"
 
-#include "Equipment/Weapon/DRRWeapon1.h"
+#include "Equipment/Weapon/DRRWeaponBase.h"
+#include "Skill/DRRActUnitBase.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
@@ -25,14 +26,14 @@ APlayerCharacterBase::APlayerCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create Capsule-Kwakhyunbin
-	GetCapsuleComponent()->InitCapsuleSize(500.0f, 100.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	GetCapsuleComponent()->InitCapsuleSize(50.0f, 100.0f);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 
 	// Set Mesh-Kwakhyunbin
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-
+	GetMesh()->SetCollisionProfileName(TEXT("Player"));
+	
 	//Set Movement Default-Kwakhyunbin
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
@@ -73,14 +74,14 @@ APlayerCharacterBase::APlayerCharacterBase()
 	}
 
 	//Set Mesh and Anim BP-Kwakhyunbin
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/ProtoTypeAsset/Characters/Heroes/Wraith/Meshes/Wraith.Wraith"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Player/TestAsset/Animation/Sword_And_Shield.Sword_And_Shield'"));
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 
 	//Animation
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/ProtoTypeAsset/Characters/Heroes/Wraith/Wraith_AnimBlueprint.Wraith_AnimBlueprint_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Script/Engine.AnimBlueprint'/Game/Blueprints/Player/Test/ABP_PlayerAnimInstance.ABP_PlayerAnimInstance_C'"));
 	if (AnimInstanceClassRef.Class)
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
@@ -125,20 +126,24 @@ void APlayerCharacterBase::BeginPlay()
 
 	CLog::Log("SetMappingContext");
 	//매핑 콘텍스트를 컨트롤러에 연결하는 작업
-	APlayerController* playerController = CastChecked<APlayerController>(GetController());
-
-	UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
-	if (nullptr != subsystem)
+	if (GetController()!=nullptr)
 	{
-		//매핑 컨택스트들을 전부 제거
-		subsystem->ClearAllMappings();
-		if (defaultMappingContext)
-		{
-			//매핑 콘텍스트 컨트롤러에 연결. removeMappingContext로 지우고 다른걸 추가할 수도 있음
-			subsystem->AddMappingContext(defaultMappingContext, 0);
-		}
+		APlayerController* playerController = CastChecked<APlayerController>(GetController());
 
+		UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+		if (nullptr != subsystem)
+		{
+			//매핑 컨택스트들을 전부 제거
+			subsystem->ClearAllMappings();
+			if (defaultMappingContext)
+			{
+				//매핑 콘텍스트 컨트롤러에 연결. removeMappingContext로 지우고 다른걸 추가할 수도 있음
+				subsystem->AddMappingContext(defaultMappingContext, 0);
+			}
+
+		}
 	}
+	
 }
 
 void APlayerCharacterBase::SetWeapon(TSubclassOf<class ADRRWeaponBase> NewWeapon)
@@ -153,13 +158,23 @@ void APlayerCharacterBase::SetWeapon(TSubclassOf<class ADRRWeaponBase> NewWeapon
 void APlayerCharacterBase::WeaponAttackPress()
 {
 	CLog::Log("WeaponAttackPress");
-	ActComponent->Act(Cast<IDRRActableInterface>(Weapon->GetDefaultObject()));
+	auto Temp = Cast<IDRRActableInterface>(Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct());
+	if (Temp)
+	{
+		
+		ActComponent->Act(Temp);
+	}
 }
 
 void APlayerCharacterBase::WeaponAttackRelaease()
 {
 	CLog::Log("WeaponAttackRelaease");
-	ActComponent->ActRelease(Cast<IDRRActableInterface>(Weapon->GetDefaultObject()));
+	auto Temp = Cast<IDRRActableInterface>(Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct());
+	if (Temp)
+	{
+
+		ActComponent->ActRelease(Temp);
+	}
 }
 
 

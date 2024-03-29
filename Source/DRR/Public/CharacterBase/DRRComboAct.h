@@ -13,8 +13,7 @@ class DRR_API DRRComboAct : public DRRAct
 {
 public:
 
-	DRRComboAct(IDRRActableInterface* Target);
-	~DRRComboAct();
+	DRRComboAct();
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual FName GetMontgeSectionName() override;

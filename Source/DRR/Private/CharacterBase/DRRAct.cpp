@@ -5,7 +5,12 @@
 #include "Interface/DRRActableInterface.h"
 #include "Utilities/UtilityList.h"
 
-DRRAct::DRRAct(IDRRActableInterface* Target)
+DRRAct::DRRAct()
+{
+
+}
+
+void DRRAct::SetActor(IDRRActableInterface* Target)
 {
 	CLog::Log("DDRAct");
 	SetActs(Target);
@@ -21,13 +26,21 @@ void DRRAct::ActRelease()
 
 DRRAct::~DRRAct()
 {
-	BeginActFunc.Unbind();
+	if (BeginActFunc.IsBound())
+	{
+		BeginActFunc.Unbind();
 
-	for (auto f : ActFunc)
+	}
+	if (BeginActFunc.IsBound())
+	{
+		EndActFunc.Unbind();
+
+	}
+	for (FOnActFuncDelegate f : ActFunc)
 	{
 		f.Unbind();
 	}
-
+	ActFunc.Empty();
 }
 
 float DRRAct::GetNextTime()
@@ -49,17 +62,23 @@ bool DRRAct::NextReset()
 	return false;
 }
 
-void DRRAct::DoBeginAct()
+FOnActFuncDelegate DRRAct::DoBeginAct()
 {
 	CLog::Log("DRRAct::DoAct");
-	BeginActFunc.Execute();
+	
+	return BeginActFunc;
 	
 }
 
-void DRRAct::DoAct()
+FOnActFuncDelegate DRRAct::DoAct()
 {
 	CLog::Log("DRRAct::DoAct");
-	ActFunc[curFuncCount++].Execute();
+	return (ActFunc[curFuncCount++]);
+}
+
+FOnActFuncDelegate DRRAct::DoEndAct()
+{
+	return EndActFunc;
 }
 
 const UDA_ActData* DRRAct::GetCurAct()
@@ -87,6 +106,21 @@ FName DRRAct::GetMontgeSectionName()
 
 void DRRAct::EndAct()
 {
+	if (BeginActFunc.IsBound())
+	{
+		BeginActFunc.Unbind();
+
+	}
+	if (BeginActFunc.IsBound())
+	{
+		EndActFunc.Unbind();
+
+	}
+	for (FOnActFuncDelegate f : ActFunc)
+	{
+		f.Unbind();
+	}
+	ActFunc.Empty();
 
 }
 
@@ -100,7 +134,8 @@ void DRRAct::SetActs(IDRRActableInterface* Target)
 {
 	CLog::Log("DRRAct::SetActs");
 	BeginActFunc = Target->GetBeginActFunc();
-	ActFunc = Target->GetActFunc();
+	ActFunc = Target->GetActFunc( );
+	EndActFunc = Target->GetEndActFunc();
 	CLog::Log(ActFunc.Num());
 	
 	

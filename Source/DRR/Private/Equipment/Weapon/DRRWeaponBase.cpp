@@ -2,6 +2,7 @@
 
 
 #include "Equipment/Weapon/DRRWeaponBase.h"
+#include "Skill/DRRActUnitBase.h"
 #include "DataAsset/Item/DA_WeaponData.h"
 
 // Sets default values
@@ -11,36 +12,23 @@ ADRRWeaponBase::ADRRWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
-
-TArray<FOnActFuncDelegate> ADRRWeaponBase::GetActFunc()
+UDRRActUnitBase* ADRRWeaponBase::GetFirstAct()
 {
-	return TArray<FOnActFuncDelegate>();
+	return Cast<UDRRActUnitBase>(FirstAct->ClassDefaultObject);
 }
-
-FOnActFuncDelegate ADRRWeaponBase::GetBeginActFunc()
+UDRRActUnitBase* ADRRWeaponBase::GetSecondAct()
 {
-	FOnActFuncDelegate Temp;
-
-	Temp.BindUObject(this, &ADRRWeaponBase::BeginFunc);
-
-	return Temp;
-
-}
-
-UDA_ActData* ADRRWeaponBase::GetActData()
-{
-	return WeaponData->ActData;
+	return Cast<UDRRActUnitBase>(SecondAct->ClassDefaultObject);
 }
 
 // Called when the game starts or when spawned
 void ADRRWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+
 	
 }
 
-void ADRRWeaponBase::BeginFunc()
-{
-}
 
 

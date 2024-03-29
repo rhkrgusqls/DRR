@@ -194,7 +194,7 @@ void UCMultiplaySubsystem::OnCreateSessionComplete(FName SessionName, bool bWasS
 	//상속받은로컬플레이어 필요
 	//Cast<>(LPC.GetLocalPlayer())->CurrentLevel = ECurrentLevel::SomeLevel;
 	//이동할 레벨
-	GetWorld()->ServerTravel("/Game/Level/StartDungeon?listen");
+	GetWorld()->ServerTravel("/Game/Levels/DebugTestLevel?listen");
 }
 
 void UCMultiplaySubsystem::OnFindSessionComplete(bool bWasSuccessful)

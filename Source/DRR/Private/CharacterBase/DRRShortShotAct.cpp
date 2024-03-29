@@ -4,13 +4,9 @@
 #include "CharacterBase/DRRShortShotAct.h"
 #include "Interface/DRRActableInterface.h"
 
-DRRShortShotAct::DRRShortShotAct(IDRRActableInterface* Target):DRRAct(Target)
+DRRShortShotAct::DRRShortShotAct():DRRAct()
 {
     
-}
-
-DRRShortShotAct::~DRRShortShotAct()
-{
 }
 
 

@@ -38,7 +38,7 @@ void UCCommandSubsystem::FindFinish(const TArray<FOnlineSessionSearchResult>& Se
 {
 	for (int i=0;i<SessionResults.Num();i++)
 	{
-		CDisplayLog::Log("%d 번 방 : ",i);
+		CDisplayLog::Log(TEXT("%d 번 방 : "),i);
 	}
 
 	GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>()->MultiplayerOnFindSessionComplete.Clear();

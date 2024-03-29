@@ -12,8 +12,7 @@ class DRR_API DRRShortShotAct : public DRRAct
 {
 public:
 
-	DRRShortShotAct(class IDRRActableInterface* Target);
-	~DRRShortShotAct();
+	DRRShortShotAct();
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual float GetNextTime() override;

@@ -4,13 +4,10 @@
 #include "CharacterBase/DRRChargeAct.h"
 #include "Interface/DRRActableInterface.h"
 
-DRRChargeAct::DRRChargeAct(IDRRActableInterface* Target) :DRRAct(Target)
+DRRChargeAct::DRRChargeAct() :DRRAct()
 {
 }
 
-DRRChargeAct::~DRRChargeAct()
-{
-}
 
 void DRRChargeAct::ActRelease()
 {

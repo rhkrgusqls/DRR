@@ -29,6 +29,11 @@ UDRRActComponent::UDRRActComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	Actor = nullptr;
+	ComboActor = new DRRComboAct();
+	 CastActor = new DRRCastAct();
+	ShortShotActor=new DRRShortShotAct();
+	 ChargeActor = new DRRChargeAct();
+
 
 	//Take Item Section
 	ActActions.Add(FOnActDelegateWrapper(FOnActDelegate::CreateUObject(this, &UDRRActComponent::ShortShot)));
@@ -70,12 +75,12 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 {
 
 	CLog::Log("Act");
-	if (Actor == nullptr)
+	//실행중인 행동이 없거나 이번에 들어온 행동입력이 다른행동일경우
+	if (Actor == nullptr||Actor->GetCurAct()->ActionName.Equals(Actable->GetActData()->ActionName))
 	{
 
 		CLog::Log("Begin");
 		EraseAct();
-		ActActions[(uint8)Actable->GetActData()->Type].ActDelegate.ExecuteIfBound(Actable);
 		BeginAct();
 		return;
 	}
@@ -109,7 +114,7 @@ void UDRRActComponent::ActFunc()
 		return;
 	}
 
-	Actor->DoAct();
+	Actor->DoAct().ExecuteIfBound(GetOwner());
 
 }
 
@@ -117,27 +122,31 @@ void UDRRActComponent::ActFunc()
 void UDRRActComponent::ShortShot( IDRRActableInterface* Target)
 {
 	CLog::Log("ShortShot");
-	Actor = new DRRShortShotAct(Target);
+	ShortShotActor->SetActor(Target);
+	Actor = ShortShotActor;
 	
 }
 
 void UDRRActComponent::Charging(IDRRActableInterface* Target)
 {
 	CLog::Log("Charging");
-	Actor = new DRRChargeAct(Target);
+	ChargeActor->SetActor(Target);
+	Actor = ChargeActor;
 }
 
 void UDRRActComponent::Casting(IDRRActableInterface* Target)
 {
 	CLog::Log("Casting");
-	Actor = new DRRCastAct(Target);
+	CastActor->SetActor(Target);
+	Actor = CastActor;
 	
 }
 
 void UDRRActComponent::Combo(IDRRActableInterface* Target)
 {
 	CLog::Log("Combo");
-	Actor = new DRRComboAct(Target);
+	ComboActor->SetActor(Target);
+	Actor = ComboActor;
 
 }
 
@@ -151,7 +160,7 @@ void UDRRActComponent::BeginAct()
 	animInstance->Montage_Play(Actor->GetCurAct()->ActionMontage);
 
 
-	Actor->DoBeginAct();
+	Actor->DoBeginAct().ExecuteIfBound(GetOwner());
 	//몽타주가 끝날떄 호출되는델리게이트
 	FOnMontageEnded endDelegate;
 	//델리게이트 바인딩
@@ -207,13 +216,20 @@ void UDRRActComponent::CheckAct()
 void UDRRActComponent::EndAct(UAnimMontage* targetMontage, bool isInteruped)
 {
 	CLog::Log("UDRRActComponent::EndAct");
+
+	Actor->DoEndAct().ExecuteIfBound(GetOwner());
 	EraseAct();
 
 }
 
 void UDRRActComponent::EraseAct()
 {
-	delete(Actor);
+	if (Actor != nullptr)
+	{
+		Actor->EndAct();
+		Actor = nullptr;
+
+	}
 }
 
 

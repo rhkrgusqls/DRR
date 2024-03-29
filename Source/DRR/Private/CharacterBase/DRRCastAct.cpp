@@ -4,14 +4,10 @@
 #include "CharacterBase/DRRCastAct.h"
 #include "Interface/DRRActableInterface.h"
 
-DRRCastAct::DRRCastAct(IDRRActableInterface* Target) :DRRAct(Target)
+DRRCastAct::DRRCastAct() :DRRAct()
 {
 }
 
-DRRCastAct::~DRRCastAct()
-{
-	
-}
 
 
 bool DRRCastAct::BeginAct()

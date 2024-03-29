@@ -13,8 +13,7 @@ class DRR_API DRRCastAct : public DRRAct
 {
 public:
 
-	DRRCastAct(IDRRActableInterface* Target);
-	~DRRCastAct();
+	DRRCastAct();
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual FName GetMontgeSectionName() override;
