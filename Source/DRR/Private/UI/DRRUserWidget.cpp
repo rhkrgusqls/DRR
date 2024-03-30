@@ -23,12 +23,11 @@ void UDRRUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	EnemyHPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("EnemyHPBar")));
+	PlayerHPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerHPBar")));
 
 	IDRRCharacterWidgetInterface* CharacterWidget = Cast<IDRRCharacterWidgetInterface>(OwningActor);
 	if (CharacterWidget)
 	{
 		CharacterWidget->SetupCharacterWidget(this);
 	}
-
-	PlayerHPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerHPBar")));
 }
