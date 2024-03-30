@@ -5,8 +5,9 @@
 
 ADRRMainPlayerHUD::ADRRMainPlayerHUD()
 {
+	
+	//static ConstructorHelpers::FClassFinder<AHUD> DRRHUDRef(TEXT("/Game/Blueprints/UI/BP_HUD.BP_HUD_C"));
 	/*
-	static ConstructorHelpers::FClassFinder<ADRRMainPlayerHUD> DRRHUDRef(TEXT("/Game/Blueprints/UI/BP_HUD.BP_HUD_C"));
 	if (DRRHUDRef.Class)
 	{
 		//MainHUD = DRRHUDRef.Class;

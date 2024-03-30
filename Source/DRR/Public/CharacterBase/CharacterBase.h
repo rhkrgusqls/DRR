@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/WidgetComponent.h"
+#include "Interface/DRRCharacterWidgetInterface.h"
 #include "CharacterBase.generated.h"
 
 
@@ -14,7 +16,7 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter
+class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -22,14 +24,23 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+public:
+	virtual void BeginPlay() override;
+	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
+
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
+
+	void SetMaxHP(float NewHP);
+	void SetHP(float NewHP);
 
 protected:
 	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
 
 public:		
 	virtual void Tick(float DeltaTime) override;
+
+	float ApplyDamage(float InDamage);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
@@ -53,5 +64,10 @@ public:
 	float HPRegenSpeed;
 
 	float HPRegenHandle;
+
+	TObjectPtr<class UWidgetComponent> PlayerHUD;
+
+	FOnHPZeroDelegate OnHPZero;
+	FOnHPChangedDelegate OnHPChanged;
 
 };
