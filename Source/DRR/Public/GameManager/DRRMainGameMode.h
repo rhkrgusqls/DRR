@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "UI/DRRMainPlayerHUD.h"
 #include "DRRMainGameMode.generated.h"
 
 /**
@@ -17,6 +18,11 @@ class DRR_API ADRRMainGameMode : public AGameMode
 public:
 	ADRRMainGameMode();
 
+public:
+	virtual void BeginPlay() override;
+
 protected:
 	TSubclassOf<UUserWidget> MainHUDWidgetClass;
+
+	UUserWidget* MainHUDWidget;
 };
