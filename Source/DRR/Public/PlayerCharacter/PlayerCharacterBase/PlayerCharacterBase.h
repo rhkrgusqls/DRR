@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "CharacterBase/CharacterBase.h"
+#include "Animation/PlayerAnim/DRRAnimInstance.h"
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
@@ -25,7 +26,7 @@ private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
 	void Sit(const FInputActionValue& Value);
-	void weaponChange(const FInputActionValue& Value);
+	//void weaponChange(const FInputActionValue& Value);
 
 	void SetCharacterControl(ECharacterControlType ControlType);
 
@@ -52,6 +53,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> weaponChangeAction;
+
+	//ChangeWeapon
+	TArray<TObjectPtr<class UABWeaponItemData>> WeaponList;
+
+	uint8 curWeapon = 0;
+
+	bool IsSit = false;
 
 
 private:

@@ -22,15 +22,17 @@ void UDRRAnimInstance::NativeInitializeAnimation()
 	{
 		Movement = Owner->GetCharacterMovement();
 	}
+
 }
 
 void UDRRAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (Movement)
-	{
+	if (Movement){
 		GroundSpeed = Movement->Velocity.Size2D();
 		bIsIdle = GroundSpeed < MoveThreadshold;
+
+		bIsSit = Movement->IsCrouching();
 	}
 }

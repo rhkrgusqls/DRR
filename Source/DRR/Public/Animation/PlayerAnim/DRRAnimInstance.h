@@ -21,6 +21,7 @@ protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character)
 	TObjectPtr<class ACharacter> Owner;
