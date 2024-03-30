@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/WidgetComponent.h"
 #include "CharacterBase.generated.h"
 
 
@@ -22,8 +23,14 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+public:
+	virtual void BeginPlay() override;
+
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
+
+	void SetMaxHP(float NewHP);
+	void SetHP(float NewHP);
 
 protected:
 	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
@@ -53,5 +60,7 @@ public:
 	float HPRegenSpeed;
 
 	float HPRegenHandle;
+
+	TObjectPtr<class UWidgetComponent> PlayerHUD;
 
 };

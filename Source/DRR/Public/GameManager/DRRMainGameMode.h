@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "UI/DRRMainPlayerHUD.h"
 #include "DRRMainGameMode.generated.h"
 
 /**

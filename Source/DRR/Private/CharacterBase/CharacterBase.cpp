@@ -56,6 +56,24 @@ ACharacterBase::ACharacterBase()
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
 	}
+
+	// UI Widget
+	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBar"));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
+	if (PlayerHUDRef.Class)
+	{
+		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
+		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void ACharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetMaxHP(100.0f);
+	SetHP(MaxHP);
 }
 
 void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -69,6 +87,16 @@ void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* Char
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+}
+
+void ACharacterBase::SetMaxHP(float NewHP)
+{
+	MaxHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
+}
+
+void ACharacterBase::SetHP(float NewHP)
+{
+	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
 }
 
 void ACharacterBase::Tick(float DeltaTime)
