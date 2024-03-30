@@ -15,5 +15,6 @@ class DRR_API ANormalMonster : public AEnemyCharacterBase
 	GENERATED_BODY()
 
 	ANormalMonster();
+	ANormalMonster(int Type);
 	
 };

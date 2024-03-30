@@ -68,8 +68,12 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 		physicsDef = EnemyData.PhysicsDefCoefficient;
 //		MagicDef = EnemyData.MagicDefCoefficient;
 		HPRegenSpeed = EnemyData.HPRegenerationSpeed;
-
 	}
+
+	//----------------------------------------------------------------
+	//Set Animmongtage-Kwakhyunbin
+
+	//----------------------------------------------------------------
 
 	// Create Capsule-Kwakhyunbin
 	GetCapsuleComponent()->InitCapsuleSize(CapsuleSize, CapsuleHeight);
