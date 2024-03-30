@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
+#include "Interface/DRRCharacterWidgetInterface.h"
 #include "CharacterBase.generated.h"
 
 
@@ -15,7 +16,7 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter
+class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -25,6 +26,7 @@ public:
 
 public:
 	virtual void BeginPlay() override;
+	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
@@ -37,6 +39,8 @@ protected:
 
 public:		
 	virtual void Tick(float DeltaTime) override;
+
+	float ApplyDamage(float InDamage);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
@@ -62,5 +66,8 @@ public:
 	float HPRegenHandle;
 
 	TObjectPtr<class UWidgetComponent> PlayerHUD;
+
+	FOnHPZeroDelegate OnHPZero;
+	FOnHPChangedDelegate OnHPChanged;
 
 };

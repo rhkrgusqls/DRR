@@ -7,9 +7,14 @@
 
 void UDRRUserWidget::UpdateHP(float NewHP)
 {
-	if (HPProgressBar)
+	if (PlayerHPProgressBar)
 	{
-		HPProgressBar->SetPercent(NewHP / MaxHP);
+		PlayerHPProgressBar->SetPercent(NewHP / MaxHP);
+	}
+
+	if (EnemyHPProgressBar)
+	{
+		EnemyHPProgressBar->SetPercent(NewHP / MaxHP);
 	}
 }
 
@@ -17,11 +22,13 @@ void UDRRUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("EnemyHPBar")));
+	EnemyHPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("EnemyHPBar")));
 
 	IDRRCharacterWidgetInterface* CharacterWidget = Cast<IDRRCharacterWidgetInterface>(OwningActor);
 	if (CharacterWidget)
 	{
 		CharacterWidget->SetupCharacterWidget(this);
 	}
+
+	PlayerHPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerHPBar")));
 }

@@ -5,6 +5,8 @@
 #include "Components/CapsuleComponent.h"
 #include "PlayerCharacter/PlayerCharacterBase/PlayerControlDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/DRRWidgetComponent.h"
+#include "UI/DRRUserWidget.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -58,7 +60,7 @@ ACharacterBase::ACharacterBase()
 	}
 
 	// UI Widget
-	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBar"));
+	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHPBar"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
@@ -66,6 +68,8 @@ ACharacterBase::ACharacterBase()
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
 		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+
+	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 }
 
 void ACharacterBase::BeginPlay()
@@ -74,6 +78,16 @@ void ACharacterBase::BeginPlay()
 
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
+}
+
+void ACharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
+{
+	if (InUserWidget)
+	{
+		InUserWidget->SetMaxHP(MaxHP);
+		InUserWidget->UpdateHP(CurrentHP);
+		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
+	}
 }
 
 void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -97,6 +111,8 @@ void ACharacterBase::SetMaxHP(float NewHP)
 void ACharacterBase::SetHP(float NewHP)
 {
 	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
+
+	OnHPChanged.Broadcast(CurrentHP);
 }
 
 void ACharacterBase::Tick(float DeltaTime)
@@ -108,4 +124,18 @@ void ACharacterBase::Tick(float DeltaTime)
 		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01;
 		HPRegenHandle = 0;
 	}
+}
+
+float ACharacterBase::ApplyDamage(float InDamage)
+{
+	float ActualDamage = FMath::Clamp(InDamage, 0.0f, InDamage);
+
+	SetHP(CurrentHP - ActualDamage);
+	if (CurrentHP <= 0.0f)
+	{
+		// Please call Dead() (or else simillar) function in here
+		OnHPZero.Broadcast();
+	}
+
+	return 0.0f;
 }

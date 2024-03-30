@@ -25,6 +25,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Actor)
 	TObjectPtr<AActor> OwningActor;
 
-	TObjectPtr<class UProgressBar> HPProgressBar;
+	TObjectPtr<class UProgressBar> EnemyHPProgressBar;
+	TObjectPtr<class UProgressBar> PlayerHPProgressBar;
 	float MaxHP;
 };
