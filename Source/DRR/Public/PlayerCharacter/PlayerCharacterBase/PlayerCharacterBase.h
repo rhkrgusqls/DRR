@@ -26,7 +26,7 @@ private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
 	void Sit(const FInputActionValue& Value);
-	//void weaponChange(const FInputActionValue& Value);
+	void weaponChange(const FInputActionValue& Value);
 
 	void SetCharacterControl(ECharacterControlType ControlType);
 

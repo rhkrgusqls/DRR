@@ -30,6 +30,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	//Set Movement Default
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 500.0f;
 	GetCharacterMovement()->AirControl = 0.35f;
@@ -128,7 +129,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Attack);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
-	//EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
+	EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -185,41 +186,34 @@ void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
 	if (IsSit == true ) {
-		IsSit = false;
-		
-		UE_LOG(LogTemp, Log, TEXT("Stand"));
-
+		IsSit = false;		
 		UnCrouch();
 	}
 	
 	else if (IsSit == false) {
-		IsSit = true;
-		UE_LOG(LogTemp, Log, TEXT("Sit"));
-		
+		IsSit = true;		
 		Crouch();
-	}
-	
+	}	
 }
 
 
 //Change weapon
-/*
-void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
-	UE_LOG(LogTemp, Log, TEXT("Change"));
-	
-	if (IsAttack == true)
-	{
-		return;
-	}
-	if (WeaponList.Num() < 1)
-		return;
-	curWeapon++;
-	curWeapon = WeaponList.Num() > curWeapon ? curWeapon : 0;
 
-	Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
-	Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
+void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
+	
+	if (curWeapon == 0) {
+		UE_LOG(LogTemp, Log, TEXT("Change :: 0"));
+		curWeapon++;
+	}
+	else if (curWeapon == 1) {
+		UE_LOG(LogTemp, Log, TEXT("Change :: 1"));
+		curWeapon--;
+	}
+	
+	//Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
+	//Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
 }
-*/
+
 
 void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType)
 {
