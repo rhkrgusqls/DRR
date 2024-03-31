@@ -43,7 +43,7 @@ ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitial
 	Sight->PeripheralVisionAngleDegrees = 60.0f;
 	Sight->DetectionByAffiliation.bDetectNeutrals = true;
 	Sight->SetMaxAge(10.0f);
-	Sight->AutoSuccessRangeFromLastSeenLocation = 900.0f;
+	//Sight->AutoSuccessRangeFromLastSeenLocation = 900.0f;
 	Sight->DetectionByAffiliation.bDetectEnemies = true;
 	Sight->DetectionByAffiliation.bDetectFriendlies = true;
 
