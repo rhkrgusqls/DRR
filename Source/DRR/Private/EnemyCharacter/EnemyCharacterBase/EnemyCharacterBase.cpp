@@ -15,6 +15,7 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// UI Widget
+	/*
 	EnemyHPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHPBar"));
 	EnemyHPBar->SetupAttachment(GetMesh());
 	EnemyHPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
@@ -27,6 +28,7 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 		EnemyHPBar->SetDrawSize(FVector2D(150.0f, 20.0f));
 		EnemyHPBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	*/
 
 }
 
@@ -133,8 +135,9 @@ void AEnemyCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
+/*
 void AEnemyCharacterBase::SetHP(float NewHP)
 {
 	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
 }
+*/

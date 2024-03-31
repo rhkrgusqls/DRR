@@ -12,7 +12,7 @@
 ACharacterBase::ACharacterBase()
 {
 	// UI Widget
-	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHPBar"));
+	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
@@ -37,7 +37,7 @@ void ACharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 	if (InUserWidget)
 	{
 		InUserWidget->SetMaxHP(MaxHP);
-		InUserWidget->UpdateHP(CurrentHP);
+		//InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
 	}
 }

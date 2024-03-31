@@ -65,6 +65,7 @@ public:
 
 	float HPRegenHandle;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta= ( AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetComponent> PlayerHUD;
 
 	FOnHPZeroDelegate OnHPZero;
