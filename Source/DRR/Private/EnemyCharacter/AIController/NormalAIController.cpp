@@ -3,6 +3,7 @@
 
 #include "EnemyCharacter/AIController/NormalAIController.h"
 #include "CharacterBase/CharacterBase.h"
+#include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -37,20 +38,30 @@ ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitial
 
 	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 
-	Sight->SightRadius = 2000.0f;
+	Sight->SightRadius = 800.0f;
 	Sight->LoseSightRadius = Sight->SightRadius + 500.0f;
-	Sight->PeripheralVisionAngleDegrees = 90.0f;
+	Sight->PeripheralVisionAngleDegrees = 60.0f;
 	Sight->DetectionByAffiliation.bDetectNeutrals = true;
+	Sight->SetMaxAge(10.0f);
+	Sight->AutoSuccessRangeFromLastSeenLocation = 900.0f;
+	Sight->DetectionByAffiliation.bDetectEnemies = true;
+	Sight->DetectionByAffiliation.bDetectFriendlies = true;
 
 	AIPerceptionComponent->ConfigureSense(*Sight);
 	AIPerceptionComponent->SetDominantSense(Sight->GetSenseImplementation());
+
 }
 
+//** AI Casted Player -kwakhyunbin
 void ANormalAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 {
-	EnemyCharacter = Cast<ACharacterBase>(Actor);
-	if (EnemyCharacter == nullptr)
+
+	EnemyCharacter = Cast<APlayerCharacterBase>(Actor);
+	if (EnemyCharacter != nullptr)
 	{
+		BlackboardComp->SetValueAsBool("IsTargetLookOn", true);
+		BlackboardComp->SetValueAsObject("Target", Actor);
+		UE_LOG(LogTemp, Warning, TEXT("Casted/%s"), *EnemyCharacter->GetName());
 		return;
 	}
 	
@@ -60,7 +71,6 @@ void ANormalAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ANormalAIController::OnPerception);
-
 	RunAI();
 }
 
@@ -74,6 +84,8 @@ void ANormalAIController::RunAI()
 		bool RunResult = RunBehaviorTree(BTAsset);
 		ensure(RunResult);
 	}
+	BlackboardComp = GetBlackboardComponent();
+	BlackboardComp->SetValueAsBool("IsTargetLookOn", false);
 }
 
 void ANormalAIController::StopAI()

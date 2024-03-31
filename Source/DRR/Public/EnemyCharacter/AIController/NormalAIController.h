@@ -32,7 +32,7 @@ public:
 	class ACharacterBase* Agent;
 
 	ACharacterBase* Character;
-	ACharacterBase* EnemyCharacter;
+	AActor* EnemyCharacter;
 
 	UFUNCTION()
 	void OnPerception(AActor* Actor, FAIStimulus Stimulus);
@@ -47,4 +47,5 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UBehaviorTree> BTAsset;
 
+	UBlackboardComponent* BlackboardComp;
 };
