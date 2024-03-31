@@ -22,6 +22,10 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
+	virtual void EquipWeapon(class UABItemData* InItemData);
+	//virtual void DrinkPotion(class UABItemData* InItemData);
+	//virtual void ReadScroll(class UABItemData* InItemData);
+
 private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
@@ -47,6 +51,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SitAction;
+	bool IsSit = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> AttackAction;
@@ -56,11 +61,11 @@ protected:
 
 	//ChangeWeapon
 	TArray<TObjectPtr<class UABWeaponItemData>> WeaponList;
-
 	uint8 curWeapon = 0;
 
-	bool IsSit = false;
-
+	//Weapon Mesh
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USkeletalMeshComponent> Weapon;
 
 private:
 	ECharacterControlType CurrentCharacterControlType;

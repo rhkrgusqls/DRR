@@ -9,6 +9,7 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
+#include "Item/ABWeaponItemData.h"
 
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
@@ -52,6 +53,10 @@ APlayerCharacterBase::APlayerCharacterBase()
 		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
+
+	// Weapon Mesh Component
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh(), TEXT("Tumb2_R"));
 
 	//SetInputDataAsset
 	static ConstructorHelpers::FObjectFinder<UPlayerControlDataAsset> QuaterDataAssetRef(TEXT("/Game/Asset/Character/CharacterControlData/DA_CCQuater.DA_CCQuater"));
@@ -118,6 +123,12 @@ void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::Quater);
+	
+	WeaponList[0] = GetMesh()->SetSkeletalMesh(WeaponMesh(TEXT("")));
+
+	EquipWeapon(WeaponList[0]);
+	EquipWeapon(WeaponList[1]);
+
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -159,6 +170,29 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 }
 
+void APlayerCharacterBase::EquipWeapon(UABItemData* InItemData)
+{
+	UE_LOG(LogTemp, Log, TEXT("EquipWeapon"));
+	
+	UABWeaponItemData* WeaponItemData = Cast<UABWeaponItemData>(InItemData);
+	if (WeaponItemData)
+	{
+		if (WeaponList.Contains(WeaponItemData))
+		{
+			return;
+		}
+
+		if (WeaponItemData->WeaponMesh.IsPending())
+		{
+			WeaponItemData->WeaponMesh.LoadSynchronous();
+		}
+		WeaponList.Add(WeaponItemData);
+
+		Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
+		
+	}
+}
+
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -179,9 +213,7 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 
 void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
 	UE_LOG(LogTemp, Log, TEXT("Attack"));
-
 }
-
 
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
@@ -196,9 +228,7 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	}	
 }
 
-
 //Change weapon
-
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 	
 	if (curWeapon == 0) {
@@ -208,9 +238,8 @@ void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 	else if (curWeapon == 1) {
 		UE_LOG(LogTemp, Log, TEXT("Change :: 1"));
 		curWeapon--;
-	}
-	
-	//Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
+	}	
+	Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
 	//Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
 }
 
