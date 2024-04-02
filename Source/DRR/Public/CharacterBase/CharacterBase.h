@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
+#include "Interface/DRRActorInterface.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
 #include "CharacterBase.generated.h"
 
@@ -16,7 +17,7 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface
+class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface, public IDRRActorInterface
 {
 	GENERATED_BODY()
 
@@ -28,6 +29,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 
+	virtual void Act() override;
+
+
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
 
@@ -37,6 +41,9 @@ protected:
 protected:
 	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
 
+	
+	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly, Category = Act, Meta = (AllowPrivateAccess = "true"));
+	TObjectPtr<class UDRRActComponent> ActComponent;
 public:		
 	virtual void Tick(float DeltaTime) override;
 
