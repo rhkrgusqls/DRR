@@ -60,14 +60,17 @@ protected:
 	TObjectPtr<class UInputAction> weaponChangeAction;
 
 	//ChangeWeapon
-	TArray<TObjectPtr<class UABWeaponItemData>> WeaponList;
+	UPROPERTY(EditAnywhere, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class AABWeaponItem> Weapon1;
+	TObjectPtr<class AABWeaponItem> Weapon2;
+
+	TArray<TObjectPtr<class AABWeaponItem>> WeaponList =  { Weapon1, Weapon2 };
 	uint8 curWeapon = 0;
 
-	//Weapon Mesh
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class USkeletalMeshComponent> Weapon;
+
+
 
 private:
-	ECharacterControlType CurrentCharacterControlType;
+	//ECharacterControlType CurrentCharacterControlType;
 
 };

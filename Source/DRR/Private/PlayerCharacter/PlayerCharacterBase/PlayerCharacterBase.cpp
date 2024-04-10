@@ -9,7 +9,7 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
-#include "Item/ABWeaponItemData.h"
+#include "Item/ABWeaponItem.h"
 
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
@@ -54,9 +54,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
 
-	// Weapon Mesh Component
-	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	Weapon->SetupAttachment(GetMesh(), TEXT("Tumb2_R"));
+	
 
 	//SetInputDataAsset
 	static ConstructorHelpers::FObjectFinder<UPlayerControlDataAsset> QuaterDataAssetRef(TEXT("/Game/Asset/Character/CharacterControlData/DA_CCQuater.DA_CCQuater"));
@@ -123,12 +121,16 @@ void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::Quater);
+
+	// Weapon Mesh Component
+	FName WeaponSocket(TEXT("Tumb2_R"));
+	auto CurWeapon = GetWorld()->SpawnActor<AABWeaponItem>(FVector::ZeroVector, FRotator::ZeroRotator);
+	WeaponList[0] = CurWeapon;
+	if (nullptr != CurWeapon)
+	{
+		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
+	}
 	
-	WeaponList[0] = GetMesh()->SetSkeletalMesh(WeaponMesh(TEXT("")));
-
-	EquipWeapon(WeaponList[0]);
-	EquipWeapon(WeaponList[1]);
-
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -174,23 +176,7 @@ void APlayerCharacterBase::EquipWeapon(UABItemData* InItemData)
 {
 	UE_LOG(LogTemp, Log, TEXT("EquipWeapon"));
 	
-	UABWeaponItemData* WeaponItemData = Cast<UABWeaponItemData>(InItemData);
-	if (WeaponItemData)
-	{
-		if (WeaponList.Contains(WeaponItemData))
-		{
-			return;
-		}
-
-		if (WeaponItemData->WeaponMesh.IsPending())
-		{
-			WeaponItemData->WeaponMesh.LoadSynchronous();
-		}
-		WeaponList.Add(WeaponItemData);
-
-		Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
-		
-	}
+	
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -230,17 +216,8 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 
 //Change weapon
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
-	
-	if (curWeapon == 0) {
-		UE_LOG(LogTemp, Log, TEXT("Change :: 0"));
-		curWeapon++;
-	}
-	else if (curWeapon == 1) {
-		UE_LOG(LogTemp, Log, TEXT("Change :: 1"));
-		curWeapon--;
-	}	
-	Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
-	//Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
+	AABWeaponItem* Weapon;
+	Weapon->Change();
 }
 
 
