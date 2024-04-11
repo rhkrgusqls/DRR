@@ -35,8 +35,19 @@ ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitial
 	}
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
+	//AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
 
 	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+	FriendIdentificationSight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Friend Sight Config"));
+
+	FriendIdentificationSight->SightRadius = 800.0f;
+	FriendIdentificationSight->LoseSightRadius = Sight->SightRadius + 500.0f;
+	FriendIdentificationSight->PeripheralVisionAngleDegrees = 360.0f;
+	FriendIdentificationSight->DetectionByAffiliation.bDetectNeutrals = true;
+	FriendIdentificationSight->SetMaxAge(10.0f);
+	//Sight->AutoSuccessRangeFromLastSeenLocation = 900.0f;
+	FriendIdentificationSight->DetectionByAffiliation.bDetectEnemies = true;
+	FriendIdentificationSight->DetectionByAffiliation.bDetectFriendlies = true;
 
 	Sight->SightRadius = 800.0f;
 	Sight->LoseSightRadius = Sight->SightRadius + 500.0f;
@@ -48,14 +59,15 @@ ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitial
 	Sight->DetectionByAffiliation.bDetectFriendlies = true;
 
 	AIPerceptionComponent->ConfigureSense(*Sight);
+	AIPerceptionComponent->ConfigureSense(*FriendIdentificationSight);
 	AIPerceptionComponent->SetDominantSense(Sight->GetSenseImplementation());
-
+	AIPerceptionComponent->SetDominantSense(FriendIdentificationSight->GetSenseImplementation());
 }
 
 //** AI Casted Player -kwakhyunbin
 void ANormalAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 {
-
+	
 	EnemyCharacter = Cast<APlayerCharacterBase>(Actor);
 	if (EnemyCharacter != nullptr)
 	{
@@ -63,6 +75,19 @@ void ANormalAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 		BlackboardComp->SetValueAsObject("Target", Actor);
 		UE_LOG(LogTemp, Warning, TEXT("Casted/%s"), *EnemyCharacter->GetName());
 		return;
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Sight detected: %s"), *Actor->GetName());
+	if (Stimulus.Type.Name == Sight->GetFName()) // Sight
+	{
+		// Sight
+		UE_LOG(LogTemp, Warning, TEXT("Sight detected: %s"), *Actor->GetName());
+	}
+	//AIPerceptionComponent->GetCurrentlyPerceivedActors(TSubclassOf<UAISense> *Sight, TArray<AActor*>&OutActors);
+	else if (Stimulus.Type.Name == FriendIdentificationSight->GetFName()) // FriendIdentificationSight
+	{
+		// FriendIdentificationSight
+		UE_LOG(LogTemp, Warning, TEXT("Friend Identification Sight detected: %s"), *Actor->GetName());
 	}
 	
 }

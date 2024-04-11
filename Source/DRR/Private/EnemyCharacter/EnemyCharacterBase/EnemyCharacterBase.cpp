@@ -94,9 +94,9 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 	GetCharacterMovement()->BrakingDecelerationWalking = CharacterBrakingDecelerationWalking;
 
 	//Set Rotation Remit-Kwakhyunbin
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
 
 	//Set Mesh and Anim BP-Kwakhyunbin
 	GetMesh()->SetSkeletalMesh(CharacterMesh);

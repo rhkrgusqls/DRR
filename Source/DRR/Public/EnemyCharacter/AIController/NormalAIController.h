@@ -19,7 +19,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* AIPerceptionComponent;
-
+	UAIPerceptionComponent* AIPerceptionComponentFriendly;
 	virtual void BeginPlay();
 
 public:
@@ -38,6 +38,7 @@ public:
 	void OnPerception(AActor* Actor, FAIStimulus Stimulus);
 
 	class UAISenseConfig_Sight* Sight;
+	class UAISenseConfig_Sight* FriendIdentificationSight;
 
 	virtual void OnPossess(APawn* InPawn) override;
 
