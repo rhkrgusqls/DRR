@@ -91,10 +91,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// UI Widget Component
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWidgetComponent> EnemyHPBar;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<class UWidgetComponent> EnemyHPBar;
 
-	void SetHP(float NewHP);
+	//void SetHP(float NewHP);
 
 	//FOnHPZeroDelegate OnHPZero;
 	//FOnHPChangeDelegate OnHPChange;

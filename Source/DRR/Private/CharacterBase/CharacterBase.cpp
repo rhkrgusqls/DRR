@@ -8,11 +8,13 @@
 #include "UI/DRRWidgetComponent.h"
 #include "UI/DRRUserWidget.h"
 
+#include "CharacterBase/DRRActComponent.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
 	// UI Widget
-	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHPBar"));
+	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
+	ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
@@ -20,6 +22,8 @@ ACharacterBase::ACharacterBase()
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
 		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	
+
 
 	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 }
@@ -32,12 +36,17 @@ void ACharacterBase::BeginPlay()
 	SetHP(MaxHP);
 }
 
+void ACharacterBase::Act()
+{
+	ActComponent->ActFunc();
+
+}
 void ACharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
 	if (InUserWidget)
 	{
 		InUserWidget->SetMaxHP(MaxHP);
-		InUserWidget->UpdateHP(CurrentHP);
+		//InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
 	}
 }
