@@ -10,20 +10,20 @@ UCLASS()
 class DRR_API AABWeaponItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AABWeaponItem();
 
 protected:
 
-public:	
+public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* Weapon1;
+	USkeletalMeshComponent* Weapon_One;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* Weapon2;
+	USkeletalMeshComponent* Weapon_Two;
 
-
-	void Change();
+	USkeletalMeshComponent* GetWeapon1();
+	USkeletalMeshComponent* GetWeapon2();
 };

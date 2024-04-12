@@ -59,16 +59,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> weaponChangeAction;
 
-	//ChangeWeapon
-	UPROPERTY(EditAnywhere, Category = Weapon, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class AABWeaponItem> Weapon1;
-	TObjectPtr<class AABWeaponItem> Weapon2;
+	// Item
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	//TArray<UABItemData> Inventory;
 
-	TArray<TObjectPtr<class AABWeaponItem>> WeaponList =  { Weapon1, Weapon2 };
+	// ChangeWeapon
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	TObjectPtr<class USkeletalMeshComponent> Weapon1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	TObjectPtr<class USkeletalMeshComponent> Weapon2;
+
+	TObjectPtr<class USkeletalMeshComponent> CurWeapon;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	TArray<TObjectPtr<class USkeletalMeshComponent>> WeaponList =  { Weapon1, Weapon2 };
 	uint8 curWeapon = 0;
+	FName WeaponSocket = "Tumb2_R";
 
-
-
+	
 
 private:
 	//ECharacterControlType CurrentCharacterControlType;

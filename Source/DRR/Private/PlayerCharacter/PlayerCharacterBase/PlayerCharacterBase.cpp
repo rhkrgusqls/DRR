@@ -46,15 +46,12 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	//Set Mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/Asset/Character/Meshes/Player.Player"));
-
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
-
-	
 
 	//SetInputDataAsset
 	static ConstructorHelpers::FObjectFinder<UPlayerControlDataAsset> QuaterDataAssetRef(TEXT("/Game/Asset/Character/CharacterControlData/DA_CCQuater.DA_CCQuater"));
@@ -123,9 +120,11 @@ void APlayerCharacterBase::BeginPlay()
 	SetCharacterControl(ECharacterControlType::Quater);
 
 	// Weapon Mesh Component
-	FName WeaponSocket(TEXT("Tumb2_R"));
-	auto CurWeapon = GetWorld()->SpawnActor<AABWeaponItem>(FVector::ZeroVector, FRotator::ZeroRotator);
-	WeaponList[0] = CurWeapon;
+	
+	
+	WeaponList[0]->GetWeapon1(); 
+	WeaponList[1]->GetWeapon2();
+	CurWeapon = WeaponList[0];
 	if (nullptr != CurWeapon)
 	{
 		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
@@ -216,8 +215,20 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 
 //Change weapon
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
-	AABWeaponItem* Weapon;
-	Weapon->Change();
+	
+	if (CurWeapon == WeaponList[0]) {
+		CurWeapon = WeaponList[1];
+	}
+
+	if (CurWeapon == WeaponList[1]) {
+		CurWeapon = WeaponList[0];
+	}
+	
+	if (nullptr != CurWeapon)
+	{
+		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
+	}
+	UE_LOG(LogTemp, Log, TEXT("Change in C++"));
 }
 
 
