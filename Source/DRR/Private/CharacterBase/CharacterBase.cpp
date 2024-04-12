@@ -36,11 +36,12 @@ void ACharacterBase::BeginPlay()
 	SetHP(MaxHP);
 }
 
-void ACharacterBase::Act()
+void ACharacterBase::ActFunc()
 {
 	ActComponent->ActFunc();
 
 }
+
 void ACharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
 	if (InUserWidget)

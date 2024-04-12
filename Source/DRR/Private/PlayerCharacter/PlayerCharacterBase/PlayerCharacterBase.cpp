@@ -14,6 +14,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+
+#include "Interface/DRRActableInterface.h"
+#include "CharacterBase/DRRActComponent.h"
+#include "Equipment/Weapon/DRRWeaponBase.h"
+
 APlayerCharacterBase::APlayerCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -106,6 +111,20 @@ APlayerCharacterBase::APlayerCharacterBase()
 		AttackAction = InputActionAttackRef.Object;
 	}
 
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction'"));
+	if (InputActionLeftPressRef.Object)
+	{
+		ActLeftPressAction = InputActionLeftPressRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressRightFireAction.IA_PressRightFireAction'"));
+	if (InputActionRightPressRef.Object)
+	{
+		ActRightPressAction = InputActionRightPressRef.Object;
+	}
+
+
+
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionChangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
 	if (InputActionJumpRef.Object)
 	{
@@ -127,7 +146,10 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Attack);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
 	EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
@@ -180,6 +202,66 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
 	UE_LOG(LogTemp, Log, TEXT("Attack"));
 
+}
+
+void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
+	if (Temp)
+	{
+
+		ActComponent->Act(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
+	if (Temp)
+	{
+
+		ActComponent->Act(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
+	if (Temp)
+	{
+
+		ActComponent->ActRelease(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
+	if (Temp)
+	{
+
+		ActComponent->ActRelease(Temp);
+	}
 }
 
 

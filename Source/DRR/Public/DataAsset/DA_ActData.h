@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+
 #include "DA_ActData.generated.h"
 
 
@@ -13,7 +14,16 @@ enum class EActType : uint8
 	ShortShot,
 	Charging,
 	Casting,
-	Combo
+	Combo,
+	Trigger
+};
+
+UENUM()
+enum class EActCycleType : uint8
+{
+	Reverse,
+	Constant,
+	End
 };
 
 /**
@@ -45,9 +55,20 @@ public:
 	TArray<float> EffectiveFrameCount;
 
 	UPROPERTY(EditAnywhere, Category = Section)
+	TArray<uint8> FuncCountPerAct;
+
+	UPROPERTY(EditAnywhere, Category = Section)
 	float FrameRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
 	EActType Type;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+	EActCycleType CycleType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+	uint8 HasAnotherAct : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+	TSubclassOf<class UDRRActUnitBase> NextActUnit;
 };

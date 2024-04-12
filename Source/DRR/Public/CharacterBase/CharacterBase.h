@@ -29,8 +29,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 
-	virtual void Act() override;
+	virtual void ActFunc() override;
 
+	class UDRRActComponent* GetActComponent() const { return ActComponent; }
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
