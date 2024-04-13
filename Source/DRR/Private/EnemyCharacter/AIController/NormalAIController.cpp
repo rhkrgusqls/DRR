@@ -111,8 +111,6 @@ void ANormalAIController::RunAI()
 	}
 	BlackboardComp = GetBlackboardComponent();
 	BlackboardComp->SetValueAsBool("IsTargetLookOn", false);
-	BlackboardComp->SetValueAsEnum("BattleState", 0);
-	BlackboardComp->SetValueAsVector("StartPoint",GetPawn()->GetActorLocation());
 }
 
 void ANormalAIController::StopAI()
