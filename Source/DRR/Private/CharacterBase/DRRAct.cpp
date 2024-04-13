@@ -50,26 +50,13 @@ uint8 UDRRAct::NextAct()
 {
 
 	CLog::Log("UDRRAct::NextAct");
-	switch (CurAct->CycleType)
-	{
-	case EActCycleType::Reverse :
-		curActCount = FMath::Clamp((curActCount + 1) % CurAct->MaxActCount, 0, CurAct->MaxActCount - 1);
-		break;
-	case EActCycleType::Constant :
-	case EActCycleType::End :
-	default :
-		curActCount = FMath::Clamp((curActCount + 1), 0, CurAct->MaxActCount - 1);
-
-		break;
-	}
+	curActCount = FMath::Clamp((curActCount + 1)%CurAct->MaxActCount, 0, CurAct->MaxActCount - 1);
 	CLog::Log(curActCount);
-	curFuncCount = 0;
 	return curActCount;
 }
 
 bool UDRRAct::NextReset()
 {
-	
 	return false;
 }
 
@@ -91,20 +78,11 @@ FOnActFuncDelegate UDRRAct::DoBeginAct()
 FOnActFuncDelegate UDRRAct::DoAct()
 {
 	CLog::Log("UDRRAct::DoAct");
-	uint8 Result = 0;
-	for (int i = 0; i < curActCount; i++)
-	{
-		Result += CurAct->FuncCountPerAct[i];
-	}
-	Result += curFuncCount;
-	curFuncCount++;
-	return (ActFunc[Result]);
+	return (ActFunc[GetCurFuncCount()]);
 }
 
 FOnActFuncDelegate UDRRAct::DoEndAct()
 {
-
-
 	return EndActFunc;
 }
 
@@ -124,8 +102,7 @@ bool UDRRAct::BeginAct()
 
 FName UDRRAct::GetMontgeSectionName()
 {
-	FString CombineString = CurAct->MontageSectionPrefix;
-	return FName(*CombineString);
+	return FName(TEXT("Default"));
 }
 
 
@@ -163,10 +140,7 @@ void UDRRAct::SetActs(IDRRActableInterface* Target)
 	BeginActFunc = Target->GetBeginActFunc();
 	ActFunc = Target->GetActFunc( );
 	EndActFunc = Target->GetEndActFunc();
-	ConditionCheckFunc = Target->GetAchieveCondition();
 	CLog::Log(ActFunc.Num());
-	CLog::Log("NextActBound");
-	CLog::Log(ConditionCheckFunc.IsBound() == true);
 	
 	
 }
@@ -174,7 +148,6 @@ void UDRRAct::SetActs(IDRRActableInterface* Target)
 void UDRRAct::BeginDestroy()
 {
 	Super::BeginDestroy();
-	CLog::Log("BeginDestroy");
 	EndAct();
 
 }

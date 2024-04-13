@@ -14,8 +14,6 @@
 #include "CharacterBase/DRRCastAct.h"
 #include "CharacterBase/DRRChargeAct.h"
 #include "CharacterBase/DRRComboAct.h"
-#include "CharacterBase/DRRTriggerAct.h"
-#include "Skill/DRRActUnitBase.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -58,7 +56,6 @@ void UDRRActComponent::BeginPlay()
 void UDRRActComponent::AfterAct()
 {
 	hasNextAct= Actor->AfterAct();
-	
 }
 
 
@@ -75,7 +72,6 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 
 
 	CLog::Log("Act");
-	CLog::Log((uint8)Actable->GetActData()->Type);
 	
 	//실행중인 행동이 없거나 이번에 들어온 행동입력이 다른행동일경우
 	if (Actor == nullptr||!Actor->GetCurAct()->ActionName.Equals(Actable->GetActData()->ActionName))
@@ -84,8 +80,7 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 		if (Actor != nullptr)
 			return;
 		CLog::Log("Begin");
-
-		EndTimer();
+	
 
 		SetActor(Actable);
 		Actor->SetActor(Actable);
@@ -101,14 +96,6 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 
 		return;
 	}
-	//트리거 타입이라면 행동 종료
-	if (Actor->GetCurAct()->Type == EActType::Trigger)
-	{
-		CLog::Log("Second");
-		AfterAct();
-
-		return;
-	}
 
 }
 
@@ -118,14 +105,7 @@ void UDRRActComponent::ActRelease(IDRRActableInterface* Actable)
 	{
 		return;
 	}
-	CLog::Log("KeyRelease");
 	Actor->ActRelease();
-	if (Actor->GetCurAct()->Type==EActType::Charging)
-	{
-		EndTimer();
-		hasNextAct=	Actor->AfterAct();
-		CheckAct();
-	}
 }
 
 void UDRRActComponent::ActFunc()
@@ -208,7 +188,6 @@ void UDRRActComponent::CheckActTimer()
 
 void UDRRActComponent::EndTimer()
 {
-	
 	if (ActTimerHandle.IsValid())
 	{
 
@@ -220,7 +199,6 @@ void UDRRActComponent::CheckAct()
 {
 	//콤보타이머 핸들 비활성화
 	EndTimer();
-	
 	CLog::Log("UDRRActComponent::CheckAct");
 
 
@@ -243,26 +221,11 @@ void UDRRActComponent::CheckAct()
 		//콤보타이머 활성화
 		CheckActTimer();
 		hasNextAct = Actor->NextReset();
-
 	}
 	else
 	{
 		PrevActor = Actor;
 		Actor = nullptr;
-		// 이유를 알수 없이 애님몽타주가 끝났는데 Check를 한번 더하고있다. 이유를 찾아봐야할듯
-		if (PrevActor == nullptr)
-		{
-			return;
-		}
-		bool another = PrevActor->GetCurAct()->HasAnotherAct;
-		auto nextAct = PrevActor->GetCurAct()->NextActUnit.GetDefaultObject();
-		bool check = PrevActor->GetConditionCheckFunc().Execute(GetOwner());
-		if(PrevActor!=nullptr&& another && check &&nextAct!=nullptr)
-		{
-			CLog::Log("TryTriggerAct");
-			Act(nextAct);
-		}
-
 	}
 
 }
@@ -273,12 +236,14 @@ void UDRRActComponent::EndAct(UAnimMontage* targetMontage, bool isInteruped)
 	CLog::Log(targetMontage->GetName());
 
 	
-	if (PrevActor!=nullptr&&PrevActor->DoEndAct().IsBound())
-	{
-		PrevActor->DoEndAct().Execute(GetOwner());
+	
+		CLog::Log("UDRRActComponent::EndAct2");
+		if (PrevActor->DoEndAct().IsBound())
+		{
+			PrevActor->DoEndAct().Execute(GetOwner());
 
-	}
-	EraseAct();
+		}
+		EraseAct();
 
 
 }
@@ -292,6 +257,7 @@ void UDRRActComponent::ClearMontageAct()
 void UDRRActComponent::EraseAct()
 {
 	CLog::Log("EraseAct");
+	EndTimer();
 	if (PrevActor != nullptr)
 	{
 		PrevActor->EndAct();
@@ -317,9 +283,6 @@ void UDRRActComponent::SetActor(IDRRActableInterface* Target)
 		break;
 	case EActType::Combo:
 		Actor = NewObject<UDRRComboAct>();
-		break;
-	case EActType::Trigger:
-		Actor = NewObject<UDRRTriggerAct>();
 		break;
 	}
 }

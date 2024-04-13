@@ -15,7 +15,6 @@
 
 #include "CharacterBase/DRRActComponent.h"
 
-#include "Utilities/UtilityList.h"
 // Sets default values
 ATestPlayer::ATestPlayer()
 {
@@ -62,7 +61,7 @@ ATestPlayer::ATestPlayer()
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
 	}
 
-	//입력  
+	////입력  
 	//static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Player/Input/PlayerInputMappingContext.PlayerInputMappingContext'"));
 	//if (InputMappingContextRef.Object)
 	//{
@@ -75,24 +74,21 @@ ATestPlayer::ATestPlayer()
 	{
 		ActLeftPressAction = InputActionLeftPressRef.Object;
 	}
-	
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/PressRightFireAction.PressRightFireAction'"));
-	if (InputActionRightPressRef.Object)
-	{
-		ActRightPressAction = InputActionRightPressRef.Object;
-	}
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftReleaseRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/ReleaseLeftFireAction.ReleaseLeftFireAction'"));
 	if (InputActionLeftReleaseRef.Object)
 	{
 		ActLeftReleaseAction = InputActionLeftReleaseRef.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/PressRightFireAction.PressRightFireAction'"));
+	if (InputActionRightPressRef.Object)
+	{
+		ActRightPressAction = InputActionRightPressRef.Object;
+	}
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightReleaseRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/ReleaseRightFireAction.ReleaseRightFireAction'"));
 	if (InputActionRightReleaseRef.Object)
 	{
 		ActRightReleaseAction = InputActionRightReleaseRef.Object;
 	}
-	
 
 
 	//추가사항3
@@ -140,10 +136,10 @@ void ATestPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	//형변환: 최신 트랜드. CastChecked로 형변환이 제대로 됬는지 확인
 	UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
-	enhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &ATestPlayer::WeaponLeftAttackPress);
-	enhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &ATestPlayer::WeaponLeftAttackRelaease);
-	enhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &ATestPlayer::WeaponRightAttackPress);
-	enhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed, this, &ATestPlayer::WeaponRightAttackRelaease);
+	enhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Triggered, this, &ATestPlayer::WeaponLeftAttackPress);
+	enhancedInputComponent->BindAction(ActLeftReleaseAction, ETriggerEvent::Triggered, this, &ATestPlayer::WeaponLeftAttackRelaease);
+	enhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Triggered, this, &ATestPlayer::WeaponRightAttackPress);
+	enhancedInputComponent->BindAction(ActRightReleaseAction, ETriggerEvent::Triggered, this, &ATestPlayer::WeaponRightAttackRelaease);
 
 	//매핑 컨택스트를 컨트롤러와 연결해야함
 
@@ -186,7 +182,6 @@ void ATestPlayer::WeaponLeftAttackRelaease()
 }
 void ATestPlayer::WeaponRightAttackPress()
 {
-	CLog::Log("RightKeyPress");
 	if (Weapon == nullptr)
 	{
 		return;
@@ -202,7 +197,6 @@ void ATestPlayer::WeaponRightAttackPress()
 
 void ATestPlayer::WeaponRightAttackRelaease()
 {
-	CLog::Log("RightKeyRelease");
 	if (Weapon == nullptr)
 	{
 		return;
@@ -216,7 +210,7 @@ void ATestPlayer::WeaponRightAttackRelaease()
 	}
 }
 
-void ATestPlayer::ActFunc()
+void ATestPlayer::Act()
 {
 	ActComponent->ActFunc();
 }
