@@ -10,7 +10,7 @@
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
-class DRR_API APlayerCharacterBase : public ACharacterBase, public IDRRCharacterWidgetInterface,
+class DRR_API APlayerCharacterBase : public ACharacterBase, public IDRRCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
