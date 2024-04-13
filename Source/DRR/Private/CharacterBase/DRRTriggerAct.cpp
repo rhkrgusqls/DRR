@@ -12,24 +12,12 @@ bool UDRRTriggerAct::BeginAct()
 
 	curActCount = 0;
 	curFuncCount = 0;
-
-	return NextReset();
+	return false; 
 }
 
 bool UDRRTriggerAct::NextReset()
 {
-	bool result;
-	switch (CurAct->CycleType)
-	{
-	case EActCycleType::Reverse:
-	case EActCycleType::Constant:
-	case EActCycleType::End:
-	default:
-		result=curActCount< (CurAct->MaxActCount - 1)?true : false;
-
-		break;
-	}
-	return result;
+	return true;
 }
 
 FName UDRRTriggerAct::GetMontgeSectionName()

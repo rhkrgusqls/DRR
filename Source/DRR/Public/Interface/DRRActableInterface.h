@@ -1,3 +1,4 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,8 +9,6 @@
 #include "DRRActableInterface.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnActFuncDelegate,AActor* Owner)
-DECLARE_DELEGATE_RetVal_OneParam( bool, FOnActCheckConditionDelegate, AActor*)
-
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UDRRActableInterface : public UInterface
@@ -29,7 +28,6 @@ public:
 	virtual TArray<FOnActFuncDelegate> GetActFunc() = 0;
 	virtual FOnActFuncDelegate GetEndActFunc() = 0;
 	virtual class UDA_ActData* GetActData() = 0;
-	virtual FOnActCheckConditionDelegate GetAchieveCondition() = 0;
 
 
 };

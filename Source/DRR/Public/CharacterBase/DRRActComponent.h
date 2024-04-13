@@ -85,7 +85,6 @@ private:
 
 
 	struct FTimerHandle ActTimerHandle;
-	struct FTimerHandle PrevActTimerHandle;
 	bool hasNextAct;
 
 		
