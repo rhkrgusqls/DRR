@@ -6,6 +6,8 @@
 #include "InputActionValue.h"
 #include "CharacterBase/CharacterBase.h"
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
+#include "Interface/DRRCharacterWidgetInterface.h"
+#include "Components/WidgetComponent.h"
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
@@ -16,11 +18,18 @@ class DRR_API APlayerCharacterBase : public ACharacterBase
 public:
 	APlayerCharacterBase();
 
+
+	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
+	float ApplyDamage(float InDamage);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
+
+	void SetMaxHP(float NewHP);
+	void SetHP(float NewHP);
 
 private:
 	void QuaterMove(const FInputActionValue& Value);
@@ -64,5 +73,12 @@ protected:
 
 private:
 	ECharacterControlType CurrentCharacterControlType;
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWidgetComponent> PlayerHUD;
+
+	FOnHPZeroDelegate OnHPZero;
+	FOnHPChangedDelegate OnHPChanged;
 
 };
