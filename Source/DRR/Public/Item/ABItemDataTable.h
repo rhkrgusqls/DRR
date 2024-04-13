@@ -46,8 +46,9 @@ UCLASS()
 class DRR_API AABItemDataTable : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
+	static AABItemDataTable* m_staticInstance;
 	// Sets default values for this actor's properties
 	AABItemDataTable();
 

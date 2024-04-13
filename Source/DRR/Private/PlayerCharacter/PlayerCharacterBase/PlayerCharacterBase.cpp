@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
 #include "Item/ABWeaponItem.h"
+#include "Item/ABItemDataTable.h"
 
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
@@ -66,7 +67,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
 	}
-
 	/*---------------------------------------------------*/
 
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -120,16 +120,7 @@ void APlayerCharacterBase::BeginPlay()
 	SetCharacterControl(ECharacterControlType::Quater);
 
 	// Weapon Mesh Component
-	
-	
-	WeaponList[0]->GetWeapon1(); 
-	WeaponList[1]->GetWeapon2();
-	CurWeapon = WeaponList[0];
-	if (nullptr != CurWeapon)
-	{
-		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
-	}
-	
+	AABItemDataTable::m_staticInstance;
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -174,8 +165,7 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 void APlayerCharacterBase::EquipWeapon(UABItemData* InItemData)
 {
 	UE_LOG(LogTemp, Log, TEXT("EquipWeapon"));
-	
-	
+
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -215,19 +205,20 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 
 //Change weapon
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
-	
-	if (CurWeapon == WeaponList[0]) {
-		CurWeapon = WeaponList[1];
-	}
-
-	if (CurWeapon == WeaponList[1]) {
-		CurWeapon = WeaponList[0];
-	}
-	
+			
 	if (nullptr != CurWeapon)
 	{
+		if (CurWeapon == WeaponList[0]) {
+			CurWeapon = WeaponList[1];
+		}
+
+		if (CurWeapon == WeaponList[1]) {
+			CurWeapon = WeaponList[0];
+		}
+
 		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
 	}
+
 	UE_LOG(LogTemp, Log, TEXT("Change in C++"));
 }
 

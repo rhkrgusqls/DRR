@@ -26,5 +26,5 @@ protected:
 
 private:
 	UPROPERTY()
-	UDataTable* ItemDataTable;
+	class UDataTable* ItemDataTable;
 };

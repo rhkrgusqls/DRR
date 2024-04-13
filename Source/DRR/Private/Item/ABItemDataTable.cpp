@@ -6,7 +6,7 @@
 // Sets default values
 AABItemDataTable::AABItemDataTable()
 {
-
+	AABItemDataTable::m_staticInstance = this;
 
 }
 

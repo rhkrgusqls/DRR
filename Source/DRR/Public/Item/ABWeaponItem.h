@@ -19,11 +19,8 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* Weapon_One;
+	USkeletalMeshComponent* Weapon;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* Weapon_Two;
+	USkeletalMeshComponent* GetWeapon();
 
-	USkeletalMeshComponent* GetWeapon1();
-	USkeletalMeshComponent* GetWeapon2();
 };

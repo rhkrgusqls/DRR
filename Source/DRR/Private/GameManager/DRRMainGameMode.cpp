@@ -50,5 +50,10 @@ void ADRRMainGameMode::BeginPlay()
 		}
 	}
 
-
+	if (ItemDataTable != nullptr)
+	{
+		FItem* ItemTableRow = ItemDataTable->FindRow<FItem>(FName("20"), FString());
+		//데이터 정보 정상적으로 들어오는거 확인 완료
+		//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
+	}
 }

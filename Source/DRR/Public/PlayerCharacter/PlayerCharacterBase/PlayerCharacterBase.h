@@ -74,7 +74,7 @@ protected:
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TArray<TObjectPtr<class USkeletalMeshComponent>> WeaponList =  { Weapon1, Weapon2 };
-	uint8 curWeapon = 0;
+	
 	FName WeaponSocket = "Tumb2_R";
 
 	
