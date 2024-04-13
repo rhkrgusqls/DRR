@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
 #include "Interface/DRRActorInterface.h"
-#include "Interface/DRRCharacterWidgetInterface.h"
+
 #include "CharacterBase.generated.h"
 
 
@@ -17,7 +17,7 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface, public IDRRActorInterface
+class DRR_API ACharacterBase : public ACharacter, public IDRRActorInterface
 {
 	GENERATED_BODY()
 
@@ -27,16 +27,16 @@ public:
 
 public:
 	virtual void BeginPlay() override;
-	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
+	
 
-	virtual void Act() override;
+	virtual void ActFunc() override;
 
+	class UDRRActComponent* GetActComponent() const { return ActComponent; }
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
 
-	void SetMaxHP(float NewHP);
-	void SetHP(float NewHP);
+	
 
 protected:
 	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
@@ -47,7 +47,7 @@ protected:
 public:		
 	virtual void Tick(float DeltaTime) override;
 
-	float ApplyDamage(float InDamage);
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
@@ -72,11 +72,6 @@ public:
 
 	float HPRegenHandle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta= ( AllowPrivateAccess = "true"))
-	TObjectPtr<class UWidgetComponent> PlayerHUD;
-
-	FOnHPZeroDelegate OnHPZero;
-	FOnHPChangedDelegate OnHPChanged;
 
 //AnimMongtage-kwakhyunbin
 
