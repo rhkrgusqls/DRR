@@ -14,11 +14,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
-
-#include "Interface/DRRActableInterface.h"
-#include "CharacterBase/DRRActComponent.h"
-#include "Equipment/Weapon/DRRWeaponBase.h"
-
 #include "UI/DRRWidgetComponent.h"
 #include "UI/DRRUserWidget.h"
 
@@ -114,25 +109,12 @@ APlayerCharacterBase::APlayerCharacterBase()
 		AttackAction = InputActionAttackRef.Object;
 	}
 
-
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction'"));
-	if (InputActionLeftPressRef.Object)
-	{
-		ActLeftPressAction = InputActionLeftPressRef.Object;
-	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressRightFireAction.IA_PressRightFireAction'"));
-	if (InputActionRightPressRef.Object)
-	{
-		ActRightPressAction = InputActionRightPressRef.Object;
-	}
-
-
-
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionChangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
 	if (InputActionJumpRef.Object)
 	{
 		weaponChangeAction = InputActionChangeRef.Object;
 	}
+
 
 	// UI Widget
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
@@ -144,10 +126,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
 		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-
-
-
-	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 
 }
 
@@ -189,10 +167,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Attack);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
 	EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
@@ -247,66 +222,6 @@ void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
 
 }
 
-void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
-{
-	if (Weapon == nullptr)
-	{
-		return;
-	}
-
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
-	if (Temp)
-	{
-
-		ActComponent->Act(Temp);
-	}
-}
-
-void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
-{
-	if (Weapon == nullptr)
-	{
-		return;
-	}
-
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
-	if (Temp)
-	{
-
-		ActComponent->Act(Temp);
-	}
-}
-
-void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
-{
-	if (Weapon == nullptr)
-	{
-		return;
-	}
-
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
-	if (Temp)
-	{
-
-		ActComponent->ActRelease(Temp);
-	}
-}
-
-void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
-{
-	if (Weapon == nullptr)
-	{
-		return;
-	}
-
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
-	if (Temp)
-	{
-
-		ActComponent->ActRelease(Temp);
-	}
-}
-
 
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
@@ -345,7 +260,6 @@ void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType
 	UPlayerControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
 	SetCharacterControlData(NewCharacterControlData);
 }
-
 
 float APlayerCharacterBase::ApplyDamage(float InDamage)
 {

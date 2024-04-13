@@ -17,7 +17,6 @@ public:
 	UDRRCastActUnitProto();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
-	virtual bool IsAchieveCondition(AActor* Owner) override;
 
 
 

@@ -40,14 +40,6 @@ UDA_ActData* UDRRActUnitBase::GetActData()
 	return ActData;
 }
 
-FOnActCheckConditionDelegate UDRRActUnitBase::GetAchieveCondition()
-{
-	FOnActCheckConditionDelegate Temp;
-	
-	Temp.BindUObject(this, &UDRRActUnitBase::IsAchieveCondition);
-	return Temp;
-}
-
 void UDRRActUnitBase::BeginFunc(AActor* Owner)
 {
 }
@@ -55,11 +47,6 @@ void UDRRActUnitBase::BeginFunc(AActor* Owner)
 void UDRRActUnitBase::EndFunc(AActor* Owner)
 {
 
-}
-
-bool UDRRActUnitBase::IsAchieveCondition(AActor* Owner)
-{
-	return true;
 }
 
 

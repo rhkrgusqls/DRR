@@ -13,18 +13,5 @@ UCLASS()
 class DRR_API UDRRTriggerActUnitProto : public UDRRActUnitBase
 {
 	GENERATED_BODY()
-public:
-	UDRRTriggerActUnitProto();
-
-	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
-
-
-
-protected:
-	virtual void BeginFunc(AActor* Owner) override;
-	virtual void EndFunc(AActor* Owner) override;
-
-private:
-	void Func1(AActor* Owner);
 	
 };
