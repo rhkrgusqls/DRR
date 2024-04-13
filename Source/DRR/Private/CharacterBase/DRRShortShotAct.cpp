@@ -20,7 +20,7 @@ bool UDRRShortShotAct::BeginAct()
 
 bool UDRRShortShotAct::NextReset()
 {
-    return false;
+	return false;
 }
 float UDRRShortShotAct::GetNextTime()
 {
@@ -39,5 +39,22 @@ void UDRRShortShotAct::EndAct()
 
 bool UDRRShortShotAct::AfterAct()
 {
-    return true;
+	switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+		return true;
+		break;
+	case EActCycleType::End:
+	default:
+		if (curActCount == CurAct->MaxActCount-1)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+		break;
+	}
 }

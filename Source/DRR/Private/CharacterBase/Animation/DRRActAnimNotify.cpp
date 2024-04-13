@@ -11,7 +11,7 @@ void UDRRActAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	IDRRActorInterface* ActorInterface=Cast<IDRRActorInterface>(MeshComp->GetOwner());
 	if (ActorInterface)
 	{
-		ActorInterface->Act();
+		ActorInterface->ActFunc();
 	}
 
 }

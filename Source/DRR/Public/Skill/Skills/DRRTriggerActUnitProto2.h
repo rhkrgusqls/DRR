@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Skill/DRRActUnitBase.h"
-#include "DRRTriggerActUnitProto.generated.h"
+#include "DRRTriggerActUnitProto2.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DRR_API UDRRTriggerActUnitProto : public UDRRActUnitBase
+class DRR_API UDRRTriggerActUnitProto2 : public UDRRActUnitBase
 {
 	GENERATED_BODY()
 public:
-	UDRRTriggerActUnitProto();
+	UDRRTriggerActUnitProto2();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
 
@@ -26,5 +26,4 @@ protected:
 
 private:
 	void Func1(AActor* Owner);
-	
 };

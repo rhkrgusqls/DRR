@@ -26,8 +26,8 @@ bool UDRRChargeAct::NextReset()
 
 FName UDRRChargeAct::GetMontgeSectionName()
 {
-	FString CombineString = CurAct->MontageSectionPrefix + FString::FromInt(curActCount);
 
+	FString CombineString = CurAct->MontageSectionPrefix;
 	return FName(*CombineString);
 }
 
@@ -35,6 +35,7 @@ FName UDRRChargeAct::GetMontgeSectionName()
 
 void UDRRChargeAct::EndAct()
 {
+	Super::EndAct();
 }
 
 bool UDRRChargeAct::AfterAct()

@@ -21,9 +21,14 @@ public:
 	virtual FOnActFuncDelegate GetEndActFunc() override;
 	virtual class UDA_ActData* GetActData() override;
 
+	virtual FOnActCheckConditionDelegate GetAchieveCondition() override;
+
 protected:
 	virtual void BeginFunc(AActor* Owner);
 	virtual void EndFunc(AActor* Owner);
+
+	UFUNCTION()
+	virtual bool IsAchieveCondition(AActor* Owner);
 
 public:	
 
@@ -32,7 +37,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ActData)
 	TObjectPtr<class UDA_ActData> ActData;
-
 
 
 
