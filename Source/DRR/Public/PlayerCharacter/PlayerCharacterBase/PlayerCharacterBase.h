@@ -7,17 +7,15 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
-#include "Components/WidgetComponent.h"
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
-class DRR_API APlayerCharacterBase : public ACharacterBase
+class DRR_API APlayerCharacterBase : public ACharacterBase, public IDRRCharacterWidgetInterface,
 {
 	GENERATED_BODY()
 
 public:
 	APlayerCharacterBase();
-
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 	float ApplyDamage(float InDamage);
@@ -34,6 +32,12 @@ protected:
 private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
+
+	void WeaponLeftAttackPress(const FInputActionValue& Value);
+	void WeaponRightAttackPress(const FInputActionValue& Value);
+	void WeaponLeftAttackRelaease(const FInputActionValue& Value);
+	void WeaponRightAttackRelaease(const FInputActionValue& Value);
+
 	void Sit(const FInputActionValue& Value);
 	void weaponChange(const FInputActionValue& Value);
 
@@ -61,6 +65,14 @@ protected:
 	TObjectPtr<class UInputAction> AttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ActLeftPressAction;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ActRightPressAction;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> weaponChangeAction;
 
 	//ChangeWeapon
@@ -69,6 +81,10 @@ protected:
 	uint8 curWeapon = 0;
 
 	bool IsSit = false;
+
+	//TestWeapon
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
+	TSubclassOf<class ADRRWeaponBase> Weapon;
 
 
 private:

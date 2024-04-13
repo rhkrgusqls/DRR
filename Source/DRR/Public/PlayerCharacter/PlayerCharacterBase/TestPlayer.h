@@ -35,7 +35,7 @@ public:
 	virtual void WeaponRightAttackRelaease();
 
 	//추가 사항2
-	virtual void Act() override;
+	virtual void ActFunc() override;
 
 protected:
 
@@ -46,9 +46,6 @@ protected:
 
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TSubclassOf<class ADRRWeaponBase> Weapon;
-
-	//UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
-	//TObjectPtr<class ADRRWeaponBase> WeaponObject;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, Meta = (AllowPrivateAccess = "true"))
 	//TObjectPtr<class USkeletalMeshComponent> WeaponMesh;
@@ -61,14 +58,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ActLeftPressAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ActRightPressAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ActLeftReleaseAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> ActRightPressAction;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ActRightReleaseAction;
+
 };

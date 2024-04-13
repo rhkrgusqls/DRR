@@ -35,6 +35,8 @@ public:
 	virtual bool BeginAct();
 	virtual FName GetMontgeSectionName();
 	virtual void EndAct();
+	FOnActCheckConditionDelegate GetConditionCheckFunc() { return ConditionCheckFunc; }
+
 protected:
 	
 private:
@@ -44,6 +46,7 @@ protected:
 
 	FOnActFuncDelegate BeginActFunc;
 	FOnActFuncDelegate EndActFunc;
+	FOnActCheckConditionDelegate ConditionCheckFunc;
 	TArray<FOnActFuncDelegate> ActFunc;
 	uint8 curActCount;
 	uint8 curFuncCount;

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
+#include "Components/WidgetComponent.h"
 #include "Interface/DRRActorInterface.h"
 
 #include "CharacterBase.generated.h"
@@ -17,7 +17,7 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface, public IDRRActorInterface
+class DRR_API ACharacterBase : public ACharacter, public IDRRActorInterface
 {
 	GENERATED_BODY()
 
@@ -29,8 +29,9 @@ public:
 	virtual void BeginPlay() override;
 	
 
-	virtual void Act() override;
+	virtual void ActFunc() override;
 
+	class UDRRActComponent* GetActComponent() const { return ActComponent; }
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
@@ -71,7 +72,6 @@ public:
 
 	float HPRegenHandle;
 
-	
 
 //AnimMongtage-kwakhyunbin
 

@@ -12,10 +12,6 @@
 ACharacterBase::ACharacterBase()
 {
 	
-	
-
-
-	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 }
 
 void ACharacterBase::BeginPlay()
@@ -25,12 +21,11 @@ void ACharacterBase::BeginPlay()
 	
 }
 
-void ACharacterBase::Act()
+void ACharacterBase::ActFunc()
 {
 	ActComponent->ActFunc();
 
 }
-
 
 void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
 {
@@ -44,6 +39,7 @@ void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* Char
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 }
+
 
 
 

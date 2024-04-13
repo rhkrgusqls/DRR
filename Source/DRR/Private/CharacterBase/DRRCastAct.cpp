@@ -12,17 +12,25 @@ UDRRCastAct::UDRRCastAct() :UDRRAct()
 
 bool UDRRCastAct::BeginAct()
 {
-	return true;
+	return NextReset();
 }
 
 bool UDRRCastAct::NextReset()
 {
-	return true;
+	if (curActCount + 1 < GetCurAct()->MaxActCount)
+	{
+		return true;
+	}
+	else
+	{
+
+		return false;
+	}
 }
 
 FName UDRRCastAct::GetMontgeSectionName()
 {
-	FString CombineString = CurAct->MontageSectionPrefix + FString::FromInt(curActCount);
+	FString CombineString = CurAct->MontageSectionPrefix;
 
 	return FName(*CombineString);
 }
@@ -30,6 +38,7 @@ FName UDRRCastAct::GetMontgeSectionName()
 
 void UDRRCastAct::EndAct()
 {
+	Super::EndAct();
 }
 
 bool UDRRCastAct::AfterAct()
