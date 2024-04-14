@@ -242,7 +242,8 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
-void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
+void APlayerCharacterBase::Attack(const FInputActionValue& Value) 
+{
 	UE_LOG(LogTemp, Log, TEXT("Attack"));
 
 }
@@ -318,7 +319,10 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	else if (IsSit == false) {
 		IsSit = true;		
 		Crouch();
-	}	
+	}
+	//----------------------------------------------------
+	CurrentHP = CurrentHP - 10;
+	SetDotDamage(0.2, 5);
 }
 
 
@@ -334,7 +338,7 @@ void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 		UE_LOG(LogTemp, Log, TEXT("Change :: 1"));
 		curWeapon--;
 	}
-	
+
 	//Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
 	//Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
 }

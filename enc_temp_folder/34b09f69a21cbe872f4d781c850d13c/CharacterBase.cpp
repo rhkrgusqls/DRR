@@ -54,13 +54,11 @@ void ACharacterBase::Tick(float DeltaTime)
 	}
 }
 
-//Call Hit Event
 void ACharacterBase::ReciveAttack(float physicsDamage/*, float MagicDamage*/)
 {
 	CurrentHP = CurrentHP - physicsDamage/ physicsDef/*-MagicDamage/MagicDef*/;
 }
 
-//Call DotDamage
 void ACharacterBase::SetDotDamage(float TickDamage, float DurationTime)
 {
 	DotDamage = DotDamage + TickDamage;
@@ -76,3 +74,9 @@ void ACharacterBase::RemoveDotDamage(float TickDamage)
 {
 	DotDamage = DotDamage - TickDamage;
 }
+
+void ACharacterBase::RemoveDotDamage2(float TickDamage)
+{
+	
+}
+
