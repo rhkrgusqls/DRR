@@ -30,6 +30,10 @@ APlayerCharacterBase::APlayerCharacterBase()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 
+	//Set Weapon Mesh
+	CurWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	CurWeapon->SetupAttachment(GetMesh(), WeaponSocket);
+
 	//Set Movement Default
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -120,7 +124,7 @@ void APlayerCharacterBase::BeginPlay()
 	SetCharacterControl(ECharacterControlType::Quater);
 
 	// Weapon Mesh Component
-	AABItemDataTable::m_staticInstance;
+	//AABItemDataTable::m_staticInstance;
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -162,10 +166,21 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 }
 
-void APlayerCharacterBase::EquipWeapon(UABItemData* InItemData)
+void APlayerCharacterBase::EquipWeapon(UABItemDataTable* InItemData)
 {
 	UE_LOG(LogTemp, Log, TEXT("EquipWeapon"));
-
+	UABWeaponItem* WeaponItemData = Cast<UABWeaponItem>(InItemData);
+	if (WeaponItemData) 
+	{
+		if (WeaponList.Contains(WeaponItemData)) 
+		{
+			return;
+		}
+		if (WeaponItemData->WeaponMesh.IsPending()) {
+			WeaponItemData->WeaponMesh.LoadSynchronous();
+		}
+		CurWeapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
+	}
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -206,7 +221,7 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 //Change weapon
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 			
-	if (nullptr != CurWeapon)
+	/*if (nullptr != CurWeapon)
 	{
 		if (CurWeapon == WeaponList[0]) {
 			CurWeapon = WeaponList[1];
@@ -217,7 +232,7 @@ void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 		}
 
 		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
-	}
+	}*/
 
 	UE_LOG(LogTemp, Log, TEXT("Change in C++"));
 }

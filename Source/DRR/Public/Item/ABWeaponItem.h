@@ -7,19 +7,19 @@
 #include "ABWeaponItem.generated.h"
 
 UCLASS()
-class DRR_API AABWeaponItem : public AActor
+class DRR_API UABWeaponItem : public UABItemDataTable
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AABWeaponItem();
+	UABWeaponItem();
 
 protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* Weapon;
+	TSoftObjectPtr<USkeletalMesh> WeaponMesh;
 
 	USkeletalMeshComponent* GetWeapon();
 

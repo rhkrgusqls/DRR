@@ -43,14 +43,14 @@ struct FItem : public FTableRowBase {
 };
 
 UCLASS()
-class DRR_API AABItemDataTable : public AActor
+class DRR_API UABItemDataTable : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
 public:	
-	static AABItemDataTable* m_staticInstance;
+	//static AABItemDataTable* m_staticInstance;
 	// Sets default values for this actor's properties
-	AABItemDataTable();
+	UABItemDataTable();
 
 
 };

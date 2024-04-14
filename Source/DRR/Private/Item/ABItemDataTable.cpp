@@ -4,9 +4,9 @@
 #include "Item/ABItemDataTable.h"
 
 // Sets default values
-AABItemDataTable::AABItemDataTable()
+UABItemDataTable::UABItemDataTable()
 {
-	AABItemDataTable::m_staticInstance = this;
+	//AABItemDataTable::m_staticInstance = this;
 
 }
 

@@ -4,7 +4,7 @@
 #include "Item/ABItemDataTable.h"
 
 // Sets default values
-AABWeaponItem::AABWeaponItem()
+UABWeaponItem::UABWeaponItem()
 {
 
 
@@ -25,6 +25,11 @@ AABWeaponItem::AABWeaponItem()
 	//	Weapon_Two->SetCollisionProfileName(TEXT("NoCollision"));
 	//}
 
+}
+
+USkeletalMeshComponent* UABWeaponItem::GetWeapon()
+{
+	return nullptr;
 }
 
 

@@ -22,7 +22,7 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
-	virtual void EquipWeapon(class UABItemData* InItemData);
+	virtual void EquipWeapon(class UABItemDataTable* InItemData);
 	//virtual void DrinkPotion(class UABItemData* InItemData);
 	//virtual void ReadScroll(class UABItemData* InItemData);
 
@@ -65,15 +65,15 @@ protected:
 
 	// ChangeWeapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	TObjectPtr<class USkeletalMeshComponent> Weapon1;
+	TObjectPtr<class UABWeaponItem> Weapon1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	TObjectPtr<class USkeletalMeshComponent> Weapon2;
+	TObjectPtr<class UABWeaponItem> Weapon2;
 
 	TObjectPtr<class USkeletalMeshComponent> CurWeapon;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	TArray<TObjectPtr<class USkeletalMeshComponent>> WeaponList =  { Weapon1, Weapon2 };
+	TArray<TObjectPtr<class UABWeaponItem>> WeaponList =  { Weapon1, Weapon2 };
 	
 	FName WeaponSocket = "Tumb2_R";
 
