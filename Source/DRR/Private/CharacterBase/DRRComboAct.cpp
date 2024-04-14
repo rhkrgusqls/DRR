@@ -4,26 +4,34 @@
 #include "CharacterBase/DRRComboAct.h"
 #include "Interface/DRRActableInterface.h"
 
-UDRRComboAct::UDRRComboAct() :UDRRAct()
+DRRComboAct::DRRComboAct() :DRRAct()
 {
 
 }
 
 
-bool UDRRComboAct::BeginAct()
+bool DRRComboAct::BeginAct()
 {
 
 	curActCount = 0;
 	curFuncCount = 0;
-	return false;
+	return NextReset();
 }
 
-bool UDRRComboAct::NextReset()
+bool DRRComboAct::NextReset()
 {
-	return false;
+	switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+	case EActCycleType::End:
+	default:
+		return false;
+		break;
+	}
 }
 
-FName UDRRComboAct::GetMontgeSectionName()
+FName DRRComboAct::GetMontgeSectionName()
 {
 
 	FString CombineString = CurAct->MontageSectionPrefix + FString::FromInt(FMath::Clamp(curActCount+1,1,CurAct->MaxActCount));
@@ -31,12 +39,8 @@ FName UDRRComboAct::GetMontgeSectionName()
 	return FName(*CombineString);
 }
 
-void UDRRComboAct::EndAct()
-{
-	Super::EndAct();
-}
 
-bool UDRRComboAct::AfterAct()
+bool DRRComboAct::AfterAct()
 {
 	switch (CurAct->CycleType)
 	{
@@ -46,7 +50,7 @@ bool UDRRComboAct::AfterAct()
 		break;
 	case EActCycleType::End:
 	default:
-		if (curActCount == CurAct->MaxActCount-1)
+		if (IsLastNumAct())
 		{
 			return false;
 		}

@@ -4,31 +4,45 @@
 #include "CharacterBase/DRRCastAct.h"
 #include "Interface/DRRActableInterface.h"
 
-UDRRCastAct::UDRRCastAct() :UDRRAct()
+DRRCastAct::DRRCastAct() :DRRAct()
 {
 }
 
 
 
-bool UDRRCastAct::BeginAct()
+bool DRRCastAct::BeginAct()
 {
+	curActCount = 0;
+	curFuncCount = 0;
+
 	return NextReset();
 }
 
-bool UDRRCastAct::NextReset()
+bool DRRCastAct::NextReset()
 {
-	if (curActCount + 1 < GetCurAct()->MaxActCount)
-	{
-		return true;
-	}
-	else
-	{
 
-		return false;
+	switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+	case EActCycleType::End:
+	default:
+		if (IsLastNumAct())
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+
+		}
+		break;
 	}
+
+	
 }
 
-FName UDRRCastAct::GetMontgeSectionName()
+FName DRRCastAct::GetMontgeSectionName()
 {
 	FString CombineString = CurAct->MontageSectionPrefix;
 
@@ -36,12 +50,20 @@ FName UDRRCastAct::GetMontgeSectionName()
 }
 
 
-void UDRRCastAct::EndAct()
-{
-	Super::EndAct();
-}
 
-bool UDRRCastAct::AfterAct()
+bool DRRCastAct::AfterAct()
 {
+	switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+	case EActCycleType::End:
+	default:
+			return false;
+		break;
+	}
+
+
+
 	return false;
 }

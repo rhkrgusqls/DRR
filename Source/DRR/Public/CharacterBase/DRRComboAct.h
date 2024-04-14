@@ -4,24 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "DRRAct.h"
-#include "DRRComboAct.generated.h"
-
 
 /**
  * 
  */
-UCLASS()
-class DRR_API UDRRComboAct : public UDRRAct
+class DRR_API DRRComboAct : public DRRAct
 {
 public:
 
-	GENERATED_BODY()
-	UDRRComboAct();
+	DRRComboAct();
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual FName GetMontgeSectionName() override;
 protected:
-	virtual void EndAct() override;
 	virtual bool AfterAct() override;
 	
 protected:

@@ -5,24 +5,24 @@
 #include "Interface/DRRActableInterface.h"
 #include "Utilities/UtilityList.h"
 
-UDRRAct::UDRRAct()
+DRRAct::DRRAct()
 {
 	
 }
 
-void UDRRAct::SetActor(IDRRActableInterface* Target)
+void DRRAct::SetActor(IDRRActableInterface* Target)
 {
 	SetActs(Target);
 	CurAct = Target->GetActData();
 	BeginAct();
 }
 
-void UDRRAct::ActRelease()
+void DRRAct::ActRelease()
 {
 
 }
 
-UDRRAct::~UDRRAct()
+DRRAct::~DRRAct()
 {
 	if (BeginActFunc.IsBound())
 	{
@@ -41,15 +41,15 @@ UDRRAct::~UDRRAct()
 	ActFunc.Empty();
 }
 
-float UDRRAct::GetNextTime()
+float DRRAct::GetNextTime()
 {
 	return CurAct->EffectiveFrameCount[curActCount]/CurAct->FrameRate;
 }
 
-uint8 UDRRAct::NextAct()
+uint8 DRRAct::NextAct()
 {
 
-	CLog::Log("UDRRAct::NextAct");
+	CLog::Log("DRRAct::NextAct");
 	switch (CurAct->CycleType)
 	{
 	case EActCycleType::Reverse :
@@ -67,13 +67,13 @@ uint8 UDRRAct::NextAct()
 	return curActCount;
 }
 
-bool UDRRAct::NextReset()
+bool DRRAct::NextReset()
 {
 	
 	return false;
 }
 
-uint8 UDRRAct::GetCurFuncCount()
+uint8 DRRAct::GetCurFuncCount()
 {
 	uint8 Temp = curFuncCount;
 	curFuncCount=FMath::Clamp((curFuncCount+1)%ActFunc.Num(), 0, ActFunc.Num() - 1);
@@ -81,16 +81,16 @@ uint8 UDRRAct::GetCurFuncCount()
 	return Temp;
 }
 
-FOnActFuncDelegate UDRRAct::DoBeginAct()
+FOnActFuncDelegate DRRAct::DoBeginAct()
 {
 	
 	return BeginActFunc;
 	
 }
 
-FOnActFuncDelegate UDRRAct::DoAct()
+FOnActFuncDelegate DRRAct::DoAct()
 {
-	CLog::Log("UDRRAct::DoAct");
+	CLog::Log("DRRAct::DoAct");
 	uint8 Result = 0;
 	for (int i = 0; i < curActCount; i++)
 	{
@@ -101,19 +101,19 @@ FOnActFuncDelegate UDRRAct::DoAct()
 	return (ActFunc[Result]);
 }
 
-FOnActFuncDelegate UDRRAct::DoEndAct()
+FOnActFuncDelegate DRRAct::DoEndAct()
 {
 
 
 	return EndActFunc;
 }
 
-const UDA_ActData* UDRRAct::GetCurAct()
+const UDA_ActData* DRRAct::GetCurAct()
 {
 	return CurAct;
 }
 
-bool UDRRAct::BeginAct()
+bool DRRAct::BeginAct()
 {
 
 	curActCount = 0;
@@ -122,7 +122,7 @@ bool UDRRAct::BeginAct()
 
 }
 
-FName UDRRAct::GetMontgeSectionName()
+FName DRRAct::GetMontgeSectionName()
 {
 	FString CombineString = CurAct->MontageSectionPrefix;
 	return FName(*CombineString);
@@ -130,9 +130,9 @@ FName UDRRAct::GetMontgeSectionName()
 
 
 
-void UDRRAct::EndAct()
+void DRRAct::EndAct()
 {
-	CLog::Log("EndAct");
+	CLog::Log("DRRAct::EndAct");
 	if (BeginActFunc.IsBound())
 	{
 		BeginActFunc.Unbind();
@@ -148,18 +148,19 @@ void UDRRAct::EndAct()
 		f.Unbind();
 	}
 	ActFunc.Empty();
+	
 
 }
 
 
-bool UDRRAct::AfterAct()
+bool DRRAct::AfterAct()
 {
 	return true;
 }
 
-void UDRRAct::SetActs(IDRRActableInterface* Target)
+void DRRAct::SetActs(IDRRActableInterface* Target)
 {
-	CLog::Log("UDRRAct::SetActs");
+	CLog::Log("DRRAct::SetActs");
 	BeginActFunc = Target->GetBeginActFunc();
 	ActFunc = Target->GetActFunc( );
 	EndActFunc = Target->GetEndActFunc();
@@ -171,10 +172,11 @@ void UDRRAct::SetActs(IDRRActableInterface* Target)
 	
 }
 
-void UDRRAct::BeginDestroy()
+bool DRRAct::IsLastNumAct()
 {
-	Super::BeginDestroy();
-	CLog::Log("BeginDestroy");
-	EndAct();
-
+	if ((curActCount + 1) < CurAct->MaxActCount)
+		return false;
+	else
+		return true;
 }
+

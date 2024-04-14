@@ -163,7 +163,7 @@ void ATestPlayer::WeaponLeftAttackPress()
 	}
 
 	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
-	if (Temp)
+	if (Temp!=nullptr)
 	{
 
 		ActComponent->Act(Temp);
@@ -178,7 +178,7 @@ void ATestPlayer::WeaponLeftAttackRelaease()
 	}
 
 	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
-	if (Temp)
+	if (Temp != nullptr)
 	{
 
 		ActComponent->ActRelease(Temp);
@@ -186,14 +186,13 @@ void ATestPlayer::WeaponLeftAttackRelaease()
 }
 void ATestPlayer::WeaponRightAttackPress()
 {
-	CLog::Log("RightKeyPress");
 	if (Weapon == nullptr)
 	{
 		return;
 	}
 
 	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
-	if (Temp)
+	if (Temp != nullptr)
 	{
 
 		ActComponent->Act(Temp);
@@ -202,14 +201,13 @@ void ATestPlayer::WeaponRightAttackPress()
 
 void ATestPlayer::WeaponRightAttackRelaease()
 {
-	CLog::Log("RightKeyRelease");
 	if (Weapon == nullptr)
 	{
 		return;
 	}
 
 	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
-	if (Temp)
+	if (Temp != nullptr)
 	{
 
 		ActComponent->ActRelease(Temp);

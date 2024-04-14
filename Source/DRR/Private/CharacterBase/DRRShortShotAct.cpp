@@ -4,13 +4,13 @@
 #include "CharacterBase/DRRShortShotAct.h"
 #include "Interface/DRRActableInterface.h"
 
-UDRRShortShotAct::UDRRShortShotAct() :UDRRAct()
+DRRShortShotAct::DRRShortShotAct() :DRRAct()
 {
     
 }
 
 
-bool UDRRShortShotAct::BeginAct()
+bool DRRShortShotAct::BeginAct()
 {
     
     curActCount = 0;
@@ -18,11 +18,21 @@ bool UDRRShortShotAct::BeginAct()
     return false;
 }
 
-bool UDRRShortShotAct::NextReset()
+bool DRRShortShotAct::NextReset()
 {
+	switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+	case EActCycleType::End:
+	default:
+		return false;
+		break;
+	}
+
 	return false;
 }
-float UDRRShortShotAct::GetNextTime()
+float DRRShortShotAct::GetNextTime()
 {
     return CurAct->EffectiveFrameCount[0] / CurAct->FrameRate;
 }
@@ -30,14 +40,7 @@ float UDRRShortShotAct::GetNextTime()
 
 
 
-void UDRRShortShotAct::EndAct()
-{
-
-    Super::EndAct();
-
-}
-
-bool UDRRShortShotAct::AfterAct()
+bool DRRShortShotAct::AfterAct()
 {
 	switch (CurAct->CycleType)
 	{
@@ -47,7 +50,7 @@ bool UDRRShortShotAct::AfterAct()
 		break;
 	case EActCycleType::End:
 	default:
-		if (curActCount == CurAct->MaxActCount-1)
+		if (IsLastNumAct())
 		{
 			return false;
 		}

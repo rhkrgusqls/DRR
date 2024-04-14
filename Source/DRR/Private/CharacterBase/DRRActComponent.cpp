@@ -10,13 +10,13 @@
 #include "DataAsset/DA_ComboActData.h"
 #include "DataAsset/DA_ShortShotActData.h"
 #include "Interface/DRRActableInterface.h"
+#include "CharacterBase/DRRAct.h"
 #include "CharacterBase/DRRShortShotAct.h"
 #include "CharacterBase/DRRCastAct.h"
 #include "CharacterBase/DRRChargeAct.h"
 #include "CharacterBase/DRRComboAct.h"
 #include "CharacterBase/DRRTriggerAct.h"
 #include "Skill/DRRActUnitBase.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Components/CapsuleComponent.h"
@@ -31,13 +31,14 @@ UDRRActComponent::UDRRActComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	Actor = nullptr;
-
+	TryInput = false;
 
 	//Take Item Section
 	ActActions.Add(FOnActDelegateWrapper(FOnActDelegate::CreateUObject(this, &UDRRActComponent::ShortShot)));
 	ActActions.Add(FOnActDelegateWrapper(FOnActDelegate::CreateUObject(this, &UDRRActComponent::Charging)));
 	ActActions.Add(FOnActDelegateWrapper(FOnActDelegate::CreateUObject(this, &UDRRActComponent::Casting)));
 	ActActions.Add(FOnActDelegateWrapper(FOnActDelegate::CreateUObject(this, &UDRRActComponent::Combo)));
+	ActActions.Add(FOnActDelegateWrapper(FOnActDelegate::CreateUObject(this, &UDRRActComponent::Trigger)));
 
 
 
@@ -77,34 +78,21 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 	CLog::Log("Act");
 	CLog::Log((uint8)Actable->GetActData()->Type);
 	
+
 	//실행중인 행동이 없거나 이번에 들어온 행동입력이 다른행동일경우
-	if (Actor == nullptr||!Actor->GetCurAct()->ActionName.Equals(Actable->GetActData()->ActionName))
+	if (Actor == nullptr)
 	{
-		//몽타주 실행중엔 다른 행동을 하지 않으려면 
-		if (Actor != nullptr)
-			return;
-		CLog::Log("Begin");
-
-		EndTimer();
-
+		
+		CLog::Log("NewAct");
 		SetActor(Actable);
 		Actor->SetActor(Actable);
 		BeginAct();
 		return;
 	}
-	//같은 명령이라면 같은 행동선에서 다른 행동. 아니라면 새로운 행동
+	//같은 명령이라면 같은 행동선에서 다른 행동. 아니라면 새로운 행동, 트리거타입의 행동이 진행중일떄.
 	if (Actor->GetCurAct()->ActionName.Equals(Actable->GetActData()->ActionName))
 	{
-
-		CLog::Log("Second");
-		AfterAct();
-
-		return;
-	}
-	//트리거 타입이라면 행동 종료
-	if (Actor->GetCurAct()->Type == EActType::Trigger)
-	{
-		CLog::Log("Second");
+		CLog::Log("AfterAct");
 		AfterAct();
 
 		return;
@@ -122,8 +110,8 @@ void UDRRActComponent::ActRelease(IDRRActableInterface* Actable)
 	Actor->ActRelease();
 	if (Actor->GetCurAct()->Type==EActType::Charging)
 	{
+		AfterAct();
 		EndTimer();
-		hasNextAct=	Actor->AfterAct();
 		CheckAct();
 	}
 }
@@ -140,34 +128,41 @@ void UDRRActComponent::ActFunc()
 	Actor->DoAct().ExecuteIfBound(GetOwner());
 
 }
-
-UDRRAct* UDRRActComponent::ShortShot( IDRRActableInterface* Target)
+DRRAct* UDRRActComponent::ShortShot( IDRRActableInterface* Target)
 {
 	CLog::Log("MakeShortShot");
-	Actor = NewObject<UDRRShortShotAct>();;
+	Actor = new DRRShortShotAct();
 
 	return Actor;
 
 }
 
-UDRRAct* UDRRActComponent::Charging(IDRRActableInterface* Target)
+DRRAct* UDRRActComponent::Charging(IDRRActableInterface* Target)
 {
 	CLog::Log("MakeCharging");
-	Actor = NewObject<UDRRChargeAct>();;;
+	Actor = new DRRChargeAct();;;
 	return Actor;
 }	
 
-UDRRAct* UDRRActComponent::Casting(IDRRActableInterface* Target)
+DRRAct* UDRRActComponent::Casting(IDRRActableInterface* Target)
 {
 	CLog::Log("MakeCasting");
-	Actor = NewObject<UDRRCastAct>();;
+	Actor = new DRRCastAct();;
 	return Actor;
 }
 
-UDRRAct* UDRRActComponent::Combo(IDRRActableInterface* Target)
+DRRAct* UDRRActComponent::Combo(IDRRActableInterface* Target)
 {
 	CLog::Log("MakeCombo");
-	Actor = NewObject<UDRRComboAct>();;
+	Actor = new DRRComboAct();;
+
+	return Actor;
+}
+
+DRRAct* UDRRActComponent::Trigger(IDRRActableInterface* Target)
+{
+	CLog::Log("MakeCombo");
+	Actor = new DRRTriggerAct();;
 
 	return Actor;
 }
@@ -211,8 +206,7 @@ void UDRRActComponent::EndTimer()
 	
 	if (ActTimerHandle.IsValid())
 	{
-
-		ActTimerHandle.Invalidate();
+		GetWorld()->GetTimerManager().ClearTimer(ActTimerHandle);
 	}
 }
 
@@ -226,7 +220,7 @@ void UDRRActComponent::CheckAct()
 
 	if (hasNextAct)
 	{
-		CLog::Log(hasNextAct);
+		CLog::Log("ActNextMotion");
 		
 		uint8 curActCount=Actor->NextAct();
 
@@ -247,6 +241,9 @@ void UDRRActComponent::CheckAct()
 	}
 	else
 	{
+		CLog::Log("Finish Montage");
+		CLog::Log(Actor->GetCurAct()->ActionName);
+		
 		PrevActor = Actor;
 		Actor = nullptr;
 		// 이유를 알수 없이 애님몽타주가 끝났는데 Check를 한번 더하고있다. 이유를 찾아봐야할듯
@@ -289,37 +286,59 @@ void UDRRActComponent::ClearMontageAct()
 	
 }
 
-void UDRRActComponent::EraseAct()
+void UDRRActComponent::BeginDestroy()
 {
-	CLog::Log("EraseAct");
+	Super::BeginDestroy();
+	if (Actor != nullptr)
+	{
+		Actor->EndAct();
+		delete(Actor);
+	}
 	if (PrevActor != nullptr)
 	{
 		PrevActor->EndAct();
+		delete(PrevActor);
+	}
+}
+
+void UDRRActComponent::EraseAct()
+{
+	CLog::Log("UDRRActComponent::EraseAct");
+	if (PrevActor != nullptr)
+	{
+		PrevActor->EndAct();
+		delete(PrevActor);
 		PrevActor = nullptr;
 	}
 }
 
 void UDRRActComponent::SetActor(IDRRActableInterface* Target)
 {
-
+	//델리게이트랩퍼로 스위치 대신 사용하려면 UFUNCTION을 써야하는데 오류 해결이 난해함 나중에 강사님께 여쭤보자
+	//ActActions[(uint8)Target->GetActData()->Type];
 
 	
 	switch (Target->GetActData()->Type)
 	{
 	case EActType::ShortShot:
-		Actor = NewObject<UDRRShortShotAct>();;
+		CLog::Log("ShortShot");
+		Actor = new DRRShortShotAct();;
 		break;
 	case EActType::Charging:
-		Actor = NewObject<UDRRChargeAct>();;
+		CLog::Log("Charging");
+		Actor = new DRRChargeAct();;
 		break;
 	case EActType::Casting:
-		Actor = NewObject<UDRRCastAct>();;
+		CLog::Log("Casting");
+		Actor = new DRRCastAct();;
 		break;
 	case EActType::Combo:
-		Actor = NewObject<UDRRComboAct>();
+		CLog::Log("Combo");
+		Actor = new DRRComboAct();
 		break;
 	case EActType::Trigger:
-		Actor = NewObject<UDRRTriggerAct>();
+		CLog::Log("Trigger");
+		Actor = new DRRTriggerAct();
 		break;
 	}
 }
