@@ -221,18 +221,18 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 //Change weapon
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 			
-	/*if (nullptr != CurWeapon)
+	if (nullptr != CurWeapon)
 	{
-		if (CurWeapon == WeaponList[0]) {
+		/*if (CurWeapon == WeaponList[0]->WeaponMesh) {
 			CurWeapon = WeaponList[1];
 		}
 
 		if (CurWeapon == WeaponList[1]) {
 			CurWeapon = WeaponList[0];
-		}
+		}*/
 
 		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
-	}*/
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("Change in C++"));
 }

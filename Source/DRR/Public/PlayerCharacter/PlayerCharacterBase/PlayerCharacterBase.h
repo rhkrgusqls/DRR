@@ -23,8 +23,8 @@ protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
 	virtual void EquipWeapon(class UABItemDataTable* InItemData);
-	//virtual void DrinkPotion(class UABItemData* InItemData);
-	//virtual void ReadScroll(class UABItemData* InItemData);
+	//virtual void DrinkPotion(class UABItemDataTable* InItemData);
+	//virtual void ReadScroll(class UABItemDataTable* InItemData);
 
 private:
 	void QuaterMove(const FInputActionValue& Value);
