@@ -53,6 +53,7 @@ public:
 
 	void RemoveDotDamage(float TickDamage);
 
+	void RemoveDotDamage2(float TickDamage);
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
