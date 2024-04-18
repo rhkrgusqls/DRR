@@ -19,7 +19,7 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	TSoftObjectPtr<USkeletalMesh> WeaponMesh;
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 
 	USkeletalMeshComponent* GetWeapon();
 

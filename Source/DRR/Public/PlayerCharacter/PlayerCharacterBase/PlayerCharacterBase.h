@@ -70,6 +70,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TObjectPtr<class UABWeaponItem> Weapon2;
 
+	
 	TObjectPtr<class USkeletalMeshComponent> CurWeapon;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)

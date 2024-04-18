@@ -32,7 +32,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	//Set Weapon Mesh
 	CurWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	CurWeapon->SetupAttachment(GetMesh(), WeaponSocket);
+	CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
 
 	//Set Movement Default
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -123,8 +123,7 @@ void APlayerCharacterBase::BeginPlay()
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::Quater);
 
-	// Weapon Mesh Component
-	//AABItemDataTable::m_staticInstance;
+	//CurWeapon = Weapon1->WeaponMesh;
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -169,18 +168,18 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 void APlayerCharacterBase::EquipWeapon(UABItemDataTable* InItemData)
 {
 	UE_LOG(LogTemp, Log, TEXT("EquipWeapon"));
-	UABWeaponItem* WeaponItemData = Cast<UABWeaponItem>(InItemData);
-	if (WeaponItemData) 
-	{
-		if (WeaponList.Contains(WeaponItemData)) 
-		{
-			return;
-		}
-		if (WeaponItemData->WeaponMesh.IsPending()) {
-			WeaponItemData->WeaponMesh.LoadSynchronous();
-		}
-		CurWeapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
-	}
+//	UABWeaponItem* WeaponItemData = Cast<UABWeaponItem>(InItemData);
+//	if (WeaponItemData) 
+//	{
+//		if (WeaponList.Contains(WeaponItemData)) 
+//		{
+//			return;
+//		}
+//		if (WeaponItemData->WeaponMesh.IsPending()) {
+//			WeaponItemData->WeaponMesh.LoadSynchronous();
+//		}
+//		CurWeapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
+//	}
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -223,13 +222,13 @@ void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
 			
 	if (nullptr != CurWeapon)
 	{
-		/*if (CurWeapon == WeaponList[0]->WeaponMesh) {
-			CurWeapon = WeaponList[1];
+		if (CurWeapon == WeaponList[0]->WeaponMesh) {
+			CurWeapon = WeaponList[1]->WeaponMesh;
 		}
 
-		if (CurWeapon == WeaponList[1]) {
-			CurWeapon = WeaponList[0];
-		}*/
+		if (CurWeapon == WeaponList[1]->WeaponMesh) {
+			CurWeapon = WeaponList[0]->WeaponMesh;
+		}
 
 		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
 	}
