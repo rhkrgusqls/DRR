@@ -53,7 +53,7 @@ public:
 
 	void RemoveDotDamage(float TickDamage);
 
-
+	virtual void IsDead();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
@@ -67,7 +67,7 @@ public:
 	float physicsAttack;		
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float physicsDef;
+	float physicsDef=1;
 
 	//Not Use
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")

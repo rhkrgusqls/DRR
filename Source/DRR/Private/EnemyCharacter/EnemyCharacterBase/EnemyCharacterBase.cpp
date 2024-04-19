@@ -2,12 +2,19 @@
 
 
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
+#include "DRR.h"
+#include "GameFramework/Actor.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameManager/EnemyManager.h"
 #include "DBEnemyCharacterSetting.h"
 #include "Components/CapsuleComponent.h"
 #include "GameManager/GameManager.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
+
 
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
@@ -113,6 +120,7 @@ void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+	UWorld* World = GetWorld();
 	UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
 	if (GameInstance)
 	{
@@ -128,6 +136,18 @@ void AEnemyCharacterBase::BeginPlay()
 	//MagicAttack = MagicAttack * (100 + Level);
 	physicsDef = physicsAttack * (100 + Level);
 	//MagicDef = MagicDef * (100 + Level);
+	if (World!=nullptr)
+	{
+		for (TActorIterator<AEnemyManager> It(World); It; ++It)
+		{
+			Manager = *It;
+		}
+	}
+	if (Manager != nullptr)
+	{
+		MonsterNum = Manager->SetMonsterNum();
+	}
+	
 }
 
 void AEnemyCharacterBase::Tick(float DeltaTime)

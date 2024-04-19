@@ -52,6 +52,10 @@ void ACharacterBase::Tick(float DeltaTime)
 		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01 - DotDamage;
 		HPRegenHandle = 0;
 	}
+	if (CurrentHP <= 0)
+	{
+		IsDead();
+	}
 }
 
 //Call Hit Event
@@ -75,4 +79,9 @@ void ACharacterBase::SetDotDamage(float TickDamage, float DurationTime)
 void ACharacterBase::RemoveDotDamage(float TickDamage)
 {
 	DotDamage = DotDamage - TickDamage;
+}
+
+void ACharacterBase::IsDead()
+{
+
 }
