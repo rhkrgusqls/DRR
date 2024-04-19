@@ -17,11 +17,14 @@ class DRR_API ADRRMainGameMode : public AGameMode
 public:
 	ADRRMainGameMode();
 
-public:
 	virtual void BeginPlay() override;
+
 
 protected:
 	TSubclassOf<UUserWidget> MainHUDWidgetClass;
-
 	UUserWidget* MainHUDWidget;
+
+private:
+	UPROPERTY()
+	class UDataTable* ItemDataTable;
 };
