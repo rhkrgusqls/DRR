@@ -5,41 +5,26 @@
 #include "Components/CapsuleComponent.h"
 #include "PlayerCharacter/PlayerCharacterBase/PlayerControlDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "UI/DRRWidgetComponent.h"
-#include "UI/DRRUserWidget.h"
 
+
+#include "CharacterBase/DRRActComponent.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
-	// UI Widget
-	//PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHPBar"));
-
-	//static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
-	//if (PlayerHUDRef.Class)
-	//{
-	//	PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
-	//	PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//}
-
-	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
+	
 }
 
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetMaxHP(100.0f);
-	SetHP(MaxHP);
+	
 }
 
-void ACharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
+void ACharacterBase::ActFunc()
 {
-	if (InUserWidget)
-	{
-		InUserWidget->SetMaxHP(MaxHP);
-		InUserWidget->UpdateHP(CurrentHP);
-		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
-	}
+	ActComponent->ActFunc();
+
 }
 
 void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -55,17 +40,8 @@ void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* Char
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 }
 
-void ACharacterBase::SetMaxHP(float NewHP)
-{
-	MaxHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
-}
 
-void ACharacterBase::SetHP(float NewHP)
-{
-	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
 
-	OnHPChanged.Broadcast(CurrentHP);
-}
 
 void ACharacterBase::Tick(float DeltaTime)
 {
@@ -73,21 +49,39 @@ void ACharacterBase::Tick(float DeltaTime)
 	HPRegenHandle++;
 	if (HPRegenHandle == 9)
 	{
-		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01;
+		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01 - DotDamage;
 		HPRegenHandle = 0;
+	}
+	if (CurrentHP <= 0)
+	{
+		IsDead();
 	}
 }
 
-float ACharacterBase::ApplyDamage(float InDamage)
+//Call Hit Event
+void ACharacterBase::ReciveAttack(float physicsDamage/*, float MagicDamage*/)
 {
-	float ActualDamage = FMath::Clamp(InDamage, 0.0f, InDamage);
+	CurrentHP = CurrentHP - physicsDamage/ physicsDef/*-MagicDamage/MagicDef*/;
+}
 
-	SetHP(CurrentHP - ActualDamage);
-	if (CurrentHP <= 0.0f)
-	{
-		// Please call Dead() (or else simillar) function in here
-		OnHPZero.Broadcast();
-	}
+//Call DotDamage
+void ACharacterBase::SetDotDamage(float TickDamage, float DurationTime)
+{
+	DotDamage = DotDamage + TickDamage;
 
-	return 0.0f;
+	FTimerDelegate TimerCallback;
+	TimerCallback.BindLambda([this, TickDamage]() { RemoveDotDamage(TickDamage); });
+
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, TimerCallback, DurationTime, false);
+}
+
+void ACharacterBase::RemoveDotDamage(float TickDamage)
+{
+	DotDamage = DotDamage - TickDamage;
+}
+
+void ACharacterBase::IsDead()
+{
+
 }

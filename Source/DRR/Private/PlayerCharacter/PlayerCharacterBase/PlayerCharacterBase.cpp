@@ -9,12 +9,18 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
-#include "Item/ABWeaponItem.h"
-#include "Item/ABItemDataTable.h"
 
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
+
+#include "Interface/DRRActableInterface.h"
+#include "CharacterBase/DRRActComponent.h"
+#include "Equipment/Weapon/DRRWeaponBase.h"
+
+#include "UI/DRRWidgetComponent.h"
+#include "UI/DRRUserWidget.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
@@ -29,10 +35,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-
-	//Set Weapon Mesh
-	CurWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
 
 	//Set Movement Default
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -51,6 +53,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	//Set Mesh
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/Asset/Character/Meshes/Player.Player"));
+
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
@@ -71,6 +74,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
 	}
+
 	/*---------------------------------------------------*/
 
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -110,11 +114,42 @@ APlayerCharacterBase::APlayerCharacterBase()
 		AttackAction = InputActionAttackRef.Object;
 	}
 
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction'"));
+	if (InputActionLeftPressRef.Object)
+	{
+		ActLeftPressAction = InputActionLeftPressRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressRightFireAction.IA_PressRightFireAction'"));
+	if (InputActionRightPressRef.Object)
+	{
+		ActRightPressAction = InputActionRightPressRef.Object;
+	}
+
+
+
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionChangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
 	if (InputActionJumpRef.Object)
 	{
 		weaponChangeAction = InputActionChangeRef.Object;
 	}
+
+	// UI Widget
+	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
+	ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
+	HUDWidget = CreateDefaultSubobject<UDRRUserWidget>(TEXT("HUDWidget"));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
+	if (PlayerHUDRef.Class)
+	{
+		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
+		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		HUDWidget = Cast<UDRRUserWidget>(PlayerHUD);
+	}
+
+
+
+	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 
 }
 
@@ -123,7 +158,32 @@ void APlayerCharacterBase::BeginPlay()
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::Quater);
 
-	//CurWeapon = Weapon1->WeaponMesh;
+	SetMaxHP(100.0f);
+	SetHP(MaxHP);
+
+	SetupCharacterWidget(HUDWidget);
+}
+
+void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
+{
+	if (InUserWidget)
+	{
+		InUserWidget->SetMaxHP(MaxHP);
+		InUserWidget->UpdateHP(CurrentHP);
+		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
+	}
+}
+
+void APlayerCharacterBase::SetMaxHP(float NewHP)
+{
+	MaxHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
+}
+
+void APlayerCharacterBase::SetHP(float NewHP)
+{
+	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
+
+	OnHPChanged.Broadcast(CurrentHP);
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -133,7 +193,10 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Attack);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
 	EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
@@ -165,23 +228,6 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 }
 
-void APlayerCharacterBase::EquipWeapon(UABItemDataTable* InItemData)
-{
-	UE_LOG(LogTemp, Log, TEXT("EquipWeapon"));
-//	UABWeaponItem* WeaponItemData = Cast<UABWeaponItem>(InItemData);
-//	if (WeaponItemData) 
-//	{
-//		if (WeaponList.Contains(WeaponItemData)) 
-//		{
-//			return;
-//		}
-//		if (WeaponItemData->WeaponMesh.IsPending()) {
-//			WeaponItemData->WeaponMesh.LoadSynchronous();
-//		}
-//		CurWeapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
-//	}
-}
-
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -202,7 +248,69 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 
 void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
 	UE_LOG(LogTemp, Log, TEXT("Attack"));
+
 }
+
+void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
+	if (Temp)
+	{
+
+		ActComponent->Act(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
+	if (Temp)
+	{
+
+		ActComponent->Act(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
+	if (Temp)
+	{
+
+		ActComponent->ActRelease(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr)
+	{
+		return;
+	}
+
+	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
+	if (Temp)
+	{
+
+		ActComponent->ActRelease(Temp);
+	}
+}
+
 
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
@@ -217,23 +325,22 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	}	
 }
 
+
 //Change weapon
+
 void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
-			
-	if (nullptr != CurWeapon)
-	{
-		if (CurWeapon == WeaponList[0]->WeaponMesh) {
-			CurWeapon = WeaponList[1]->WeaponMesh;
-		}
-
-		if (CurWeapon == WeaponList[1]->WeaponMesh) {
-			CurWeapon = WeaponList[0]->WeaponMesh;
-		}
-
-		CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
+	
+	if (curWeapon == 0) {
+		UE_LOG(LogTemp, Log, TEXT("Change :: 0"));
+		curWeapon++;
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("Change in C++"));
+	else if (curWeapon == 1) {
+		UE_LOG(LogTemp, Log, TEXT("Change :: 1"));
+		curWeapon--;
+	}
+	
+	//Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
+	//Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
 }
 
 
@@ -241,4 +348,19 @@ void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType
 {
 	UPlayerControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
 	SetCharacterControlData(NewCharacterControlData);
+}
+
+
+float APlayerCharacterBase::ApplyDamage(float InDamage)
+{
+	float ActualDamage = FMath::Clamp(InDamage, 0.0f, InDamage);
+
+	SetHP(CurrentHP - ActualDamage);
+	if (CurrentHP <= 0.0f)
+	{
+		// Please call Dead() (or else simillar) function in here
+		OnHPZero.Broadcast();
+	}
+
+	return 0.0f;
 }

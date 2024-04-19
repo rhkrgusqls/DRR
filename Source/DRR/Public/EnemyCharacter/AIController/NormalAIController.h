@@ -19,7 +19,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UAIPerceptionComponent* AIPerceptionComponent;
-
+	//UPROPERTY(VisibleAnywhere)
+	//UAIPerceptionComponent* AIPerceptionComponentFriendly;
 	virtual void BeginPlay();
 
 public:
@@ -32,12 +33,17 @@ public:
 	class ACharacterBase* Agent;
 
 	ACharacterBase* Character;
-	ACharacterBase* EnemyCharacter;
+	AActor* EnemyCharacter;
 
 	UFUNCTION()
 	void OnPerception(AActor* Actor, FAIStimulus Stimulus);
+	//UFUNCTION()
+	//void CheckColleagueGroup(AActor* Actor, FAIStimulus Stimulus);
 
 	class UAISenseConfig_Sight* Sight;
+	//class UAISenseConfig_Sight* FriendIdentificationSight;
+
+	class UAISenseConfig_Hearing* Hearing;
 
 	virtual void OnPossess(APawn* InPawn) override;
 
@@ -47,4 +53,5 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UBehaviorTree> BTAsset;
 
+	UBlackboardComponent* BlackboardComp;
 };

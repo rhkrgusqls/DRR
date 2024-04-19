@@ -2,6 +2,12 @@
 
 
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
+#include "DRR.h"
+#include "GameFramework/Actor.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameManager/EnemyManager.h"
 #include "DBEnemyCharacterSetting.h"
 #include "Components/CapsuleComponent.h"
 #include "GameManager/GameManager.h"
@@ -9,12 +15,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
 
+
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// UI Widget
+	/*
 	EnemyHPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHPBar"));
 	EnemyHPBar->SetupAttachment(GetMesh());
 	EnemyHPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
@@ -27,6 +35,7 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 		EnemyHPBar->SetDrawSize(FVector2D(150.0f, 20.0f));
 		EnemyHPBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	*/
 
 }
 
@@ -94,9 +103,9 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 	GetCharacterMovement()->BrakingDecelerationWalking = CharacterBrakingDecelerationWalking;
 
 	//Set Rotation Remit-Kwakhyunbin
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
 
 	//Set Mesh and Anim BP-Kwakhyunbin
 	GetMesh()->SetSkeletalMesh(CharacterMesh);
@@ -111,6 +120,7 @@ void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+	UWorld* World = GetWorld();
 	UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
 	if (GameInstance)
 	{
@@ -126,6 +136,18 @@ void AEnemyCharacterBase::BeginPlay()
 	//MagicAttack = MagicAttack * (100 + Level);
 	physicsDef = physicsAttack * (100 + Level);
 	//MagicDef = MagicDef * (100 + Level);
+	if (World!=nullptr)
+	{
+		for (TActorIterator<AEnemyManager> It(World); It; ++It)
+		{
+			Manager = *It;
+		}
+	}
+	if (Manager != nullptr)
+	{
+		MonsterNum = Manager->SetMonsterNum();
+	}
+	
 }
 
 void AEnemyCharacterBase::Tick(float DeltaTime)
@@ -133,8 +155,9 @@ void AEnemyCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
+/*
 void AEnemyCharacterBase::SetHP(float NewHP)
 {
 	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
 }
+*/

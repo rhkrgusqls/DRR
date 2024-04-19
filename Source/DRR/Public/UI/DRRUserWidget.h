@@ -18,14 +18,16 @@ public:
 	FORCEINLINE void SetOwningActor(AActor* NewOwner) { OwningActor = NewOwner; }
 	FORCEINLINE void SetMaxHP(float NewHP) { MaxHP = NewHP; }
 	void UpdateHP(float NewHP);
-
+	
 protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Actor)
 	TObjectPtr<AActor> OwningActor;
 
-	TObjectPtr<class UProgressBar> EnemyHPProgressBar;
-	TObjectPtr<class UProgressBar> PlayerHPProgressBar;
+	//TObjectPtr<class UProgressBar> EnemyHPProgressBar;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = ( BindWidget, AllowPrivateAccess = "true"))
+	TObjectPtr<class UProgressBar> PlayerHPBar;
 	float MaxHP;
 };

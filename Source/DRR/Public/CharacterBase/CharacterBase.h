@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
-#include "Interface/DRRCharacterWidgetInterface.h"
+#include "Interface/DRRActorInterface.h"
+
 #include "CharacterBase.generated.h"
 
 
@@ -16,7 +17,7 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class DRR_API ACharacterBase : public ACharacter, public IDRRCharacterWidgetInterface
+class DRR_API ACharacterBase : public ACharacter, public IDRRActorInterface
 {
 	GENERATED_BODY()
 
@@ -26,24 +27,38 @@ public:
 
 public:
 	virtual void BeginPlay() override;
-	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
+	
+
+	virtual void ActFunc() override;
+
+	class UDRRActComponent* GetActComponent() const { return ActComponent; }
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
 
-	void SetMaxHP(float NewHP);
-	void SetHP(float NewHP);
+	
 
 protected:
 	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
 
+	
+	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly, Category = Act, Meta = (AllowPrivateAccess = "true"));
+	TObjectPtr<class UDRRActComponent> ActComponent;
 public:		
 	virtual void Tick(float DeltaTime) override;
 
-	float ApplyDamage(float InDamage);
+	void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
+
+	void SetDotDamage(float TickDamage, float DurationTime);
+
+	void RemoveDotDamage(float TickDamage);
+
+	virtual void IsDead();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
+
+	float DotDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentHP;
@@ -52,7 +67,7 @@ public:
 	float physicsAttack;		
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float physicsDef;
+	float physicsDef=1;
 
 	//Not Use
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
@@ -65,10 +80,6 @@ public:
 
 	float HPRegenHandle;
 
-	TObjectPtr<class UWidgetComponent> PlayerHUD;
-
-	FOnHPZeroDelegate OnHPZero;
-	FOnHPChangedDelegate OnHPChanged;
 
 //AnimMongtage-kwakhyunbin
 
