@@ -69,6 +69,12 @@ public:
 	float CurrentMP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float MaxST;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float CurrentST;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float physicsAttack;		
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")

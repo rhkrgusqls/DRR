@@ -18,8 +18,10 @@ public:
 	FORCEINLINE void SetOwningActor(AActor* NewOwner) { OwningActor = NewOwner; }
 	FORCEINLINE void SetMaxHP(float NewHP) { MaxHP = NewHP; }
 	FORCEINLINE void SetMaxMP(float NewMP) { MaxMP = NewMP; }
+	FORCEINLINE void SetMaxST(float NewST) { MaxST = NewST; }
 	void UpdateHP(float NewHP);
 	void UpdateMP(float NewMP);
+	void UpdateST(float NewST);
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -31,7 +33,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = ( BindWidget, AllowPrivateAccess = "true"))
 	TObjectPtr<class UProgressBar> PlayerHPBar;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
 	TObjectPtr<class UProgressBar> PlayerMPBar;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
+	TObjectPtr<class UProgressBar> PlayerSTBar;
 	float MaxHP;
 	float MaxMP;
+	float MaxST;
 };

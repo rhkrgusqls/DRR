@@ -164,6 +164,9 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxMP(100.0f);
 	SetMP(MaxMP);
 
+	SetMaxST(100.0f);
+	SetST(MaxST);
+
 	ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
 
@@ -181,6 +184,10 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->SetMaxMP(MaxMP);
 		InUserWidget->UpdateMP(CurrentMP);
 		OnMPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateMP);
+
+		InUserWidget->SetMaxST(MaxST);
+		InUserWidget->UpdateST(CurrentST);
+		OnSTChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateST);
 		
 	}
 }
@@ -206,6 +213,17 @@ void APlayerCharacterBase::SetMP(float NewMP)
 {
 	CurrentMP = FMath::Clamp(NewMP, 0.0f, 1000.0f);
 	OnMPChanged.Broadcast(CurrentMP);
+}
+
+void APlayerCharacterBase::SetMaxST(float NewST)
+{
+	MaxST = FMath::Clamp(NewST, 0.0f, 1000.0f);
+}
+
+void APlayerCharacterBase::SetST(float NewST)
+{
+	CurrentST = FMath::Clamp(NewST, 0.0f, 1000.0f);
+	OnSTChanged.Broadcast(CurrentST);
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -33,6 +33,9 @@ protected:
 	void SetMaxMP(float NewMP);
 	void SetMP(float NewMP);
 
+	void SetMaxST(float NewST);
+	void SetST(float NewST);
+
 private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
@@ -104,5 +107,6 @@ public:
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;
 	FOnMPChangedDelegate OnMPChanged;
+	FOnSTChangedDelegate OnSTChanged;
 
 };
