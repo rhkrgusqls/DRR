@@ -173,6 +173,12 @@ void APlayerCharacterBase::BeginPlay()
 	SetupCharacterWidget(HUDWidget);
 }
 
+//void APlayerCharacterBase::Tick(float Deltatime)
+//{
+//	Super::Tick(Deltatime);
+//	SetupCharacterWidget(HUDWidget);
+//}
+
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
 	if (InUserWidget)

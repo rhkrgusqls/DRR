@@ -62,6 +62,7 @@ void ACharacterBase::Tick(float DeltaTime)
 void ACharacterBase::ReciveAttack(float physicsDamage/*, float MagicDamage*/)
 {
 	CurrentHP = CurrentHP - physicsDamage/ physicsDef/*-MagicDamage/MagicDef*/;
+	OnHPChanged.Broadcast(CurrentHP);
 }
 
 //Call DotDamage

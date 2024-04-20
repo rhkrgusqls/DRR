@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
 #include "Interface/DRRActorInterface.h"
+#include "Interface/DRRCharacterWidgetInterface.h"
 #include "CharacterBase.generated.h"
 
 
@@ -118,4 +119,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
+
+	FOnHPChangedDelegate OnHPChanged;
 };
