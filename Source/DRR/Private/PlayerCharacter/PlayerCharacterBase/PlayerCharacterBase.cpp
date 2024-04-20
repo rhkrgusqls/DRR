@@ -22,6 +22,9 @@
 #include "UI/DRRWidgetComponent.h"
 #include "UI/DRRUserWidget.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "GameManager/DRRMainGameMode.h"
+
 APlayerCharacterBase::APlayerCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -137,17 +140,16 @@ APlayerCharacterBase::APlayerCharacterBase()
 	// UI Widget
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
 	ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
-	HUDWidget = CreateDefaultSubobject<UDRRUserWidget>(TEXT("HUDWidget"));
+	//HUDWidget = CreateDefaultSubobject<UDRRUserWidget>(TEXT("HUDWidget"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
 	{
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
 		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		HUDWidget = Cast<UDRRUserWidget>(PlayerHUD);
+		
+		//HUDWidget = PlayerHUDRef.Class;
 	}
-
-
 
 	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 
@@ -161,6 +163,9 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
 
+	ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
+
 	SetupCharacterWidget(HUDWidget);
 }
 
@@ -171,6 +176,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->SetMaxHP(MaxHP);
 		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
+		
 	}
 }
 

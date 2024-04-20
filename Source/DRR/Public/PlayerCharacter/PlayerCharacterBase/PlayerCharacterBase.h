@@ -7,6 +7,7 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
+#include "Components/ProgressBar.h"
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
@@ -19,6 +20,7 @@ public:
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 	float ApplyDamage(float InDamage);
+	void UpdateHealthPercent(float HealthPercent);
 
 protected:
 	// Called when the game starts or when spawned
@@ -95,6 +97,7 @@ private:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetComponent> PlayerHUD;
+
 
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;

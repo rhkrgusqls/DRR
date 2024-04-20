@@ -19,6 +19,7 @@ public:
 
 	virtual void BeginPlay() override;
 
+	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
 
 protected:
 	TSubclassOf<UUserWidget> MainHUDWidgetClass;

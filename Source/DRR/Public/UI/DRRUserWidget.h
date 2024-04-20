@@ -21,7 +21,7 @@ public:
 	
 protected:
 	virtual void NativeConstruct() override;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Actor)
 	TObjectPtr<AActor> OwningActor;
 
