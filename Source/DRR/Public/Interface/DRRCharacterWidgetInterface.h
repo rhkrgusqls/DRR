@@ -9,6 +9,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnHPZeroDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHPChangedDelegate, float CurrentHP);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMPChangedDelegate, float CurrentMP);
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UDRRCharacterWidgetInterface : public UInterface

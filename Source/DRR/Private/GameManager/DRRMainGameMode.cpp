@@ -23,7 +23,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 	}
 
 	// MainWidget
-	static ConstructorHelpers::FClassFinder<UUserWidget> MainHUDWidgetRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> MainHUDWidgetRef(TEXT("/Game/Asset/UI/Main/WBP_MainHUD.WBP_MainHUD_C"));
 	if (MainHUDWidgetRef.Class)
 	{
 		MainHUDWidgetClass = MainHUDWidgetRef.Class;

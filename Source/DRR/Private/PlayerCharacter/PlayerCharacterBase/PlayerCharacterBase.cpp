@@ -161,6 +161,9 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
 
+	SetMaxMP(100.0f);
+	SetMP(MaxMP);
+
 	ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
 
@@ -174,6 +177,10 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->SetMaxHP(MaxHP);
 		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
+
+		InUserWidget->SetMaxMP(MaxMP);
+		InUserWidget->UpdateMP(CurrentMP);
+		OnMPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateMP);
 		
 	}
 }
@@ -188,6 +195,17 @@ void APlayerCharacterBase::SetHP(float NewHP)
 	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
 
 	OnHPChanged.Broadcast(CurrentHP);
+}
+
+void APlayerCharacterBase::SetMaxMP(float NewMP)
+{
+	MaxMP = FMath::Clamp(NewMP, 0.0f, 1000.0f);
+}
+
+void APlayerCharacterBase::SetMP(float NewMP)
+{
+	CurrentMP = FMath::Clamp(NewMP, 0.0f, 1000.0f);
+	OnMPChanged.Broadcast(CurrentMP);
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -355,16 +373,16 @@ void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType
 }
 
 
-float APlayerCharacterBase::ApplyDamage(float InDamage)
-{
-	float ActualDamage = FMath::Clamp(InDamage, 0.0f, InDamage);
-
-	SetHP(CurrentHP - ActualDamage);
-	if (CurrentHP <= 0.0f)
-	{
-		// Please call Dead() (or else simillar) function in here
-		OnHPZero.Broadcast();
-	}
-
-	return 0.0f;
-}
+//float APlayerCharacterBase::ApplyDamage(float InDamage)
+//{
+//	float ActualDamage = FMath::Clamp(InDamage, 0.0f, InDamage);
+//
+//	SetHP(CurrentHP - ActualDamage);
+//	if (CurrentHP <= 0.0f)
+//	{
+//		// Please call Dead() (or else simillar) function in here
+//		OnHPZero.Broadcast();
+//	}
+//
+//	return 0.0f;
+//}

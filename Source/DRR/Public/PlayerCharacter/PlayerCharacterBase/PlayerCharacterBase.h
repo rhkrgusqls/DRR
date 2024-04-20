@@ -19,7 +19,7 @@ public:
 	APlayerCharacterBase();
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
-	float ApplyDamage(float InDamage);
+	//float ApplyDamage(float InDamage);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +29,9 @@ protected:
 
 	void SetMaxHP(float NewHP);
 	void SetHP(float NewHP);
+
+	void SetMaxMP(float NewMP);
+	void SetMP(float NewMP);
 
 private:
 	void QuaterMove(const FInputActionValue& Value);
@@ -100,5 +103,6 @@ public:
 
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;
+	FOnMPChangedDelegate OnMPChanged;
 
 };

@@ -19,16 +19,26 @@ void UDRRUserWidget::UpdateHP(float NewHP)
 	*/
 }
 
+void UDRRUserWidget::UpdateMP(float NewMP)
+{
+	if (PlayerMPBar)
+	{
+		PlayerMPBar->SetPercent(NewMP / MaxMP);
+	}
+}
+
 void UDRRUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	//EnemyHPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("EnemyHPBar")));
 	PlayerHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerHPBar")));
+	PlayerMPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerMPBar")));
 
 	IDRRCharacterWidgetInterface* CharacterWidget = Cast<IDRRCharacterWidgetInterface>(OwningActor);
 	if (CharacterWidget)
 	{
 		CharacterWidget->SetupCharacterWidget(this);
 	}
+
 }
