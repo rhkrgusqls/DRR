@@ -79,6 +79,13 @@ ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitial
 
 	Hearing->HearingRange = 800.0f;
 	Hearing->LoSHearingRange = 1200.0f;
+
+	Hearing->DetectionByAffiliation.bDetectNeutrals = true;
+	Hearing->SetMaxAge(10.0f);
+	//Sight->AutoSuccessRangeFromLastSeenLocation = 900.0f;
+	Hearing->DetectionByAffiliation.bDetectEnemies = true;
+	Hearing->DetectionByAffiliation.bDetectFriendlies = true;
+
 	AIPerceptionComponent->ConfigureSense(*Hearing);
 }
 
