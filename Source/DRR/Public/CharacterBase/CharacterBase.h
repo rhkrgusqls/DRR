@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
 #include "Interface/DRRActorInterface.h"
-
 #include "CharacterBase.generated.h"
 
 
@@ -62,6 +61,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float MaxMP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float CurrentMP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float physicsAttack;		
