@@ -47,10 +47,18 @@ protected:
 public:		
 	virtual void Tick(float DeltaTime) override;
 
-	
+	void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
+
+	void SetDotDamage(float TickDamage, float DurationTime);
+
+	void RemoveDotDamage(float TickDamage);
+
+	virtual void IsDead();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
+
+	float DotDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentHP;
@@ -59,7 +67,7 @@ public:
 	float physicsAttack;		
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	float physicsDef;
+	float physicsDef=1;
 
 	//Not Use
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")

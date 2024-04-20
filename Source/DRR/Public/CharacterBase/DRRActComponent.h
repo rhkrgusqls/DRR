@@ -4,6 +4,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Interface/DRRActableInterface.h"
+#include "DRRAct.h"
+#include "DataAsset/DA_ActData.h"
 #include "DRRActComponent.generated.h"
 
 
@@ -12,7 +14,7 @@
 
 //DECLARE_DELEGATE_OneParam(FOnActDelegate, class IDRRActableInterface* );
 
-DECLARE_DELEGATE_RetVal_OneParam(class UDRRAct*,FOnActDelegate, class IDRRActableInterface*)
+DECLARE_DELEGATE_RetVal_OneParam(class DRRAct*,FOnActDelegate, class IDRRActableInterface*)
 DECLARE_DELEGATE(FOnDoActDelegate);
 USTRUCT(BlueprintType)
 struct FOnActDelegateWrapper
@@ -47,10 +49,16 @@ protected:
 
 	void AfterAct();
 
-	UDRRAct* ShortShot( IDRRActableInterface* Target);
-	UDRRAct* Charging(  IDRRActableInterface* Target);
-	UDRRAct* Casting(   IDRRActableInterface* Target);
-	UDRRAct* Combo(     IDRRActableInterface* Target);
+	//UFUNCTION()
+	class DRRAct* ShortShot(class IDRRActableInterface* Target);
+	//UFUNCTION()
+	class DRRAct* Charging(class IDRRActableInterface* Target);
+	//UFUNCTION()
+	class DRRAct* Casting(class IDRRActableInterface* Target);
+	//UFUNCTION()
+	class DRRAct* Combo(class IDRRActableInterface* Target);
+	//UFUNCTION()
+	class DRRAct* Trigger(class IDRRActableInterface* Target);
 
 
 	void BeginAct();
@@ -59,6 +67,9 @@ protected:
 	void CheckAct();
 	void EndAct(UAnimMontage* targetMontage, bool isInteruped);
 	void ClearMontageAct();
+
+
+	virtual void BeginDestroy() override;
 private:
 	void EraseAct();
 	
@@ -77,9 +88,9 @@ private:
 	UPROPERTY()
 	TArray<FOnActDelegateWrapper> ActActions;
 
-	TObjectPtr<class UDRRAct> PrevActor;
+	DRRAct* PrevActor;
 
-	TObjectPtr<class UDRRAct> Actor;
+	DRRAct* Actor;
 
 	TObjectPtr<class UAnimMontage> ActionMontage;
 
@@ -87,6 +98,7 @@ private:
 	struct FTimerHandle ActTimerHandle;
 	struct FTimerHandle PrevActTimerHandle;
 	bool hasNextAct;
+	bool TryInput;
 
 		
 };

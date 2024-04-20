@@ -5,25 +5,21 @@
 #include "CoreMinimal.h"
 #include "DRRAct.h"
 
-#include "DRRShortShotAct.generated.h"
 /**
  * 
  */
-UCLASS()
-class DRR_API UDRRShortShotAct : public UDRRAct
+class DRR_API DRRShortShotAct : public DRRAct
 {
 public:
-	GENERATED_BODY()
 
 
-	UDRRShortShotAct() ;
+	DRRShortShotAct() ;
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual float GetNextTime() override;
 
 
 protected:
-	virtual void EndAct() override;
 	virtual bool AfterAct() override;
 	
 protected:

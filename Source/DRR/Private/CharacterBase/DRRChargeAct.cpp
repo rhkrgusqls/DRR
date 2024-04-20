@@ -4,27 +4,39 @@
 #include "CharacterBase/DRRChargeAct.h"
 #include "Interface/DRRActableInterface.h"
 
-UDRRChargeAct::UDRRChargeAct() :UDRRAct()
+DRRChargeAct::DRRChargeAct() :DRRAct()
 {
 }
 
 
-void UDRRChargeAct::ActRelease()
+void DRRChargeAct::ActRelease()
 {
 	AfterAct();
 }
 
-bool UDRRChargeAct::BeginAct()
+bool DRRChargeAct::BeginAct()
 {
-	return true;
+	curActCount = 0;
+	curFuncCount = 0;
+	return NextReset();
 }
 
-bool UDRRChargeAct::NextReset()
+bool DRRChargeAct::NextReset()
 {
-	return true;
+	switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+	case EActCycleType::End:
+	default:
+		return true;
+		break;
+	}
+
+
 }
 
-FName UDRRChargeAct::GetMontgeSectionName()
+FName DRRChargeAct::GetMontgeSectionName()
 {
 
 	FString CombineString = CurAct->MontageSectionPrefix;
@@ -33,12 +45,8 @@ FName UDRRChargeAct::GetMontgeSectionName()
 
 
 
-void UDRRChargeAct::EndAct()
-{
-	Super::EndAct();
-}
 
-bool UDRRChargeAct::AfterAct()
+bool DRRChargeAct::AfterAct()
 {
 	return false;
 }

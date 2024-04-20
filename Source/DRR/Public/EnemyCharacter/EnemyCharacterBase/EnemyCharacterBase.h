@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "CharacterBase/CharacterBase.h"
 #include "Perception/AiPerceptionComponent.h"
+#include "GameManager/EnemyManager.h"
 #include "EnemyCharacterBase.generated.h"
+
 
 /**
  * 
@@ -80,9 +82,14 @@ protected:
 
 	class UAISensingConfig_Sight* Sight;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Group")
+	int32 MonsterNum;
+
 	uint16 Level;
 
 	float difficulty=20;
+
+	AEnemyManager* Manager;
 
 public:
 	void OnPerception(AActor* Actor, FAIStimulus stimulus);
@@ -90,6 +97,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	AEnemyCharacterBase* ColleagueCharacter;
 	// UI Widget Component
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	//TObjectPtr<class UWidgetComponent> EnemyHPBar;

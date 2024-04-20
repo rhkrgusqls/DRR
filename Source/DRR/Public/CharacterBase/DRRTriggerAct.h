@@ -4,23 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "CharacterBase/DRRAct.h"
-#include "DRRTriggerAct.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class DRR_API UDRRTriggerAct : public UDRRAct
+class DRR_API DRRTriggerAct : public DRRAct
 {
-	GENERATED_BODY()
 
 public:
-	UDRRTriggerAct();
+	DRRTriggerAct();
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual FName GetMontgeSectionName() override;
 protected:
-	virtual void EndAct() override;
 	virtual bool AfterAct() override;
 
 protected:

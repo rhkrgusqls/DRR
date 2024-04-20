@@ -3,11 +3,11 @@
 
 #include "CharacterBase/DRRTriggerAct.h"
 
-UDRRTriggerAct::UDRRTriggerAct()
+DRRTriggerAct::DRRTriggerAct()
 {
 }
 
-bool UDRRTriggerAct::BeginAct()
+bool DRRTriggerAct::BeginAct()
 {
 
 	curActCount = 0;
@@ -16,23 +16,27 @@ bool UDRRTriggerAct::BeginAct()
 	return NextReset();
 }
 
-bool UDRRTriggerAct::NextReset()
+bool DRRTriggerAct::NextReset()
 {
-	bool result;
 	switch (CurAct->CycleType)
 	{
 	case EActCycleType::Reverse:
 	case EActCycleType::Constant:
 	case EActCycleType::End:
 	default:
-		result=curActCount< (CurAct->MaxActCount - 1)?true : false;
-
+		if (IsLastNumAct())
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 		break;
 	}
-	return result;
 }
 
-FName UDRRTriggerAct::GetMontgeSectionName()
+FName DRRTriggerAct::GetMontgeSectionName()
 {
 
 	FString CombineString = CurAct->MontageSectionPrefix + FString::FromInt(FMath::Clamp(curActCount + 1, 1, CurAct->MaxActCount));
@@ -40,12 +44,14 @@ FName UDRRTriggerAct::GetMontgeSectionName()
 	return FName(*CombineString);
 }
 
-void UDRRTriggerAct::EndAct()
-{
-	Super::EndAct();
-}
-
-bool UDRRTriggerAct::AfterAct()
-{
-	return false;
+bool DRRTriggerAct::AfterAct()
+{switch (CurAct->CycleType)
+	{
+	case EActCycleType::Reverse:
+	case EActCycleType::Constant:
+	case EActCycleType::End:
+	default:
+		return false;
+		break;
+	}
 }

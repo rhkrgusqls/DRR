@@ -4,25 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Interface/DRRActableInterface.h"
-#include "DRRAct.generated.h"
+
 DECLARE_DELEGATE(FActionDelegate);
 /**
  * 
  */
-UCLASS()
-class DRR_API UDRRAct :public UObject
+class DRR_API DRRAct 
 {
 public:
-	GENERATED_BODY()
 
-	UDRRAct();
+	DRRAct();
 	
 	void SetActor(class IDRRActableInterface* Target);
 	virtual void ActRelease();
 	const class UDA_ActData* GetCurAct();
 	//다음 행동을 위한 입력
 	virtual bool AfterAct();
-	~UDRRAct();
+	~DRRAct();
 	virtual float GetNextTime();
 	virtual uint8 NextAct();
 	//입력에 필요성에 따른 반환.행동 체크 후 다음 행동떄 입력이 필요할지 안할지에대한 반환.
@@ -38,10 +36,11 @@ public:
 	FOnActCheckConditionDelegate GetConditionCheckFunc() { return ConditionCheckFunc; }
 
 protected:
+	bool IsLastNumAct();
 	
 private:
 	void SetActs(class IDRRActableInterface* Target);
-	virtual void BeginDestroy() override;
+
 protected:
 
 	FOnActFuncDelegate BeginActFunc;

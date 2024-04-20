@@ -4,24 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "DRRAct.h"
-#include "DRRCastAct.generated.h"
 
 
 /**
  * 
  */
-UCLASS()
-class DRR_API UDRRCastAct : public UDRRAct
+class DRR_API DRRCastAct : public DRRAct
 {
 public:
-	GENERATED_BODY()
 
-	UDRRCastAct() ;
+	DRRCastAct() ;
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
 	virtual FName GetMontgeSectionName() override;
 protected:
-	virtual void EndAct() override;
 	virtual bool AfterAct() override;
 	
 protected:

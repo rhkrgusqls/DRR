@@ -137,12 +137,14 @@ APlayerCharacterBase::APlayerCharacterBase()
 	// UI Widget
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
 	ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
+	HUDWidget = CreateDefaultSubobject<UDRRUserWidget>(TEXT("HUDWidget"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
 	{
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
 		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		HUDWidget = Cast<UDRRUserWidget>(PlayerHUD);
 	}
 
 
@@ -158,6 +160,8 @@ void APlayerCharacterBase::BeginPlay()
 
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
+
+	SetupCharacterWidget(HUDWidget);
 }
 
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
@@ -165,7 +169,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 	if (InUserWidget)
 	{
 		InUserWidget->SetMaxHP(MaxHP);
-		//InUserWidget->UpdateHP(CurrentHP);
+		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
 	}
 }
