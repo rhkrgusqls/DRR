@@ -113,6 +113,11 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 
 }
 
+int32 AEnemyCharacterBase::GetEnemyCharacterNum()
+{
+	return MonsterNum;
+}
+
 void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
 {
 }
@@ -145,7 +150,7 @@ void AEnemyCharacterBase::BeginPlay()
 	}
 	if (Manager != nullptr)
 	{
-		MonsterNum = Manager->SetMonsterNum();
+		MonsterNum = Manager->SetMonsterNum(this);
 	}
 	
 }

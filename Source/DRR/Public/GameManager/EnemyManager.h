@@ -27,12 +27,14 @@ public:
 
 	void NullGroup(int32 MonsterNumber);
 
-	FVector GetPatrolPoint(AActor* PatrolUnit);
+	FVector GetPatrolPoint(int32 PatrolUnitNum);
 
-	int32 SetMonsterNum();
+	FVector FPatrolPoint;
 
-	TArray<AActor> PatrolPoint;
+	int32 SetMonsterNum(AActor* Self);
 
+	TArray<AActor*> PatrolPoint;
+	TArray<AActor*> ArrayPatrolUnit;
 	//MonsterNumber, GroupNumber
 	TMap<int32, int32> MonsterNum;
 };
