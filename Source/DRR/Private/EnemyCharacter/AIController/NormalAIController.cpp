@@ -3,6 +3,11 @@
 
 #include "EnemyCharacter/AIController/NormalAIController.h"
 #include "CharacterBase/CharacterBase.h"
+#include "DRR.h"
+#include "GameFramework/Actor.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
 #include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
@@ -10,11 +15,12 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BlackboardData.h"
+#include "GameManager/EnemyManager.h"
 
 void ANormalAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	Character = Cast<ACharacterBase>(GetPawn());
+	Character = Cast<AEnemyCharacterBase>(GetPawn());
 	if (Character)
 	{
 		Agent = Character;
@@ -73,12 +79,21 @@ ANormalAIController::ANormalAIController(const FObjectInitializer& ObjectInitial
 
 	Hearing->HearingRange = 800.0f;
 	Hearing->LoSHearingRange = 1200.0f;
+
+	Hearing->DetectionByAffiliation.bDetectNeutrals = true;
+	Hearing->SetMaxAge(10.0f);
+	//Sight->AutoSuccessRangeFromLastSeenLocation = 900.0f;
+	Hearing->DetectionByAffiliation.bDetectEnemies = true;
+	Hearing->DetectionByAffiliation.bDetectFriendlies = true;
+
 	AIPerceptionComponent->ConfigureSense(*Hearing);
 }
 
 //** AI Casted Player -kwakhyunbin
 void ANormalAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 {
+	
+	UWorld* World = GetWorld();
 	EnemyCharacter = Cast<APlayerCharacterBase>(Actor);
 	if (EnemyCharacter != nullptr)
 	{
@@ -87,10 +102,18 @@ void ANormalAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 		UE_LOG(LogTemp, Warning, TEXT("Casted:%s"), *EnemyCharacter->GetName());
 		return;
 	}
-	EnemyCharacter = Cast<AEnemyCharacterBase>(Actor);
-	if (EnemyCharacter != nullptr)
+	CastedCharacter = Cast<AEnemyCharacterBase>(Actor);
+	if (CastedCharacter != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Casted:%s"), *EnemyCharacter->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Casted:%s"), *CastedCharacter->GetName());
+		if (World != nullptr)
+		{
+			for (TActorIterator<AEnemyManager> It(World); It; ++It)
+			{
+				Manager = *It;
+				Manager->SetGroupNum(Character->GetEnemyCharacterNum(), CastedCharacter->GetEnemyCharacterNum());
+			}
+		}
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Caste"));

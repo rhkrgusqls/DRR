@@ -25,6 +25,7 @@ public:
 	AEnemyCharacterBase();
 	AEnemyCharacterBase(int Type);
 
+
 protected:
 
 	uint16 EnemyType;
@@ -96,6 +97,8 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	int32 GetEnemyCharacterNum();
 
 	AEnemyCharacterBase* ColleagueCharacter;
 	// UI Widget Component

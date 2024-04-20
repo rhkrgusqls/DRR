@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "AIController.h"
+#include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "NormalAIController.generated.h"
 
 /**
@@ -30,9 +31,14 @@ public:
 	void StopAI();
 
 	UPROPERTY(BlueprintReadWrite)
-	class ACharacterBase* Agent;
+	class AEnemyCharacterBase* Agent;
 
-	ACharacterBase* Character;
+	AEnemyCharacterBase* Character;
+
+	AEnemyManager* Manager;
+
+	AEnemyCharacterBase* CastedCharacter;
+
 	AActor* EnemyCharacter;
 
 	UFUNCTION()
@@ -52,6 +58,7 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<class UBehaviorTree> BTAsset;
+
 
 	UBlackboardComponent* BlackboardComp;
 };
