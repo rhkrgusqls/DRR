@@ -20,7 +20,6 @@ public:
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 	float ApplyDamage(float InDamage);
-	void UpdateHealthPercent(float HealthPercent);
 
 protected:
 	// Called when the game starts or when spawned
