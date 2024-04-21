@@ -113,8 +113,13 @@ FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
 	}
 	else
 	{
-		//SetPatrolPointSelf
-		FPatrolPoint = ArrayPatrolUnit[PatrolUnitNum - 1]->GetActorLocation();
+		FVector CurrentLocation = ArrayPatrolUnit[PatrolUnitNum - 1]->GetActorLocation();
+		FRotator CurrentRotation = ArrayPatrolUnit[PatrolUnitNum - 1]->GetActorRotation();
+		FVector Direction = FRotationMatrix(CurrentRotation).GetUnitAxis(EAxis::X);
+		float Distance = 200.0f;
+		FVector Offset = Direction * Distance;
+		FVector PatrolLocation = CurrentLocation + Offset;
+		FPatrolPoint = PatrolLocation;
 	}
 	return FPatrolPoint;
 }
