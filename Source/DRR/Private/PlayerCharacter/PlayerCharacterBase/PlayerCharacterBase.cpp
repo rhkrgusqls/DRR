@@ -167,6 +167,9 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxST(100.0f);
 	SetST(MaxST);
 
+	SetMaxGold(999999);
+	SetGold(0);
+
 	ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
 
@@ -195,6 +198,9 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->UpdateST(CurrentST);
 		OnSTChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateST);
 		
+		//InUserWidget->GetGoldAmount()->SetText(FText::AsNumber(CurrentGold));
+		InUserWidget->UpdateGold(CurrentGold);
+		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);
 	}
 }
 
@@ -230,6 +236,17 @@ void APlayerCharacterBase::SetST(float NewST)
 {
 	CurrentST = FMath::Clamp(NewST, 0.0f, 1000.0f);
 	OnSTChanged.Broadcast(CurrentST);
+}
+
+void APlayerCharacterBase::SetMaxGold(int NewGold)
+{
+	MaxGold = FMath::Clamp(NewGold, 0, 999999);
+}
+
+void APlayerCharacterBase::SetGold(int NewGold)
+{
+	CurrentGold = FMath::Clamp(NewGold, 0, 999999);
+	OnGoldChanged.Broadcast(CurrentGold);
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

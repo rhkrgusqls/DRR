@@ -35,6 +35,15 @@ void UDRRUserWidget::UpdateST(float NewST)
 	}
 }
 
+void UDRRUserWidget::UpdateGold(int32 NewGold)
+{
+	GoldText = FText::AsNumber(NewGold);
+	if (PlayerGold)
+	{
+		PlayerGold->SetText(GoldText);
+	}
+}
+
 void UDRRUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -43,6 +52,7 @@ void UDRRUserWidget::NativeConstruct()
 	PlayerHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerHPBar")));
 	PlayerMPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerMPBar")));
 	PlayerSTBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerSTBar")));
+	PlayerGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("CurrentGold")));
 
 	IDRRCharacterWidgetInterface* CharacterWidget = Cast<IDRRCharacterWidgetInterface>(OwningActor);
 	if (CharacterWidget)

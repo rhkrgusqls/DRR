@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "DRRUserWidget.generated.h"
 
 /**
@@ -19,9 +20,11 @@ public:
 	FORCEINLINE void SetMaxHP(float NewHP) { MaxHP = NewHP; }
 	FORCEINLINE void SetMaxMP(float NewMP) { MaxMP = NewMP; }
 	FORCEINLINE void SetMaxST(float NewST) { MaxST = NewST; }
+	FORCEINLINE UTextBlock* GetGoldAmount() { return PlayerGold; }
 	void UpdateHP(float NewHP);
 	void UpdateMP(float NewMP);
 	void UpdateST(float NewST);
+	void UpdateGold(int32 NewGold);
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -40,4 +43,8 @@ protected:
 	float MaxHP;
 	float MaxMP;
 	float MaxST;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
+	TObjectPtr<class UTextBlock> PlayerGold;
+	FText GoldText;
 };

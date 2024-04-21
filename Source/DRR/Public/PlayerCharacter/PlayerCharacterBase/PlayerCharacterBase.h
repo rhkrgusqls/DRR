@@ -37,6 +37,9 @@ protected:
 	void SetMaxST(float NewST);
 	void SetST(float NewST);
 
+	void SetMaxGold(int NewGold);
+	void SetGold(int NewGold);
+
 private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
@@ -104,10 +107,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetComponent> PlayerHUD;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	int32 MaxGold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	int32 CurrentGold;
 
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;
 	FOnMPChangedDelegate OnMPChanged;
 	FOnSTChangedDelegate OnSTChanged;
-
+	FOnGoldChangedDelegate OnGoldChanged;
 };
