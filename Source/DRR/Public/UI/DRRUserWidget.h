@@ -20,7 +20,7 @@ public:
 	FORCEINLINE void SetMaxHP(float NewHP) { MaxHP = NewHP; }
 	FORCEINLINE void SetMaxMP(float NewMP) { MaxMP = NewMP; }
 	FORCEINLINE void SetMaxST(float NewST) { MaxST = NewST; }
-	FORCEINLINE UTextBlock* GetGoldAmount() { return PlayerGold; }
+	FORCEINLINE UTextBlock* GetGoldAmount() { return CurrentGold; }
 	void UpdateHP(float NewHP);
 	void UpdateMP(float NewMP);
 	void UpdateST(float NewST);
@@ -45,6 +45,6 @@ protected:
 	float MaxST;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
-	TObjectPtr<class UTextBlock> PlayerGold;
+	TObjectPtr<class UTextBlock> CurrentGold;
 	FText GoldText;
 };

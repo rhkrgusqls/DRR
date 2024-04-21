@@ -198,7 +198,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->UpdateST(CurrentST);
 		OnSTChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateST);
 		
-		//InUserWidget->GetGoldAmount()->SetText(FText::AsNumber(CurrentGold));
+		InUserWidget->GetGoldAmount()->SetText(FText::AsNumber(CurrentGold));
 		InUserWidget->UpdateGold(CurrentGold);
 		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);
 	}
