@@ -29,6 +29,27 @@ ADRRMainGameMode::ADRRMainGameMode()
 		MainHUDWidgetClass = MainHUDWidgetRef.Class;
 	}
 
+	//ItemListWidget
+	static ConstructorHelpers::FClassFinder<UUserWidget> ItemListUIRef(TEXT("/Game/Asset/UI/Main/WBP_ItemList.WBP_ItemList_C"));
+	if (ItemListUIRef.Class)
+	{
+		ItemListWidgetClass = ItemListUIRef.Class;
+	}
+
+	//ItemCardWidget (used inside of ItemListWidget)
+	static ConstructorHelpers::FClassFinder<UUserWidget> ItemCardRef(TEXT("/Game/Asset/UI/Main/WBP_ItemListCard.WBP_ItemListCard_C"));
+	if (ItemCardRef.Class)
+	{
+		ItemCardWidgetClass = ItemCardRef.Class;
+	}
+
+	// Interact Alert
+	static ConstructorHelpers::FClassFinder<UUserWidget> InteractAlertRef(TEXT("/Game/Asset/UI/Main/WBP_InteractAlert.WBP_InteractAlert_C"));
+	if (InteractAlertRef.Class)
+	{
+		InteractAlertClass = InteractAlertRef.Class;
+	}
+
 	// ItemDataTable
 	static ConstructorHelpers::FObjectFinder <UDataTable> ItemDataRef(TEXT("/Game/Blueprints/Item/ItemData.ItemData"));
 	if (ItemDataRef.Object)
@@ -40,6 +61,8 @@ ADRRMainGameMode::ADRRMainGameMode()
 void ADRRMainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//MainHUD
 	if (IsValid(MainHUDWidgetClass))
 	{
 		MainHUDWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), MainHUDWidgetClass));
@@ -49,6 +72,45 @@ void ADRRMainGameMode::BeginPlay()
 			MainHUDWidget->AddToViewport();
 		}
 	}
+
+	//ItemList (It will be moved to other function() when GetItem() function or else is ready)
+	if (IsValid(ItemListWidgetClass))
+	{
+		ItemListWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), ItemListWidgetClass));
+
+		if (IsValid(ItemListWidget))
+		{
+			// add the function of Adding this UI after the event of Item Collect
+
+			ItemListWidget->AddToViewport();
+
+			// add the function of deleting this UI after 3 seconds
+			//GetWorldTimerManager().SetTimer(TimerHandle, ItemListWidget, ItemListWidget->SetVisibility(ESlateVisibility::Hidden), 3.0f, false);
+		}
+	}
+
+	//ItemCard (It will be moved to other function() when GetItem() function or else is ready)
+	if (IsValid(ItemCardWidgetClass))
+	{
+		ItemCardWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), ItemCardWidgetClass));
+
+		if (IsValid(ItemCardWidget))
+		{
+			// contents about (1) Getting the name of collected Item / (2) Getting the amount of collected Item
+		}
+	}
+
+	// Interact Alert (It will be moved to other function() soon)
+	if (IsValid(InteractAlertClass))
+	{
+		InteractAlert = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractAlertClass));
+
+		if (IsValid(InteractAlert))
+		{
+			// contents about (1) Getting the event of Interactive Item / (2) asdasf dsfg
+		}
+	}
+
 
 	if (ItemDataTable != nullptr)
 	{

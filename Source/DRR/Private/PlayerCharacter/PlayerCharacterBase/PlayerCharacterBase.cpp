@@ -200,7 +200,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		
 		InUserWidget->GetGoldAmount()->SetText(FText::AsNumber(CurrentGold));
 		InUserWidget->UpdateGold(CurrentGold);
-		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);
+		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);		<-AddUObject makes error and I don't know why
 	}
 }
 

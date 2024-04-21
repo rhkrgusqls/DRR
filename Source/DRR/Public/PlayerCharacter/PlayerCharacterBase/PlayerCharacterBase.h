@@ -19,7 +19,6 @@ public:
 	APlayerCharacterBase();
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
-	//float ApplyDamage(float InDamage);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -118,4 +117,5 @@ public:
 	FOnMPChangedDelegate OnMPChanged;
 	FOnSTChangedDelegate OnSTChanged;
 	FOnGoldChangedDelegate OnGoldChanged;
+	//FOnItemGetDelegate OnItemGet;
 };
