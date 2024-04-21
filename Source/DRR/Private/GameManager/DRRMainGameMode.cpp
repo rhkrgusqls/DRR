@@ -86,6 +86,7 @@ void ADRRMainGameMode::BeginPlay()
 
 			// add the function of deleting this UI after 3 seconds
 			//GetWorldTimerManager().SetTimer(TimerHandle, ItemListWidget, ItemListWidget->SetVisibility(ESlateVisibility::Hidden), 3.0f, false);
+			// Seems it need Other Function() to use it
 		}
 	}
 
@@ -107,7 +108,8 @@ void ADRRMainGameMode::BeginPlay()
 
 		if (IsValid(InteractAlert))
 		{
-			// contents about (1) Getting the event of Interactive Item / (2) asdasf dsfg
+			// contents about (1) Getting the event of Interactive Item on sight / (2) Getting the event of Interactive Item out of sight
+			// (1) InteractAlert-> SetVisibility(ESlateVisibility::Visible) / (2) InteractAlert-> SetVisibility(ESlateVisibility::Hidden)
 		}
 	}
 
