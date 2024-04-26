@@ -43,6 +43,16 @@ void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* Char
 
 
 
+void ACharacterBase::StartSprinting()
+{
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void ACharacterBase::StopSprinting()
+{
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

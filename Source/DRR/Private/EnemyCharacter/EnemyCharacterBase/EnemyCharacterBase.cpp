@@ -160,6 +160,15 @@ void AEnemyCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+void AEnemyCharacterBase::MeleeAttack(FVector TargetLocation)
+{
+}
+void AEnemyCharacterBase::MiddleAttack(FVector TargetLocation)
+{
+}
+void AEnemyCharacterBase::LongAttack(FVector TargetLocation)
+{
+}
 /*
 void AEnemyCharacterBase::SetHP(float NewHP)
 {

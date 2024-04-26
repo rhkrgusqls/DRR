@@ -24,7 +24,7 @@ EBTNodeResult::Type UCreateNoiseForMakeGroup::ExecuteTask(UBehaviorTreeComponent
 	{
 		//FAISenseID NoiseSenseID = UAISense_Hearing::ID;
 		FName Tag = ("Friend");
-		UAISense_Hearing::ReportNoiseEvent(GetWorld(), ControllingPawn->GetActorLocation(), 1.0f, ControllingPawn, 0.0f, Tag);
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), ControllingPawn->GetActorLocation(), 0.5f, ControllingPawn, 0.0f, Tag);
 		return EBTNodeResult::Succeeded;
 	}
 	

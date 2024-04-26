@@ -48,6 +48,15 @@ void AEnemyManager::NullGroup(int32 MonsterNumber)
 	}
 }
 
+bool AEnemyManager::IsLeader(int32 MonsterNumber)
+{
+	if (MonsterNumber == *MonsterNum.Find(MonsterNumber))
+	{
+		return true;
+	}
+	return false;
+}
+
 FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
 {
 	int32* MyGroup = MonsterNum.Find(PatrolUnitNum);
@@ -124,6 +133,7 @@ FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
 	return FPatrolPoint;
 }
 
+//Recive EnemyCharacterBase BeginPlay Event
 int32 AEnemyManager::SetMonsterNum(AActor* Self)
 {
 	int32 Temp = 1;

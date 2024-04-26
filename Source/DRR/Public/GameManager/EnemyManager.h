@@ -27,6 +27,8 @@ public:
 
 	void NullGroup(int32 MonsterNumber);
 
+	bool IsLeader(int32 MonsterNumber);
+
 	FVector GetPatrolPoint(int32 PatrolUnitNum);
 
 	FVector FPatrolPoint;

@@ -45,6 +45,13 @@ protected:
 	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly, Category = Act, Meta = (AllowPrivateAccess = "true"));
 	TObjectPtr<class UDRRActComponent> ActComponent;
 public:		
+	UFUNCTION()
+	void StartSprinting();
+
+	UFUNCTION()
+	void StopSprinting();
+
+
 	virtual void Tick(float DeltaTime) override;
 
 	void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
@@ -80,6 +87,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float physicsDef=1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float SprintSpeed = 200;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float WalkSpeed = 100;
 
 	//Not Use
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")

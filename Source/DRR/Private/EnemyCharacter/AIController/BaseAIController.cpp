@@ -25,7 +25,6 @@ void ABaseAIController::BeginPlay()
 	{
 		Agent = Character;
 	}
-
 }
 
 ABaseAIController::ABaseAIController(const FObjectInitializer& ObjectInitializer)
@@ -73,8 +72,21 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 	float LastPerceivedTime = GetWorld()->GetTimeSeconds();
 	UWorld* World = GetWorld();
 	EnemyCharacter = Cast<APlayerCharacterBase>(Actor);
-	if (EnemyCharacter != nullptr)
+	FName STag= Stimulus.Tag;
+
+	if (STag == TEXT("Noise"))
 	{
+		if (!BlackboardComp->GetValueAsBool("IsTargetLookOn"))
+		{
+			BlackboardComp->SetValueAsEnum("BattleState", 1);
+			Blackboard->SetValueAsVector("PatrolPoint", Stimulus.StimulusLocation);
+		}
+		return;
+	}
+	else
+	{
+		if (EnemyCharacter != nullptr)
+		{
 			// Check if the actor was perceived successfully
 			if (Stimulus.WasSuccessfullySensed())
 			{
@@ -90,7 +102,9 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 			{
 				GetWorld()->GetTimerManager().SetTimer(S, this, &ABaseAIController::RemoveTarget, 10.0f, false);
 			}
-		return;
+			return;
+		}
+
 	}
 	CastedCharacter = Cast<AEnemyCharacterBase>(Actor);
 	if (CastedCharacter != nullptr)
@@ -105,11 +119,6 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
 			}
 		}
 		return;
-	}
-	if (Actor == nullptr)
-	{
-		BlackboardComp->SetValueAsEnum("BattleState", 1);
-		Blackboard->SetValueAsVector("PatrolPoint",Stimulus.StimulusLocation);
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Caste"));
 }
@@ -135,6 +144,7 @@ void ABaseAIController::RunAI()
 	BlackboardComp->SetValueAsBool("IsTargetLookOn", false);
 	BlackboardComp->SetValueAsEnum("BattleState", 0);
 	BlackboardComp->SetValueAsVector("StartPoint", GetPawn()->GetActorLocation());
+
 }
 
 void ABaseAIController::StopAI()
@@ -152,4 +162,17 @@ void ABaseAIController::RemoveTarget()
 	BlackboardComp->ClearValue("Target");
 	BlackboardComp->SetValueAsEnum("BattleState", 0);
 	BlackboardComp->SetValueAsFloat("LastPerceivedTime", 0.0f);
+}
+
+void ABaseAIController::OnBlackboardValueChanged(FName KeyName)
+{
+	if (KeyName == TEXT("MyBlackboardKey"))
+	{
+		
+	}
+}
+
+void ABaseAIController::RestartBehaviorTree()
+{
+	RunBehaviorTree(BTAsset);
 }

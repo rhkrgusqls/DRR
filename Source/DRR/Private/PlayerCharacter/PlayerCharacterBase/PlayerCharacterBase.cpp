@@ -14,6 +14,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Perception/AISense.h"
+#include "Perception/AISense_Hearing.h"
+#include "Perception/AIPerceptionSystem.h"
 
 #include "Interface/DRRActableInterface.h"
 #include "CharacterBase/DRRActComponent.h"
@@ -306,6 +309,8 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+	FName Tag = ("Noise");
+	UAISense_Hearing::ReportNoiseEvent(GetWorld(), this->GetActorLocation(), 1.0f, this, 0.0f, Tag);
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 

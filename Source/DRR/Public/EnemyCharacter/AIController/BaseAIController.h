@@ -30,6 +30,9 @@ public:
 	void RunAI();
 	void StopAI();
 	void RemoveTarget();
+	void OnBlackboardValueChanged(FName KeyName);
+	void RestartBehaviorTree();
+
 	UPROPERTY(BlueprintReadWrite)
 	class AEnemyCharacterBase* Agent;
 

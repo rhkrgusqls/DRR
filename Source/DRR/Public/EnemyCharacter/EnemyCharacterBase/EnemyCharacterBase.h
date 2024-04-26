@@ -94,9 +94,16 @@ protected:
 
 public:
 	void OnPerception(AActor* Actor, FAIStimulus stimulus);
+
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void MeleeAttack(FVector TargetLocation);
+
+	virtual void MiddleAttack(FVector TargetLocation);
+
+	virtual void LongAttack(FVector TargetLocation);
 
 	int32 GetEnemyCharacterNum();
 
