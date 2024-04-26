@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterBase/DRRAct.h"
+#include "CharacterBase/BattleAct/DRRAct.h"
 #include "Interface/DRRActableInterface.h"
 #include "Utilities/UtilityList.h"
 

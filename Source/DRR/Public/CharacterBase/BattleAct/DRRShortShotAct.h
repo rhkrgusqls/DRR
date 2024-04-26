@@ -3,23 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DRRAct.h"
+#include "CharacterBase/BattleAct/DRRAct.h"
 
 /**
  * 
  */
-class DRR_API DRRComboAct : public DRRAct
+class DRR_API DRRShortShotAct : public DRRAct
 {
 public:
 
-	DRRComboAct();
+
+	DRRShortShotAct() ;
 	virtual bool BeginAct() override;
 	virtual bool NextReset() override;
-	virtual FName GetMontgeSectionName() override;
+	virtual float GetNextTime() override;
+
+
 protected:
 	virtual bool AfterAct() override;
 	
 protected:
+
 
 };
 

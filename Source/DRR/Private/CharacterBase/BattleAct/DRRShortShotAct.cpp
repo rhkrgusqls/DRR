@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterBase/DRRShortShotAct.h"
+#include "CharacterBase/BattleAct/DRRShortShotAct.h"
 #include "Interface/DRRActableInterface.h"
 
 DRRShortShotAct::DRRShortShotAct() :DRRAct()

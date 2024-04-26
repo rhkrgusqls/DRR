@@ -4,7 +4,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Interface/DRRActableInterface.h"
-#include "DRRAct.h"
+
+#include "BattleAct/DRRAct.h"
 #include "DataAsset/DA_ActData.h"
 #include "DRRActComponent.generated.h"
 
