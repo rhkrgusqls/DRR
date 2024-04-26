@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Effect/DRREffectUnitBase.h"
 #include "DRRPassiveActComponent.generated.h"
 
 
@@ -23,8 +24,27 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void AutoUpdate(float DeltaTime);
+	void AutoUse();
+	void AttackUse();
+	void DamagedUse(TArray<AActor*> Victims);
+	void HittedUse(AActor* Attacker);
+	void AddEffect(class ADRREffectUnitBase* Effect);
+	bool RemoveEffect(class ADRREffectUnitBase* Effect);
+private:
+	bool CheckDuplicate(class ADRREffectUnitBase* Effect);
+
+	void CreateAuto(class ADRREffectUnitBase* Effect);
+	void CreateHit(class ADRREffectUnitBase* Effect);
+	void CreateDamage(class ADRREffectUnitBase* Effect);
+	void CreateAttack(class ADRREffectUnitBase* Effect);
 
 
 protected:
+	TArray<class DRROnAutoEffect*>   AutoEffects;
+	TArray<class DRROnHitEffect*>    HittedEffects;
+	TArray<class DRROnDamageEffect*> DamagedEffects;
+	TArray<class DRROnAttackEffect*> AttackEffects;
+
 		
 };

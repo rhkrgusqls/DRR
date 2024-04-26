@@ -2,8 +2,9 @@
 
 
 #include "CharacterBase/Effect/DRROnHitEffect.h"
+#include "Effect/DRREffectUnitBase.h"
 
-DRROnHitEffect::DRROnHitEffect()
+DRROnHitEffect::DRROnHitEffect(ADRREffectUnitBase* Effect) :DRREffect(Effect)
 {
 }
 

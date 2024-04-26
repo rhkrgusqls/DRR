@@ -9,7 +9,6 @@ ANormalMonster::ANormalMonster() : AEnemyCharacterBase(0)
 	AIControllerClass = ANormalAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
-//Animation Set
 ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(0)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.

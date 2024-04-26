@@ -2,11 +2,14 @@
 
 
 #include "CharacterBase/Effect/DRROnAttackEffect.h"
+#include "Effect/DRREffectUnitBase.h"
 
-DRROnAttackEffect::DRROnAttackEffect()
+DRROnAttackEffect::DRROnAttackEffect(class ADRREffectUnitBase* Effect) :DRREffect(Effect)
 {
 }
 
 DRROnAttackEffect::~DRROnAttackEffect()
 {
 }
+
+

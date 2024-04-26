@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-#include "CharacterBase/Effect/DRREffect.h"
+#include "DRREffect.h"
 
 /**
  * 
@@ -12,6 +12,12 @@
 class DRR_API DRROnAttackEffect : public DRREffect
 {
 public:
-	DRROnAttackEffect();
+	DRROnAttackEffect(class ADRREffectUnitBase* Effect);
 	~DRROnAttackEffect();
+
+
+public:
+
+
+
 };

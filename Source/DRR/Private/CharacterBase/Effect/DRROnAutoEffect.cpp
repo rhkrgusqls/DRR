@@ -2,11 +2,14 @@
 
 
 #include "CharacterBase/Effect/DRROnAutoEffect.h"
+#include "Effect/DRREffectUnitBase.h"
 
-DRROnAutoEffect::DRROnAutoEffect()
+DRROnAutoEffect::DRROnAutoEffect(class ADRREffectUnitBase* Effect) :DRREffect(Effect)
 {
+
 }
 
 DRROnAutoEffect::~DRROnAutoEffect()
 {
+
 }

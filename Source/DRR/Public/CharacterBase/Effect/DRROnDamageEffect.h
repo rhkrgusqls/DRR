@@ -12,6 +12,6 @@
 class DRR_API DRROnDamageEffect : public DRREffect
 {
 public:
-	DRROnDamageEffect();
+	DRROnDamageEffect(class ADRREffectUnitBase* Effect);
 	~DRROnDamageEffect();
 };

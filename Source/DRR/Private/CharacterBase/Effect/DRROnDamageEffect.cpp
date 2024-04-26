@@ -2,8 +2,9 @@
 
 
 #include "CharacterBase/Effect/DRROnDamageEffect.h"
+#include "Effect/DRREffectUnitBase.h"
 
-DRROnDamageEffect::DRROnDamageEffect()
+DRROnDamageEffect::DRROnDamageEffect(class ADRREffectUnitBase* Effect):DRREffect(Effect)
 {
 }
 

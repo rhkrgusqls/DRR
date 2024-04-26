@@ -12,6 +12,8 @@
 class DRR_API DRROnAutoEffect : public DRREffect
 {
 public:
-	DRROnAutoEffect();
+	DRROnAutoEffect(class ADRREffectUnitBase* Effect);
 	~DRROnAutoEffect();
+
+public:
 };
