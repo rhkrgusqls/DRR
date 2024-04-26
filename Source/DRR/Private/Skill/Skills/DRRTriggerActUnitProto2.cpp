@@ -4,7 +4,7 @@
 #include "Skill/Skills/DRRTriggerActUnitProto2.h"
 #include "Utilities/UtilityList.h"
 
-UDRRTriggerActUnitProto2::UDRRTriggerActUnitProto2()
+ADRRTriggerActUnitProto2::ADRRTriggerActUnitProto2()
 {
 
 	ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_TriggerActData'/Game/Blueprints/Weapon/Weapon4/DA_CastWeaponTriggerAct.DA_CastWeaponTriggerAct'"));
@@ -16,27 +16,27 @@ UDRRTriggerActUnitProto2::UDRRTriggerActUnitProto2()
 
 }
 
-TArray<FOnActFuncDelegate> UDRRTriggerActUnitProto2::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRTriggerActUnitProto2::GetActFunc()
 {
 	TArray<FOnActFuncDelegate> arr;
 
 	FOnActFuncDelegate temp;
-	temp.BindUObject(this, &UDRRTriggerActUnitProto2::Func1);
+	temp.BindUObject(this, &ADRRTriggerActUnitProto2::Func1);
 	arr.Add(temp);
 	return arr;
 }
 
-void UDRRTriggerActUnitProto2::BeginFunc(AActor* Owner)
+void ADRRTriggerActUnitProto2::BeginFunc(AActor* User)
 {
 
 }
 
-void UDRRTriggerActUnitProto2::EndFunc(AActor* Owner)
+void ADRRTriggerActUnitProto2::EndFunc(AActor* User)
 {
 
 }
 
-void UDRRTriggerActUnitProto2::Func1(AActor* Owner)
+void ADRRTriggerActUnitProto2::Func1(AActor* User)
 {
 	CLog::Log("TriggerFunc");
 }

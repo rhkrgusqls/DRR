@@ -32,6 +32,7 @@ public:
 	virtual void ActFunc() override;
 
 	class UDRRActComponent* GetActComponent() const { return ActComponent; }
+	class UDRRPassiveActComponent* GetPassiveComponent() const { return PassiveComponent; }
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
@@ -44,6 +45,8 @@ protected:
 	
 	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly, Category = Act, Meta = (AllowPrivateAccess = "true"));
 	TObjectPtr<class UDRRActComponent> ActComponent;
+	UPROPERTY(VisibleAnyWhere, BlueprintReadOnly, Category = Act, Meta = (AllowPrivateAccess = "true"));
+	TObjectPtr<class UDRRPassiveActComponent> PassiveComponent;
 public:		
 	UFUNCTION()
 	void StartSprinting();

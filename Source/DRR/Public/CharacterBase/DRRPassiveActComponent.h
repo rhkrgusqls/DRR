@@ -29,10 +29,11 @@ public:
 	void AttackUse();
 	void DamagedUse(TArray<AActor*> Victims);
 	void HittedUse(AActor* Attacker);
-	void AddEffect(class ADRREffectUnitBase* Effect);
+	UFUNCTION(BlueprintCallable)
+	void AddEffect(TSubclassOf<class ADRREffectUnitBase> Effect,AActor* User);
 	bool RemoveEffect(class ADRREffectUnitBase* Effect);
 private:
-	bool CheckDuplicate(class ADRREffectUnitBase* Effect);
+	bool CheckDuplicate(TSubclassOf<class ADRREffectUnitBase> Effect, AActor* User);
 
 	void CreateAuto(class ADRREffectUnitBase* Effect);
 	void CreateHit(class ADRREffectUnitBase* Effect);

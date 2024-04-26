@@ -70,5 +70,5 @@ public:
 	uint8 HasAnotherAct : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
-	TSubclassOf<class UDRRActUnitBase> NextActUnit;
+	TSubclassOf<class ADRRActUnitBase> NextActUnit;
 };

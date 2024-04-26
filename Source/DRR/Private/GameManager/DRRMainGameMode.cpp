@@ -9,7 +9,7 @@
 ADRRMainGameMode::ADRRMainGameMode()
 {
 	// Default Pawn
-	static ConstructorHelpers::FClassFinder<APawn> PlayerCharRef(TEXT("/Script/DRR.PlayerCharacterBase"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerCharRef(TEXT("/Game/Blueprints/Player/Test/BP_PlayerCharacterBase.BP_PlayerCharacterBase_C"));
 	if (PlayerCharRef.Class)
 	{
 		DefaultPawnClass = PlayerCharRef.Class;

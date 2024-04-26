@@ -36,12 +36,14 @@ void DRREffect::BeginEffect(AActor* Owner)
 void DRREffect::EndEffect(AActor* Owner)
 {
 	EffectActor->EndFunc(Owner);
-
+	EffectActor->RemoveEffect();
+	delete(this);
 }
 
 void DRREffect::DelayReset()
 {
 	CurDelay=GetEffectData()->PassiveDelay;
+	UsageCount--;
 }
 
 

@@ -8,13 +8,13 @@
 #include "DRRActUnitBase.generated.h"
 
 UCLASS()
-class DRR_API UDRRActUnitBase : public UObject, public IDRRActableInterface
+class DRR_API ADRRActUnitBase : public AActor, public IDRRActableInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	UDRRActUnitBase();
+	ADRRActUnitBase();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
 	virtual FOnActFuncDelegate GetBeginActFunc() override;
@@ -24,11 +24,11 @@ public:
 	virtual FOnActCheckConditionDelegate GetAchieveCondition() override;
 
 protected:
-	virtual void BeginFunc(AActor* Owner);
-	virtual void EndFunc(AActor* Owner);
+	virtual void BeginFunc(AActor* User);
+	virtual void EndFunc(AActor* User);
 
 	UFUNCTION()
-	virtual bool IsAchieveCondition(AActor* Owner);
+	virtual bool IsAchieveCondition(AActor* User);
 
 public:	
 

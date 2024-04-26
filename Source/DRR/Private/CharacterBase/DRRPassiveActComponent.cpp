@@ -8,7 +8,7 @@
 #include "CharacterBase/Effect/DRROnHitEffect.h"
 #include "Effect/DRREffectUnitBase.h"
 #include "DataAsset/DA_EffectData.h"
-
+#include "Utilities/UtilityList.h"
 // Sets default values for this component's properties
 UDRRPassiveActComponent::UDRRPassiveActComponent()
 {
@@ -36,62 +36,63 @@ void UDRRPassiveActComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	AutoUpdate(DeltaTime);
+	AutoUse();
 
 }
 
 void UDRRPassiveActComponent::AutoUpdate(float DeltaTime)
 {
-	for (auto i : AutoEffects)
+	for (int i = 0; i < AutoEffects.Num(); i++)
 	{
-		i->Tick(DeltaTime);
-		if (i->CheckExpire())
+		AutoEffects[i]->Tick(DeltaTime);
+		if (AutoEffects[i]->CheckExpire())
 		{
-			i->EndEffect(GetOwner());
-			AutoEffects.Remove(i);
-		}
-
-	}
-	for (auto i : HittedEffects)
-	{
-		i->Tick(DeltaTime);
-		if (i->CheckExpire())
-		{
-			i->EndEffect(GetOwner());
-			HittedEffects.Remove(i);
+			AutoEffects[i]->EndEffect(GetOwner());
+			AutoEffects.RemoveAt(i);
 		}
 	}
-	for (auto i : DamagedEffects)
+	for (int i = 0; i < HittedEffects.Num(); i++)
 	{
-		i->Tick(DeltaTime);
-		if (i->CheckExpire())
+		HittedEffects[i]->Tick(DeltaTime);
+		if (HittedEffects[i]->CheckExpire())
 		{
-			i->EndEffect(GetOwner());
-			DamagedEffects.Remove(i);
+			HittedEffects[i]->EndEffect(GetOwner());
+			HittedEffects.RemoveAt(i);
 		}
 	}
-	for (auto i : AttackEffects)
+	for (int i = 0; i < DamagedEffects.Num(); i++)
 	{
-		i->Tick(DeltaTime);
-		if (i->CheckExpire())
+		DamagedEffects[i]->Tick(DeltaTime);
+		if (DamagedEffects[i]->CheckExpire())
 		{
-			i->EndEffect(GetOwner());
-			AttackEffects.Remove(i);
+			DamagedEffects[i]->EndEffect(GetOwner());
+			DamagedEffects.RemoveAt(i);
+		}
+	}
+	for (int i = 0; i < AttackEffects.Num(); i++)
+	{
+		AttackEffects[i]->Tick(DeltaTime);
+		if (AttackEffects[i]->CheckExpire())
+		{
+			AttackEffects[i]->EndEffect(GetOwner());
+			AttackEffects.RemoveAt(i);
 		}
 	}
 }
 
 void UDRRPassiveActComponent::AutoUse()
 {
-	for (auto i : AutoEffects)
+	for (int i = 0; i < AutoEffects.Num(); i++)
 	{
-		
-		if (i->CheckReadyToUse())
+		if (AutoEffects[i]->CheckReadyToUse())
 		{
-			i->UseEffect(GetOwner());
-			i->DelayReset();
+			CLog::Log("Use");
+			CLog::Log(i);
+			AutoEffects[i]->UseEffect(GetOwner());
+			AutoEffects[i]->DelayReset();
 		}
-	
 
+		
 	}
 }
 
@@ -140,30 +141,37 @@ void UDRRPassiveActComponent::HittedUse(AActor* Attacker)
 	}
 }
 
-void UDRRPassiveActComponent::AddEffect(ADRREffectUnitBase* Effect)
+void UDRRPassiveActComponent::AddEffect(TSubclassOf<class ADRREffectUnitBase> Effect, AActor* User)
 {
 
 		
-	if (CheckDuplicate(Effect))
+	if (CheckDuplicate(Effect,User))
 	{
-		Effect->RemoveEffect();
 		return;
 	}
-	Effect->SetTarget(GetOwner());
-	switch (Effect->GetEffectData()->UseType)
+	ADRREffectUnitBase* Default = Cast<ADRREffectUnitBase>(Effect->GetDefaultObject());
+
+	ADRREffectUnitBase* Temp = NewObject<ADRREffectUnitBase>();
+	Temp->SetData(Default->GetEffectData());
+	Temp->SetUser(User);
+	Temp->SetTarget(GetOwner());
+	switch (Temp->GetEffectData()->UseType)
 	{
 	case EPassiveType::Hit :
-		CreateHit(Effect);
-
+		CreateHit(Temp);
+		CLog::Log("CreateHit");
 		break;
 	case EPassiveType::Attack:
-		CreateAttack(Effect);
+		CreateAttack(Temp);
+		CLog::Log("CreateAttack");
 		break;
 	case EPassiveType::Auto:
-		CreateAuto(Effect);
+		CreateAuto(Temp);
+		CLog::Log("CreateAuto");
 		break;
 	case EPassiveType::Damage:
-		CreateDamage(Effect);
+		CreateDamage(Temp);
+		CLog::Log("CreateDamage");
 
 		break;
 	default:
@@ -179,16 +187,17 @@ bool UDRRPassiveActComponent::RemoveEffect(ADRREffectUnitBase* Effect)
 	return false;
 }
 
-bool UDRRPassiveActComponent::CheckDuplicate(ADRREffectUnitBase* Effect)
+bool UDRRPassiveActComponent::CheckDuplicate(TSubclassOf<class ADRREffectUnitBase> Effect, AActor* User)
 {
-	switch (Effect->GetEffectData()->UseType)
+	ADRREffectUnitBase* Temp = Cast<ADRREffectUnitBase>(Effect->GetDefaultObject());
+	switch (Temp->GetEffectData()->UseType)
 	{
 	case EPassiveType::Hit:
 		for (auto i : HittedEffects)
 		{
-			if (i->GetEffectData()->PassiveName.Equals(Effect->GetEffectData()->PassiveName)&&i->GetUser()==Effect->GetUser())
+			if (i->GetEffectData()->PassiveName.Equals(Temp->GetEffectData()->PassiveName)&&i->GetUser()== User)
 			{
-				i->ExpireReset(Effect);
+				i->ExpireReset(Temp);
 			
 				return true;
 			}
@@ -199,9 +208,9 @@ bool UDRRPassiveActComponent::CheckDuplicate(ADRREffectUnitBase* Effect)
 	case EPassiveType::Attack:
 		for (auto i : AttackEffects)
 		{
-			if (i->GetEffectData()->PassiveName.Equals(Effect->GetEffectData()->PassiveName) && i->GetUser() == Effect->GetUser())
+			if (i->GetEffectData()->PassiveName.Equals(Temp->GetEffectData()->PassiveName) && i->GetUser() == User)
 			{
-				i->ExpireReset(Effect);
+				i->ExpireReset(Temp);
 				return true;
 			}
 
@@ -210,9 +219,9 @@ bool UDRRPassiveActComponent::CheckDuplicate(ADRREffectUnitBase* Effect)
 	case EPassiveType::Auto:
 		for (auto i : AutoEffects)
 		{
-			if (i->GetEffectData()->PassiveName.Equals(Effect->GetEffectData()->PassiveName) && i->GetUser() == Effect->GetUser())
+			if (i->GetEffectData()->PassiveName.Equals(Temp->GetEffectData()->PassiveName) && i->GetUser() == User)
 			{
-				i->ExpireReset(Effect);
+				i->ExpireReset(Temp);
 				return true;
 			}
 
@@ -221,9 +230,9 @@ bool UDRRPassiveActComponent::CheckDuplicate(ADRREffectUnitBase* Effect)
 	case EPassiveType::Damage:
 		for (auto i : DamagedEffects)
 		{
-			if (i->GetEffectData()->PassiveName.Equals(Effect->GetEffectData()->PassiveName) && i->GetUser() == Effect->GetUser())
+			if (i->GetEffectData()->PassiveName.Equals(Temp->GetEffectData()->PassiveName) && i->GetUser() == User)
 			{
-				i->ExpireReset(Effect);
+				i->ExpireReset(Temp);
 				return true;
 			}
 
@@ -238,21 +247,22 @@ bool UDRRPassiveActComponent::CheckDuplicate(ADRREffectUnitBase* Effect)
 	return false;
 }
 
-void UDRRPassiveActComponent::CreateAuto(ADRREffectUnitBase* Effect)
+void UDRRPassiveActComponent::CreateAuto(class ADRREffectUnitBase* Effect)
 {
+
 	DRROnAutoEffect* OnAutoTemp = new DRROnAutoEffect(Effect);
 	AutoEffects.Add(OnAutoTemp);
 	OnAutoTemp->BeginEffect(GetOwner());
 }
 
-void UDRRPassiveActComponent::CreateHit(ADRREffectUnitBase* Effect)
+void UDRRPassiveActComponent::CreateHit(class ADRREffectUnitBase* Effect)
 {
 	DRROnHitEffect* OnHitTemp = new DRROnHitEffect(Effect);
 	HittedEffects.Add(OnHitTemp);
 	OnHitTemp->BeginEffect(GetOwner());
 }
 
-void UDRRPassiveActComponent::CreateDamage(ADRREffectUnitBase* Effect)
+void UDRRPassiveActComponent::CreateDamage(class ADRREffectUnitBase* Effect)
 {
 	DRROnDamageEffect* OnDamageTemp = new DRROnDamageEffect(Effect);
 	DamagedEffects.Add(OnDamageTemp);
@@ -260,7 +270,7 @@ void UDRRPassiveActComponent::CreateDamage(ADRREffectUnitBase* Effect)
 
 }
 
-void UDRRPassiveActComponent::CreateAttack(ADRREffectUnitBase* Effect)
+void UDRRPassiveActComponent::CreateAttack(class ADRREffectUnitBase* Effect)
 {
 	DRROnAttackEffect* OnAttackTemp = new DRROnAttackEffect(Effect);
 	AttackEffects.Add(OnAttackTemp);

@@ -10,21 +10,21 @@
  * 
  */
 UCLASS()
-class DRR_API UDRRShortShotActUnitProto : public UDRRActUnitBase
+class DRR_API ADRRShortShotActUnitProto : public ADRRActUnitBase
 {
 	GENERATED_BODY()
 public:
-	UDRRShortShotActUnitProto();
+	ADRRShortShotActUnitProto();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
 
 
 
 protected:
-	virtual void BeginFunc(AActor* Owner) override;
-	virtual void EndFunc(AActor* Owner) override;
+	virtual void BeginFunc(AActor* User) override;
+	virtual void EndFunc(AActor* User) override;
 
 private:
-	void Func1(AActor* Owner);
+	void Func1(AActor* User);
 
 };

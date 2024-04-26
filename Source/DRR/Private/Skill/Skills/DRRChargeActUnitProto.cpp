@@ -10,7 +10,7 @@
 #include "Utilities/UtilityList.h"
 
 
-UDRRChargeActUnitProto::UDRRChargeActUnitProto()
+ADRRChargeActUnitProto::ADRRChargeActUnitProto()
 {
     
     ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_ChargeActData'/Game/Blueprints/Weapon/Weapon3/DA_ChargeWeaponAct1.DA_ChargeWeaponAct1'"));
@@ -23,46 +23,46 @@ UDRRChargeActUnitProto::UDRRChargeActUnitProto()
       
 }
 
-TArray<FOnActFuncDelegate> UDRRChargeActUnitProto::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRChargeActUnitProto::GetActFunc()
 {
     TArray<FOnActFuncDelegate> arr;
 
     FOnActFuncDelegate temp;
-    temp.BindUObject(this, &UDRRChargeActUnitProto::Func1);
+    temp.BindUObject(this, &ADRRChargeActUnitProto::Func1);
     arr.Add(temp);
-    temp.BindUObject(this, &UDRRChargeActUnitProto::Func2);
+    temp.BindUObject(this, &ADRRChargeActUnitProto::Func2);
     arr.Add(temp);
-    temp.BindUObject(this, &UDRRChargeActUnitProto::Func3);
+    temp.BindUObject(this, &ADRRChargeActUnitProto::Func3);
     arr.Add(temp);
     return arr;
 }
 
-void UDRRChargeActUnitProto::BeginFunc(AActor* Owner)
+void ADRRChargeActUnitProto::BeginFunc(AActor* User)
 {
 }
 
-void UDRRChargeActUnitProto::EndFunc(AActor* Owner)
+void ADRRChargeActUnitProto::EndFunc(AActor* User)
 {
     
 }
 
-bool UDRRChargeActUnitProto::IsAchieveCondition(AActor* Owner)
+bool ADRRChargeActUnitProto::IsAchieveCondition(AActor* User)
 {
 
     return true;
 }
 
-void UDRRChargeActUnitProto::Func1(AActor* Owner)
+void ADRRChargeActUnitProto::Func1(AActor* User)
 {
     CLog::Log("ChargeFunc1");
 }
 
-void UDRRChargeActUnitProto::Func2(AActor* Owner)
+void ADRRChargeActUnitProto::Func2(AActor* User)
 {
     CLog::Log("ChargeFunc2");
 }
 
-void UDRRChargeActUnitProto::Func3(AActor* Owner)
+void ADRRChargeActUnitProto::Func3(AActor* User)
 {
     CLog::Log("ChargeFunc3");
 }

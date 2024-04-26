@@ -4,7 +4,7 @@
 #include "Skill/Skills/DRRTriggerActUnitProto.h"
 #include "Utilities/UtilityList.h"
 
-UDRRTriggerActUnitProto::UDRRTriggerActUnitProto()
+ADRRTriggerActUnitProto::ADRRTriggerActUnitProto()
 {
 
 	ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_TriggerActData'/Game/Blueprints/Weapon/Weapon3/DA_ChargeWeaponTriggerAct.DA_ChargeWeaponTriggerAct'"));
@@ -16,27 +16,27 @@ UDRRTriggerActUnitProto::UDRRTriggerActUnitProto()
 
 }
 
-TArray<FOnActFuncDelegate> UDRRTriggerActUnitProto::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRTriggerActUnitProto::GetActFunc()
 {
 	TArray<FOnActFuncDelegate> arr;
 
 	FOnActFuncDelegate temp;
-	temp.BindUObject(this, &UDRRTriggerActUnitProto::Func1);
+	temp.BindUObject(this, &ADRRTriggerActUnitProto::Func1);
 	arr.Add(temp);
 	return arr;
 }
 
-void UDRRTriggerActUnitProto::BeginFunc(AActor* Owner)
+void ADRRTriggerActUnitProto::BeginFunc(AActor* User)
 {
 
 }
 
-void UDRRTriggerActUnitProto::EndFunc(AActor* Owner)
+void ADRRTriggerActUnitProto::EndFunc(AActor* User)
 {
 
 }
 
-void UDRRTriggerActUnitProto::Func1(AActor* Owner)
+void ADRRTriggerActUnitProto::Func1(AActor* User)
 {
 	CLog::Log("TriggerFunc");
 }

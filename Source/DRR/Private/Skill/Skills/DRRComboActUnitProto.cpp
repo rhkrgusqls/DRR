@@ -4,7 +4,7 @@
 #include "Skill/Skills/DRRComboActUnitProto.h"
 #include "Utilities/CLog.h"
 
-UDRRComboActUnitProto::UDRRComboActUnitProto()
+ADRRComboActUnitProto::ADRRComboActUnitProto()
 {
 	ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_ComboActData'/Game/Blueprints/Weapon/Weapon2/DA_ComboWeaponAct1.DA_ComboWeaponAct1'"));
 	if (DataAssetRef.Object)
@@ -15,43 +15,43 @@ UDRRComboActUnitProto::UDRRComboActUnitProto()
 	CLog::Log(ActData != nullptr);
 }
 
-TArray<FOnActFuncDelegate> UDRRComboActUnitProto::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRComboActUnitProto::GetActFunc()
 {
 
 	TArray<FOnActFuncDelegate> arr;
 
 	
 	FOnActFuncDelegate temp;
-	temp.BindUObject(this, &UDRRComboActUnitProto::Func1);
+	temp.BindUObject(this, &ADRRComboActUnitProto::Func1);
 	arr.Add(temp);
-	temp.BindUObject(this, &UDRRComboActUnitProto::Func2);
+	temp.BindUObject(this, &ADRRComboActUnitProto::Func2);
 	arr.Add(temp);
-	temp.BindUObject(this, &UDRRComboActUnitProto::Func3);
+	temp.BindUObject(this, &ADRRComboActUnitProto::Func3);
 	arr.Add(temp);
 	return arr;
 }
 
-void UDRRComboActUnitProto::BeginFunc(AActor* Owner)
+void ADRRComboActUnitProto::BeginFunc(AActor* User)
 {
 	CLog::Log("ActBeginFunc");
 }
 
-void UDRRComboActUnitProto::EndFunc(AActor* Owner)
+void ADRRComboActUnitProto::EndFunc(AActor* User)
 {
 	CLog::Log("ActEndFunc");
 }
 
-void UDRRComboActUnitProto::Func1(AActor* Owner)
+void ADRRComboActUnitProto::Func1(AActor* User)
 {
 	CLog::Log("ComboFunc1");
 }
 
-void UDRRComboActUnitProto::Func2(AActor* Owner)
+void ADRRComboActUnitProto::Func2(AActor* User)
 {
 	CLog::Log("ComboFunc2");
 }
 
-void UDRRComboActUnitProto::Func3(AActor* Owner)
+void ADRRComboActUnitProto::Func3(AActor* User)
 {
 	CLog::Log("ComboFunc3");
 }

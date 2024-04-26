@@ -9,7 +9,7 @@
 
 #include "Utilities/UtilityList.h"
 
-UDRRCastActUnitProto::UDRRCastActUnitProto()
+ADRRCastActUnitProto::ADRRCastActUnitProto()
 {
     
     ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_CastActData'/Game/Blueprints/Weapon/Weapon4/DA_CastWeaponAct1.DA_CastWeaponAct1'"));
@@ -19,20 +19,20 @@ UDRRCastActUnitProto::UDRRCastActUnitProto()
     }
 }
 
-TArray<FOnActFuncDelegate> UDRRCastActUnitProto::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRCastActUnitProto::GetActFunc()
 {
     return TArray<FOnActFuncDelegate>();
 }
 
-bool UDRRCastActUnitProto::IsAchieveCondition(AActor* Owner)
+bool ADRRCastActUnitProto::IsAchieveCondition(AActor* User)
 {
     return true;
 }
 
-void UDRRCastActUnitProto::BeginFunc(AActor* Owner)
+void ADRRCastActUnitProto::BeginFunc(AActor* User)
 {
 }
 
-void UDRRCastActUnitProto::EndFunc(AActor* Owner)
+void ADRRCastActUnitProto::EndFunc(AActor* User)
 {
 }

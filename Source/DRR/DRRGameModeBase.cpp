@@ -8,7 +8,7 @@ ADRRGameModeBase::ADRRGameModeBase()
 	//Super::AGameModeBase();
 	// 
 	//DefaultPawnClass Setting
-	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/DRR.PlayerCharacterBase"));	
+	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Game/Blueprints/Player/Test/BP_PlayerCharacterBase.BP_PlayerCharacterBase_C"));	
 	if (DefaultPawnClassRef.Class)
 	{
 		DefaultPawnClass = DefaultPawnClassRef.Class;

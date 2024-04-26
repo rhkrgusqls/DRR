@@ -17,6 +17,7 @@ public:
 	ADRREffectUnitBase();
 
 	class UDA_EffectData* GetEffectData() { return EffectData; }
+	void SetData(class UDA_EffectData* data) { EffectData = data; }
 	void SetUser(AActor* user) { this->User = user; }
 	void SetTarget(AActor* target) { this->Target = target; }
 	void RemoveEffect();

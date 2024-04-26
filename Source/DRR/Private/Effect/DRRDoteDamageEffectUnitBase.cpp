@@ -7,6 +7,7 @@
 
 void ADRRDoteDamageEffectUnitBase::UpdateFunc(AActor* target)
 {
+	CLog::Log("DoteDamageUpdate");
 	ACharacterBase* Temp = Cast<ACharacterBase>(target);
 	Temp->ReciveAttack(10.0f);
 	

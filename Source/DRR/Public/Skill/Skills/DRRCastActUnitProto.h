@@ -10,20 +10,20 @@
  * 
  */
 UCLASS()
-class DRR_API UDRRCastActUnitProto : public UDRRActUnitBase
+class DRR_API ADRRCastActUnitProto : public ADRRActUnitBase
 {
 	GENERATED_BODY()
 public:
-	UDRRCastActUnitProto();
+	ADRRCastActUnitProto();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
-	virtual bool IsAchieveCondition(AActor* Owner) override;
+	virtual bool IsAchieveCondition(AActor* User) override;
 
 
 
 protected:
-	virtual void BeginFunc(AActor* Owner) override;
-	virtual void EndFunc(AActor* Owner) override;
+	virtual void BeginFunc(AActor* User) override;
+	virtual void EndFunc(AActor* User) override;
 
 	
 };

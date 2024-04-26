@@ -8,10 +8,13 @@
 
 
 #include "CharacterBase/DRRActComponent.h"
+#include "CharacterBase/DRRPassiveActComponent.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
-	
+
+	PassiveComponent = CreateDefaultSubobject<UDRRPassiveActComponent>(TEXT("Passive"));
+
 }
 
 void ACharacterBase::BeginPlay()

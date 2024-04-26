@@ -6,58 +6,58 @@
 #include "DataAsset/DA_ActData.h"
 
 // Sets default values
-UDRRActUnitBase::UDRRActUnitBase()
+ADRRActUnitBase::ADRRActUnitBase()
 {
 
 }
 
-TArray<FOnActFuncDelegate> UDRRActUnitBase::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRActUnitBase::GetActFunc()
 {
 	return TArray<FOnActFuncDelegate>();
 }
 
-FOnActFuncDelegate UDRRActUnitBase::GetBeginActFunc()
+FOnActFuncDelegate ADRRActUnitBase::GetBeginActFunc()
 {
 	FOnActFuncDelegate Temp;
 
-	Temp.BindUObject(this, &UDRRActUnitBase::BeginFunc);
+	Temp.BindUObject(this, &ADRRActUnitBase::BeginFunc);
 
 	return Temp;
 
 }
 
-FOnActFuncDelegate UDRRActUnitBase::GetEndActFunc()
+FOnActFuncDelegate ADRRActUnitBase::GetEndActFunc()
 {
 	FOnActFuncDelegate Temp;
 
-	Temp.BindUObject(this, &UDRRActUnitBase::EndFunc);
+	Temp.BindUObject(this, &ADRRActUnitBase::EndFunc);
 
 	return Temp;
 }
 
-UDA_ActData* UDRRActUnitBase::GetActData()
+UDA_ActData* ADRRActUnitBase::GetActData()
 {
 	return ActData;
 }
 
-FOnActCheckConditionDelegate UDRRActUnitBase::GetAchieveCondition()
+FOnActCheckConditionDelegate ADRRActUnitBase::GetAchieveCondition()
 {
 	FOnActCheckConditionDelegate Temp;
 	
-	Temp.BindUObject(this, &UDRRActUnitBase::IsAchieveCondition);
+	Temp.BindUObject(this, &ADRRActUnitBase::IsAchieveCondition);
 	return Temp;
 }
 
-void UDRRActUnitBase::BeginFunc(AActor* Owner)
+void ADRRActUnitBase::BeginFunc(AActor* User)
 {
 }
 
-void UDRRActUnitBase::EndFunc(AActor* Owner)
+void ADRRActUnitBase::EndFunc(AActor* User)
 {
 
 }
 
-bool UDRRActUnitBase::IsAchieveCondition(AActor* Owner)
+bool ADRRActUnitBase::IsAchieveCondition(AActor* User)
 {
 	return true;
 }

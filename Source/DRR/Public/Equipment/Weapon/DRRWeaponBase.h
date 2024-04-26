@@ -34,9 +34,9 @@ protected:
 	TObjectPtr<class UDA_WeaponData> WeaponData;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ActData)
-	TSubclassOf<class UDRRActUnitBase> FirstAct;
+	TSubclassOf<class ADRRActUnitBase> FirstAct;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ActData)
-	TSubclassOf<class UDRRActUnitBase> SecondAct;
+	TSubclassOf<class ADRRActUnitBase> SecondAct;
 
 
 

@@ -8,7 +8,7 @@
 
 
 #include "Utilities/CLog.h"
-UDRRPlayerActUnitProto::UDRRPlayerActUnitProto()
+ADRRPlayerActUnitProto::ADRRPlayerActUnitProto()
 {
 	ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_ShortShotActData'/Game/Blueprints/Weapon/PlayerTestWeapon/DA_PlayerWeaponProtoAct1.DA_PlayerWeaponProtoAct1'"));
 	if (DataAssetRef.Object)
@@ -21,37 +21,37 @@ UDRRPlayerActUnitProto::UDRRPlayerActUnitProto()
 	
 }
 
-TArray<FOnActFuncDelegate> UDRRPlayerActUnitProto::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRPlayerActUnitProto::GetActFunc()
 {
 	TArray<FOnActFuncDelegate> arr;
 
 	FOnActFuncDelegate temp;
-	temp.BindUObject(this, &UDRRPlayerActUnitProto::Func1);
+	temp.BindUObject(this, &ADRRPlayerActUnitProto::Func1);
 	arr.Add(temp);
 	return arr;
 }
 
-void UDRRPlayerActUnitProto::BeginFunc(AActor* Owner)
+void ADRRPlayerActUnitProto::BeginFunc(AActor* User)
 {
 	CLog::Log("ActBeginFunc");
 }
 
-void UDRRPlayerActUnitProto::EndFunc(AActor* Owner)
+void ADRRPlayerActUnitProto::EndFunc(AActor* User)
 {
 	CLog::Log("ActEndFunc");
 }
 
-void UDRRPlayerActUnitProto::Func1(AActor* Owner)
+void ADRRPlayerActUnitProto::Func1(AActor* User)
 {
 	CLog::Log("DamageTestActFunc1");
 
-	ACharacter* User = Cast<ACharacter>(Owner);
+	ACharacter* UserChar = Cast<ACharacter>(User);
 
 	UE_LOG(LogTemp, Log, TEXT("AttackHitCheck"));
 
 
 	//충돌에 이름을 붙임,무시할 액터:this를 넣어 자신이 충돌되는걸 방지
-	FCollisionQueryParams collisionParams(SCENE_QUERY_STAT(Attack), false, User);
+	FCollisionQueryParams collisionParams(SCENE_QUERY_STAT(Attack), false, UserChar);
 
 	FHitResult outHitResult;
 	TArray<FHitResult> outHitResults;
@@ -61,7 +61,7 @@ void UDRRPlayerActUnitProto::Func1(AActor* Owner)
 	bool isHit;
 
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
-	const FVector start = User->GetActorLocation() + User->GetActorForwardVector() * User->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector start = UserChar->GetActorLocation() + UserChar->GetActorForwardVector() * UserChar->GetCapsuleComponent()->GetScaledCapsuleRadius();
 
 	FVector end;
 
@@ -71,7 +71,7 @@ void UDRRPlayerActUnitProto::Func1(AActor* Owner)
 
 	float halfHeight = attackRange / 2.0f;
 
-	end = start + User->GetActorForwardVector() * attackRange;
+	end = start + UserChar->GetActorForwardVector() * attackRange;
 	isHit = GetWorld()->SweepSingleByProfile(outHitResult, start, end, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
 	
 
@@ -79,7 +79,7 @@ void UDRRPlayerActUnitProto::Func1(AActor* Owner)
 	//DebugDraw
 	bool isRemaining = false;
 	FColor Color = isHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(User->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
+	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(UserChar->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
 
 
 
@@ -96,7 +96,7 @@ void UDRRPlayerActUnitProto::Func1(AActor* Owner)
 		if (outHitResult.GetActor())
 		{
 
-			outHitResult.GetActor()->TakeDamage(40.0f, damageEvent, User->GetController(), User);
+			outHitResult.GetActor()->TakeDamage(40.0f, damageEvent, UserChar->GetController(), UserChar);
 		}
 	}
 
