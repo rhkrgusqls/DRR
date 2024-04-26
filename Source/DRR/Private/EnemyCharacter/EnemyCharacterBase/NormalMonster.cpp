@@ -4,12 +4,12 @@
 #include "EnemyCharacter/EnemyCharacterBase/NormalMonster.h"
 #include "EnemyCharacter/Enemy/NormalEnemyData/DBNormalEnemyAnimMongtage.h"
 #include "EnemyCharacter/AIController/NormalAIController.h"
-ANormalMonster::ANormalMonster() : AEnemyCharacterBase(0)
+ANormalMonster::ANormalMonster()
 {
 	AIControllerClass = ANormalAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
-ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(0)
+ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(Type)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;

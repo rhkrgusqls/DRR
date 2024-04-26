@@ -9,7 +9,6 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/EnemyManager.h"
-#include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"

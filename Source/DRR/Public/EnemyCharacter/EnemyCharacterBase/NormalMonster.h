@@ -13,7 +13,7 @@ UCLASS()
 class DRR_API ANormalMonster : public AEnemyCharacterBase
 {
 	GENERATED_BODY()
-
+public:
 	ANormalMonster();
 	ANormalMonster(int Type);
 	
