@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "DRR.h"
 #include "GameFramework/Actor.h"
@@ -15,107 +14,105 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
 
-
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    // Set this character to call Tick() every frame. You can turn this off to improve performance if you don't need it.
+    PrimaryActorTick.bCanEverTick = true;
 
-	// UI Widget
-	/*
-	EnemyHPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHPBar"));
-	EnemyHPBar->SetupAttachment(GetMesh());
-	EnemyHPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
+    // UI Widget
+    /*
+    EnemyHPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHPBar"));
+    EnemyHPBar->SetupAttachment(GetMesh());
+    EnemyHPBar->SetRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> EnemyHPBarWidgetRef(TEXT("/Game/Asset/UI/WBP_EnemyHPBar.WBP_EnemyHPBar"));
-	if (EnemyHPBarWidgetRef.Class)
-	{
-		EnemyHPBar->SetWidgetClass(EnemyHPBarWidgetRef.Class);
-		EnemyHPBar->SetWidgetSpace(EWidgetSpace::Screen);
-		EnemyHPBar->SetDrawSize(FVector2D(150.0f, 20.0f));
-		EnemyHPBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	*/
-
+    static ConstructorHelpers::FClassFinder<UUserWidget> EnemyHPBarWidgetRef(TEXT("/Game/Asset/UI/WBP_EnemyHPBar.WBP_EnemyHPBar"));
+    if (EnemyHPBarWidgetRef.Class)
+    {
+        EnemyHPBar->SetWidgetClass(EnemyHPBarWidgetRef.Class);
+        EnemyHPBar->SetWidgetSpace(EWidgetSpace::Screen);
+        EnemyHPBar->SetDrawSize(FVector2D(150.0f, 20.0f));
+        EnemyHPBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+    */
 }
 
 AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	static ConstructorHelpers::FObjectFinder<UDBEnemyCharacterSetting> EnemyDataAssetRef(TEXT("/Game/Blueprints/DataAsset/EnemeyData/EnemeyCharacter.EnemeyCharacter"));
-	UDBEnemyCharacterSetting* EnemyDataAsset = nullptr;
-	EnemyType = Type;
-	if (EnemyDataAssetRef.Succeeded())
-	{
-		EnemyDataAsset = EnemyDataAssetRef.Object;
-	}
-	if (EnemyDataAsset)
-	{
-		// Iterate through the array and access individual settings
-		const FEnemyCharacterSetting& EnemyData = EnemyDataAsset->SEnemyData[EnemyType];
+    // Set this character to call Tick() every frame. You can turn this off to improve performance if you don't need it.
+    PrimaryActorTick.bCanEverTick = true;
 
-		// Access variables from the EnemyData structure
-		EnemyName = EnemyData.Name;
-		CapsuleSize = EnemyData.CapsuleSize;
-		CapsuleHeight = EnemyData.CapsuleHeight;
-		CapsuleProfileName = EnemyData.CapsuleProfileName;
-		MeshVector = EnemyData.MeshVector;
-		MeshRotator = EnemyData.MeshRotator;
-		CharacterbOrientRotationToMovement = EnemyData.CharacterbOrientRotationToMovement;
-		CharacterRotationRate = EnemyData.CharacterRotationRate;
-		CharacterJumpZVelocity = EnemyData.CharacterJumpZVelocity;
-		CharacterAirControl = EnemyData.CharacterAirControl;
-		CharacterMaxWalkSpeed = EnemyData.CharacterMaxWalkSpeed;
-		CharacterMinAnalogWalkSpeed = EnemyData.CharacterMinAnalogWalkSpeed;
-		CharacterBrakingDecelerationWalking = EnemyData.CharacterBrakingDecelerationWalking;
-		CharacterMesh = EnemyData.CharacterMesh;
-		CharacterAnimBP = EnemyData.CharacterAnimBP;
-		MaxHP = EnemyData.HP;
-		physicsAttack = EnemyData.PhysicsAttackCoefficient;
-	//	MagicAttack = EnemyData.MagicAttackCoefficient;
-		physicsDef = EnemyData.PhysicsDefCoefficient;
-//		MagicDef = EnemyData.MagicDefCoefficient;
-		HPRegenSpeed = EnemyData.HPRegenerationSpeed;
-	}
+    static ConstructorHelpers::FObjectFinder<UDBEnemyCharacterSetting> EnemyDataAssetRef(TEXT("/Game/Blueprints/DataAsset/EnemeyData/EnemeyCharacter.EnemeyCharacter"));
+    UDBEnemyCharacterSetting* EnemyDataAsset = nullptr;
+    EnemyType = Type;
+    if (EnemyDataAssetRef.Succeeded())
+    {
+        EnemyDataAsset = EnemyDataAssetRef.Object;
+    }
+    if (EnemyDataAsset)
+    {
+        // Iterate through the array and access individual settings
+        const FEnemyCharacterSetting& EnemyData = EnemyDataAsset->SEnemyData[EnemyType];
 
-	//----------------------------------------------------------------
-	//Set Animmongtage-Kwakhyunbin
+        // Access variables from the EnemyData structure
+        EnemyName = EnemyData.Name;
+        CapsuleSize = EnemyData.CapsuleSize;
+        CapsuleHeight = EnemyData.CapsuleHeight;
+        CapsuleProfileName = EnemyData.CapsuleProfileName;
+        MeshVector = EnemyData.MeshVector;
+        MeshRotator = EnemyData.MeshRotator;
+        CharacterbOrientRotationToMovement = EnemyData.CharacterbOrientRotationToMovement;
+        CharacterRotationRate = EnemyData.CharacterRotationRate;
+        CharacterJumpZVelocity = EnemyData.CharacterJumpZVelocity;
+        CharacterAirControl = EnemyData.CharacterAirControl;
+        CharacterMaxWalkSpeed = EnemyData.CharacterMaxWalkSpeed;
+        CharacterMinAnalogWalkSpeed = EnemyData.CharacterMinAnalogWalkSpeed;
+        CharacterBrakingDecelerationWalking = EnemyData.CharacterBrakingDecelerationWalking;
+        CharacterMesh = EnemyData.CharacterMesh;
+        CharacterAnimBP = EnemyData.CharacterAnimBP;
+        MaxHP = EnemyData.HP;
+        physicsAttack = EnemyData.PhysicsAttackCoefficient;
+        // MagicAttack = EnemyData.MagicAttackCoefficient;
+        physicsDef = EnemyData.PhysicsDefCoefficient;
+        // MagicDef = EnemyData.MagicDefCoefficient;
+        HPRegenSpeed = EnemyData.HPRegenerationSpeed;
+    }
 
-	//----------------------------------------------------------------
+    //----------------------------------------------------------------
+    // Set Anim Montage-Kwakhyunbin
 
-	// Create Capsule-Kwakhyunbin
-	GetCapsuleComponent()->InitCapsuleSize(CapsuleSize, CapsuleHeight);
-	GetCapsuleComponent()->SetCollisionProfileName(FName(*CapsuleProfileName));
+    //----------------------------------------------------------------
 
-	// Set Mesh-Kwakhyunbin
-	GetMesh()->SetRelativeLocationAndRotation(MeshVector, MeshRotator);
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+    // Create Capsule-Kwakhyunbin
+    GetCapsuleComponent()->InitCapsuleSize(CapsuleSize, CapsuleHeight);
+    GetCapsuleComponent()->SetCollisionProfileName(FName(*CapsuleProfileName));
 
-	//Set Movement Default-Kwakhyunbin
-	GetCharacterMovement()->bOrientRotationToMovement = CharacterbOrientRotationToMovement;
-	GetCharacterMovement()->RotationRate = CharacterRotationRate;
-	GetCharacterMovement()->JumpZVelocity = CharacterJumpZVelocity;
-	GetCharacterMovement()->AirControl = CharacterAirControl;
-	GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
-	GetCharacterMovement()->MinAnalogWalkSpeed = CharacterMinAnalogWalkSpeed;
-	GetCharacterMovement()->BrakingDecelerationWalking = CharacterBrakingDecelerationWalking;
+    // Set Mesh-Kwakhyunbin
+    GetMesh()->SetRelativeLocationAndRotation(MeshVector, MeshRotator);
+    GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+    GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 
-	//Set Rotation Remit-Kwakhyunbin
-	bUseControllerRotationYaw = true;
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
+    // Set Movement Default-Kwakhyunbin
+    GetCharacterMovement()->bOrientRotationToMovement = CharacterbOrientRotationToMovement;
+    GetCharacterMovement()->RotationRate = CharacterRotationRate;
+    GetCharacterMovement()->JumpZVelocity = CharacterJumpZVelocity;
+    GetCharacterMovement()->AirControl = CharacterAirControl;
+    GetCharacterMovement()->MaxWalkSpeed = CharacterMaxWalkSpeed;
+    GetCharacterMovement()->MinAnalogWalkSpeed = CharacterMinAnalogWalkSpeed;
+    GetCharacterMovement()->BrakingDecelerationWalking = CharacterBrakingDecelerationWalking;
 
-	//Set Mesh and Anim BP-Kwakhyunbin
-	GetMesh()->SetSkeletalMesh(CharacterMesh);
-	GetMesh()->SetAnimInstanceClass(CharacterAnimBP);
+    // Set Rotation Remit-Kwakhyunbin
+    bUseControllerRotationYaw = true;
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationRoll = false;
 
+    // Set Mesh and Anim BP-Kwakhyunbin
+    GetMesh()->SetSkeletalMesh(CharacterMesh);
+    GetMesh()->SetAnimInstanceClass(CharacterAnimBP);
 }
 
 int32 AEnemyCharacterBase::GetEnemyCharacterNum()
 {
-	return MonsterNum;
+    return MonsterNum;
 }
 
 void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
@@ -124,54 +121,56 @@ void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
 
 void AEnemyCharacterBase::BeginPlay()
 {
-	Super::BeginPlay();
-	UWorld* World = GetWorld();
-	UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
-	if (GameInstance)
-	{
-		Level = GameInstance->ReturnLevel()/difficulty;
-	}
-	else
-	{
-		Level = 1;
-	}
-	MaxHP = MaxHP * (100 + Level);
-	CurrentHP = MaxHP;
-	physicsAttack = physicsAttack * (100 + Level);
-	//MagicAttack = MagicAttack * (100 + Level);
-	physicsDef = physicsAttack * (100 + Level);
-	//MagicDef = MagicDef * (100 + Level);
-	if (World!=nullptr)
-	{
-		for (TActorIterator<AEnemyManager> It(World); It; ++It)
-		{
-			Manager = *It;
-		}
-	}
-	if (Manager != nullptr)
-	{
-		MonsterNum = Manager->SetMonsterNum(this);
-	}
-	
+    Super::BeginPlay();
+    UWorld* World = GetWorld();
+    UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
+    if (GameInstance)
+    {
+        Level = GameInstance->ReturnLevel() / difficulty;
+    }
+    else
+    {
+        Level = 1;
+    }
+    MaxHP = MaxHP * (100 + Level);
+    CurrentHP = MaxHP;
+    physicsAttack = physicsAttack * (100 + Level);
+    // MagicAttack = MagicAttack * (100 + Level);
+    physicsDef = physicsAttack * (100 + Level);
+    // MagicDef = MagicDef * (100 + Level);
+    if (World != nullptr)
+    {
+        for (TActorIterator<AEnemyManager> It(World); It; ++It)
+        {
+            Manager = *It;
+        }
+    }
+    if (Manager != nullptr)
+    {
+        MonsterNum = Manager->SetMonsterNum(this);
+    }
 }
 
 void AEnemyCharacterBase::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+    Super::Tick(DeltaTime);
 }
+
 void AEnemyCharacterBase::MeleeAttack(FVector TargetLocation)
 {
 }
+
 void AEnemyCharacterBase::MiddleAttack(FVector TargetLocation)
 {
 }
+
 void AEnemyCharacterBase::LongAttack(FVector TargetLocation)
 {
 }
+
 /*
 void AEnemyCharacterBase::SetHP(float NewHP)
 {
-	CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
+    CurrentHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
 }
 */

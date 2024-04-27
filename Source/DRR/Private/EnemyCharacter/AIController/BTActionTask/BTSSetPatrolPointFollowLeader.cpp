@@ -1,6 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+// Include necessary header files
 #include "EnemyCharacter/AIController/BTActionTask/BTSSetPatrolPointFollowLeader.h"
 #include "DRR.h"
 #include "GameFramework/Actor.h"
@@ -16,31 +14,46 @@
 #include "Perception/AISense_Hearing.h"
 #include "Perception/AIPerceptionSystem.h"
 
+// Constructor for the UBTSSetPatrolPointFollowLeader class
 UBTSSetPatrolPointFollowLeader::UBTSSetPatrolPointFollowLeader()
 {
-	
+    // Constructor body (currently empty)
 }
 
+// Override TickNode method for the behavior tree node
 void UBTSSetPatrolPointFollowLeader::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	AEnemyCharacterBase* ControllingPawn = Cast<AEnemyCharacterBase>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == ControllingPawn)
-	{
-		return;
-	}
-	World = GetWorld();
-	if (World != nullptr)
-	{
-		for (TActorIterator<AEnemyManager> It(World); It; ++It)
-		{
-			Manager = *It;
-		}
-	}
-	if (Manager != nullptr)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsImLeader",Manager->IsLeader(ControllingPawn->GetEnemyCharacterNum()));
-		OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPoint", Manager->GetPatrolPoint(ControllingPawn->GetEnemyCharacterNum()));
-	}
+    // Cast the controlling pawn to AEnemyCharacterBase
+    AEnemyCharacterBase* ControllingPawn = Cast<AEnemyCharacterBase>(OwnerComp.GetAIOwner()->GetPawn());
 
-	return;
+    // If controlling pawn is null, return
+    if (ControllingPawn == nullptr)
+    {
+        return;
+    }
+
+    // Get the world
+    World = GetWorld();
+
+    // If the world is valid, find an instance of AEnemyManager
+    if (World != nullptr)
+    {
+        for (TActorIterator<AEnemyManager> It(World); It; ++It)
+        {
+            Manager = *It;
+        }
+    }
+
+    // If a valid Manager instance is found
+    if (Manager != nullptr)
+    {
+        // Set the "IsImLeader" blackboard key based on whether the controlling pawn is a leader
+        OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsImLeader", Manager->IsLeader(ControllingPawn->GetEnemyCharacterNum()));
+
+        // Set the "PatrolPoint" blackboard key to the patrol point for the controlling pawn
+        OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPoint", Manager->GetPatrolPoint(ControllingPawn->GetEnemyCharacterNum()));
+    }
+
+    // Return from the function
+    return;
 }

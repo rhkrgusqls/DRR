@@ -1,6 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+// Include necessary header files
 #include "EnemyCharacter/AIController/BTActionTask/SetPatrolPoint.h"
 #include "DRR.h"
 #include "GameFramework/Actor.h"
@@ -12,35 +10,50 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "AIController.h"
 #include "Perception/AISense.h"
 #include "Perception/AISense_Hearing.h"
 #include "Perception/AIPerceptionSystem.h"
 
+// Constructor for the USetPatrolPoint class
 USetPatrolPoint::USetPatrolPoint()
 {
+    // Constructor body (currently empty)
 }
 
+// Override ExecuteTask method for the behavior tree node
 EBTNodeResult::Type USetPatrolPoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AEnemyCharacterBase* ControllingPawn = Cast<AEnemyCharacterBase>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == ControllingPawn)
-	{
-		return EBTNodeResult::Failed;
-	}
-	World = GetWorld();
-	if (World != nullptr)
-	{
-		for (TActorIterator<AEnemyManager> It(World); It; ++It)
-		{
-			Manager = *It;
-		}
-	}
-	if (Manager != nullptr)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPoint", Manager->GetPatrolPoint(ControllingPawn->GetEnemyCharacterNum()));
-		return EBTNodeResult::Succeeded;
-	}
+    // Cast the controlling pawn to AEnemyCharacterBase
+    AEnemyCharacterBase* ControllingPawn = Cast<AEnemyCharacterBase>(OwnerComp.GetAIOwner()->GetPawn());
 
-	return EBTNodeResult::Failed;
+    // If controlling pawn is null, return task failed
+    if (ControllingPawn == nullptr)
+    {
+        return EBTNodeResult::Failed;
+    }
+
+    // Get the world
+    World = GetWorld();
+
+    // If the world is valid, find an instance of AEnemyManager
+    if (World != nullptr)
+    {
+        for (TActorIterator<AEnemyManager> It(World); It; ++It)
+        {
+            Manager = *It;
+        }
+    }
+
+    // If a valid Manager instance is found
+    if (Manager != nullptr)
+    {
+        // Set the "PatrolPoint" blackboard key to the patrol point for the controlling pawn
+        OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPoint", Manager->GetPatrolPoint(ControllingPawn->GetEnemyCharacterNum()));
+
+        // Return task succeeded
+        return EBTNodeResult::Succeeded;
+    }
+
+    // Return task failed if no valid Manager instance is found
+    return EBTNodeResult::Failed;
 }
