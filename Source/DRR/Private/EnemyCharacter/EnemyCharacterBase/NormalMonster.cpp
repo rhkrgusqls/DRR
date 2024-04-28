@@ -41,7 +41,6 @@ ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(Type)
 
 void ANormalMonster::BeginPlay()
 {
-	Super::BeginPlay();
 	//GetController()->;
 }
 
