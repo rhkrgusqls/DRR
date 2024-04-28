@@ -26,7 +26,12 @@ public:
 
 	void ComboAttack();
 
+	void ComboAttackCount();
+
 	void StartComboAttack();
+
+	void ComboAttackProcess();
+
 	void EndComboAttack();
 
 
@@ -42,4 +47,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = "true"))
 	USphereComponent* MyOverlapSphere;
+
+	int32 ComboCount=0;
+	int32 MaxComboCount=1;
+	bool IsAttack = false;
+	float AttackSpeed=1;
 };

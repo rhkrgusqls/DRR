@@ -3,7 +3,9 @@
 
 #include "EnemyCharacter/EnemyCharacterBase/NormalMonster.h"
 #include "EnemyCharacter/Enemy/NormalEnemyData/DBNormalEnemyAnimMongtage.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "EnemyCharacter/AIController/NormalAIController.h"
+
 ANormalMonster::ANormalMonster()
 {
 	AIControllerClass = ANormalAIController::StaticClass();
@@ -35,5 +37,10 @@ ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(Type)
 	}
 	AIControllerClass = ANormalAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+}
+
+void ANormalMonster::BeginPlay()
+{
+	//GetController()->;
 }
 

@@ -3,6 +3,7 @@
 #include "EnemyCharacter/EnemyCharacterBase/NormalMonster.h"
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -61,7 +62,29 @@ void AMeleeMonsterBase::LongAttack(FVector TargetLocation)
 // Function for combo attack
 void AMeleeMonsterBase::ComboAttack()
 {
-    StartComboAttack();
+    ComboAttackCount();
+}
+
+void AMeleeMonsterBase::ComboAttackCount()
+{
+    
+    if (!IsAttack)
+    {
+        IsAttack = true;
+        if (ComboCount == 0)
+        {
+            StartComboAttack();
+        }
+        else if (ComboCount >= 1 && ComboCount <= MaxComboCount)
+        {
+            ComboAttackProcess();
+        }
+        else
+        {
+            ComboCount = 0;
+        }
+    }
+
 }
 
 // Function to start combo attack
@@ -113,16 +136,23 @@ void AMeleeMonsterBase::StartComboAttack()
     }
     // Draw debug sphere at the end location
     DrawDebugSphere(GetWorld(), EndLocation, SphereRadius, 12, FColor::Blue, false, 5.0f);
+    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    AnimInstance->Montage_Play(NormalAttackMontage, AttackSpeed);
+    FOnMontageEnded EndDelegate;
+    //EndDelegate.BindUObject(this, &AMeleeMonsterBase::EndComboAttack);
+    //AnimInstance->Montage_SetEndDelegate(EndDelegate, NormalAttackMontage);
+}
 
-    // End the combo attack
-    EndComboAttack();
+void AMeleeMonsterBase::ComboAttackProcess()
+{
+
 }
 
 // Function to end combo attack
 void AMeleeMonsterBase::EndComboAttack()
 {
-    // Disable collision for the combo attack hitbox
-    // ComboAttackHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 }
 
 // Function to handle attack overlap
@@ -145,11 +175,11 @@ void AMeleeMonsterBase::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent
 // Function for strong attack
 void AMeleeMonsterBase::StrongAttack()
 {
-    // Add your strong attack code here
+
 }
 
 // Function for guarding
 void AMeleeMonsterBase::Guard()
 {
-    // Add your guard code here
+
 }

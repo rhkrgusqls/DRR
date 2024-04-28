@@ -16,5 +16,6 @@ class DRR_API ANormalMonster : public AEnemyCharacterBase
 public:
 	ANormalMonster();
 	ANormalMonster(int Type);
+	virtual void BeginPlay() override;
 	
 };
