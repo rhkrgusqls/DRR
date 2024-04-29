@@ -139,7 +139,7 @@ void AMeleeMonsterBase::StartComboAttack()
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
     AnimInstance->Montage_Play(NormalAttackMontage, AttackSpeed);
-    FOnMontageEnded EndDelegate;
+    //FOnMontageEnded EndDelegate;
     //EndDelegate.BindUObject(this, &AMeleeMonsterBase::EndComboAttack);
     //AnimInstance->Montage_SetEndDelegate(EndDelegate, NormalAttackMontage);
 }

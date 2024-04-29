@@ -6,6 +6,7 @@
 #include "EnemyCharacter/EnemyCharacterBase/NormalMonster.h"
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "MeleeMonsterBase.generated.h"
 
 /**
@@ -40,6 +41,10 @@ public:
 	virtual void StrongAttack();
 
 	virtual void Guard();
+
+	UBoxComponent* RightWeaponHitBox;
+
+	UBoxComponent* LeftWeaponHitBox;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))

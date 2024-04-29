@@ -13,5 +13,6 @@ UCLASS()
 class UBTSLenghtToTarget : public UBTService
 {
 	GENERATED_BODY()
-	
+	UBTSLenghtToTarget();
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

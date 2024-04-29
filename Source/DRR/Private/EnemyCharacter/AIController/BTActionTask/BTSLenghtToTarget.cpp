@@ -3,3 +3,10 @@
 
 #include "EnemyCharacter/AIController/BTActionTask/BTSLenghtToTarget.h"
 
+UBTSLenghtToTarget::UBTSLenghtToTarget()
+{
+}
+
+void UBTSLenghtToTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+}

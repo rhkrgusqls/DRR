@@ -38,10 +38,19 @@ ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(Type)
 	AIControllerClass = ANormalAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
-
 void ANormalMonster::BeginPlay()
 {
-	Super::BeginPlay();
-	//GetController()->;
-}
+    Super::BeginPlay();
+    AAIController* AIController = Cast<AAIController>(GetController());
 
+    if (AIController)
+    {
+        UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent();
+
+        if (BlackboardComp)
+        {
+            bool IsAggressive = true;
+            BlackboardComp->SetValueAsBool(TEXT("IsPatrolUnit"), IsAggressive);
+        }
+    }
+}

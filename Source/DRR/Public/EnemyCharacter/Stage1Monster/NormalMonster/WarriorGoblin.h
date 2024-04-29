@@ -22,15 +22,21 @@ public:
 
 	void CreateHitBoxBetweenBones();
 	virtual void BeginPlay() override;
-	
-	USkeletalMeshComponent* SkeletalMeshComp;
+	virtual void Tick(float DeltaTime) override;
+	FRotator GetRotationForBone(FVector BoneX, FVector BoneY);
 
+	USkeletalMeshComponent* SkeletalMeshComp;
+	USkeletalMeshComponent* SkeletalMeshComp2;
 	FName BoneName1;
 	FName BoneName2;
 
+	FName BoneName3;
+	FName BoneName4;
+
 	FVector BonePosition1;
 	FVector BonePosition2;
-
+	FVector BonePosition3;
+	FVector BonePosition4;
 
 	FVector MidPoint;
 	FVector Direction;
@@ -38,5 +44,4 @@ public:
 
 	FVector BoxExtent;
 
-	UBoxComponent* HitBox;
 };
