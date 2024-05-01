@@ -134,9 +134,9 @@ void AEnemyCharacterBase::BeginPlay()
     }
     MaxHP = MaxHP * (100 + Level);
     CurrentHP = MaxHP;
-    physicsAttack = physicsAttack * (100 + Level);
+    physicsAttack = physicsAttack * (10 + Level);
     // MagicAttack = MagicAttack * (100 + Level);
-    physicsDef = physicsAttack * (100 + Level);
+    physicsDef = physicsDef * (10 + Level);
     // MagicDef = MagicDef * (100 + Level);
     if (World != nullptr)
     {

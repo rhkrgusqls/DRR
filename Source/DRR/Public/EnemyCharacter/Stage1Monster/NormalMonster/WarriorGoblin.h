@@ -8,16 +8,17 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Components/BoxComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "WarriorGoblin.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DRR_API AWarriorGoblin : public AMeleeMonsterBase
 {
 	GENERATED_BODY()
 public:
+	//FORCEINLINE class UBoxComponent* GetTrigger() { return LeftWeaponHitBox; }
+	//FORCEINLINE class UBoxComponent* GetTrigger() { return RightWeaponHitBox; }
+
 	AWarriorGoblin();
 
 	void CreateHitBoxBetweenBones();

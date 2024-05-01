@@ -59,7 +59,6 @@ void AMeleeMonsterBase::LongAttack(FVector TargetLocation)
     Super::AEnemyCharacterBase::MeleeAttack(TargetLocation);
 }
 
-// Function for combo attack
 void AMeleeMonsterBase::ComboAttack()
 {
     ComboAttackCount();
@@ -90,58 +89,13 @@ void AMeleeMonsterBase::ComboAttackCount()
 // Function to start combo attack
 void AMeleeMonsterBase::StartComboAttack()
 {
-    // Set the start and end locations of the attack
-    FVector StartLocation = GetActorLocation();
-    FVector EndLocation = StartLocation + FVector(-100.0f, 0.0f, 0.0f);
-    FQuat Rotation = FQuat::Identity;
-
-    // Set collision query parameters
-    FCollisionObjectQueryParams ObjectQueryParams;
-    ObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel1);
-
-    float SphereRadius = 50.0f;
-    FCollisionShape CollisionShape = FCollisionShape::MakeSphere(SphereRadius);
-
-    // Create an array to store overlap results
-    TArray<FOverlapResult> OverlapResults;
-
-    // Perform overlap query
-    bool bOverlap = GetWorld()->OverlapMultiByObjectType(
-        OverlapResults,
-        EndLocation,
-        Rotation,
-        ObjectQueryParams,
-        CollisionShape
-    );
-
-    // Process the overlap results
-    if (bOverlap)
-    {
-        for (const FOverlapResult& OverlapResult : OverlapResults)
-        {
-            AActor* HitActor = OverlapResult.GetActor();
-
-            if (HitActor)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Attack"));
-                // Check if the hit actor is a player character
-                APlayerCharacterBase* CastedPlayer = Cast<APlayerCharacterBase>(HitActor);
-                if (CastedPlayer)
-                {
-                    // Call the receive attack function on the player character
-                    CastedPlayer->ReciveAttack(20);
-                }
-            }
-        }
-    }
-    // Draw debug sphere at the end location
-    DrawDebugSphere(GetWorld(), EndLocation, SphereRadius, 12, FColor::Blue, false, 5.0f);
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
     AnimInstance->Montage_Play(NormalAttackMontage, AttackSpeed);
-    //FOnMontageEnded EndDelegate;
-    //EndDelegate.BindUObject(this, &AMeleeMonsterBase::EndComboAttack);
-    //AnimInstance->Montage_SetEndDelegate(EndDelegate, NormalAttackMontage);
+
+    FOnMontageEnded EndDelegate;
+    EndDelegate.BindUObject(this, &AMeleeMonsterBase::EndComboAttack);
+    AnimInstance->Montage_SetEndDelegate(EndDelegate, NormalAttackMontage);
 }
 
 void AMeleeMonsterBase::ComboAttackProcess()
@@ -150,26 +104,20 @@ void AMeleeMonsterBase::ComboAttackProcess()
 }
 
 // Function to end combo attack
-void AMeleeMonsterBase::EndComboAttack()
+void AMeleeMonsterBase::EndComboAttack(UAnimMontage* TargetMontage, bool bInterrupted)
 {
+    IsAttack = false;
 
+    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
-// Function to handle attack overlap
-void AMeleeMonsterBase::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AMeleeMonsterBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Attack"));
-    // Ensure the other actor is valid and not this actor
-    if (OtherActor && OtherActor != this)
-    {
-        // Check if the other actor is a player character
-        APlayerCharacterBase* CastedPlayer = Cast<APlayerCharacterBase>(OtherActor);
-        if (CastedPlayer)
+        APlayerCharacterBase* HitPlayer = Cast<APlayerCharacterBase>(OtherActor);
+        if (HitPlayer)
         {
-            // Call the receive attack function on the player character
-            CastedPlayer->ReciveAttack(20);
+            HitPlayer->ReciveAttack(physicsAttack);
         }
-    }
 }
 
 // Function for strong attack

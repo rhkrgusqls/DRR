@@ -3,12 +3,15 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Components/BoxComponent.h"
+#include "Components/PrimitiveComponent.h"
 #include "Engine/World.h"
 
 AWarriorGoblin::AWarriorGoblin()
 {
     // Constructor for AWarriorGoblin class
     // Add any necessary initialization code here
+    RightWeaponHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox"));
+    LeftWeaponHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBoxx"));
 }
 
 void AWarriorGoblin::CreateHitBoxBetweenBones()
@@ -49,7 +52,7 @@ void AWarriorGoblin::CreateHitBoxBetweenBones()
 
 
     // Create and set up the collision box
-    RightWeaponHitBox = NewObject<UBoxComponent>(this);
+
     if (RightWeaponHitBox)
     {
         // Configure HitBox properties
@@ -63,8 +66,7 @@ void AWarriorGoblin::CreateHitBoxBetweenBones()
         RightWeaponHitBox->SetWorldRotation(GetRotationForBone(BonePosition1,BonePosition2));//RotationR);
 
         // Set the desired collision profile
-        RightWeaponHitBox->SetCollisionProfileName(TEXT("BlockAll"));
-
+        RightWeaponHitBox->SetCollisionProfileName(TEXT("EnemyAttack"));
         // Register the component to activate it
         RightWeaponHitBox->RegisterComponent();
 
@@ -106,9 +108,8 @@ void AWarriorGoblin::CreateHitBoxBetweenBones()
 
 
 
-
     // Create and set up the collision box
-    LeftWeaponHitBox = NewObject<UBoxComponent>(this);
+
     if (LeftWeaponHitBox)
     {
         // Configure HitBox properties
@@ -122,7 +123,7 @@ void AWarriorGoblin::CreateHitBoxBetweenBones()
         LeftWeaponHitBox->SetWorldRotation(GetRotationForBone(BonePosition3, BonePosition4));//RotationR);
 
         // Set the desired collision profile
-        LeftWeaponHitBox->SetCollisionProfileName(TEXT("BlockAll"));
+        LeftWeaponHitBox->SetCollisionProfileName(TEXT("EnemyAttack"));
 
         // Register the component to activate it
         LeftWeaponHitBox->RegisterComponent();
@@ -130,16 +131,20 @@ void AWarriorGoblin::CreateHitBoxBetweenBones()
         // Enable debug rendering
         LeftWeaponHitBox->SetHiddenInGame(false);
     }
+
+
 }
 
 void AWarriorGoblin::BeginPlay()
 {
     Super::BeginPlay();
 
-    FTimerHandle TimerHandle;
 
     // Create the hitbox between bones when the game starts
     CreateHitBoxBetweenBones();
+
+    RightWeaponHitBox->OnComponentBeginOverlap.AddDynamic(this, &AWarriorGoblin::OnHit);
+    LeftWeaponHitBox->OnComponentBeginOverlap.AddDynamic(this, &AWarriorGoblin::OnHit);
 }
 
 void AWarriorGoblin::Tick(float DeltaTime)
@@ -184,3 +189,4 @@ FRotator AWarriorGoblin::GetRotationForBone(FVector BoneX, FVector BoneY)
     FRotator Rotation2 = Direction3.Rotation();
     return Rotation2;
 }
+
