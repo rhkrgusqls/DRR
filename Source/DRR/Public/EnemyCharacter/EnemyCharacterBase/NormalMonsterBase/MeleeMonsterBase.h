@@ -19,6 +19,10 @@ class DRR_API AMeleeMonsterBase : public ANormalMonster
 public:
 	AMeleeMonsterBase();
 
+	void CreateHitBoxBetweenBones(FName RightBoneName1, FName RightBoneName2, FName LeftBoneName1, FName LeftBoneName2);
+
+	FRotator GetRotationForBone(FVector BoneX, FVector BoneY);
+
 	virtual void MeleeAttack(FVector TargetLocation)override;
 
 	virtual void MiddleAttack(FVector TargetLocation)override;
@@ -34,6 +38,8 @@ public:
 	void StartComboAttack();
 
 	void ComboAttackProcess();
+
+	virtual void SetCollision();
 
 	void EndComboAttack(UAnimMontage* TargetMontage, bool bInterrupted);
 
@@ -55,8 +61,38 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = "true"))
 	USphereComponent* MyOverlapSphere;
 
-	int32 ComboCount=0;
-	int32 MaxComboCount=1;
-	bool IsAttack = false;
 	float AttackSpeed=1;
+
+	USkeletalMeshComponent* SkeletalMeshComp;
+	USkeletalMeshComponent* SkeletalMeshComp2;
+	FName BoneName1;
+	FName BoneName2;
+
+	FName BoneName3;
+	FName BoneName4;
+
+	FVector BonePosition1;
+	FVector BonePosition2;
+	FVector BonePosition3;
+	FVector BonePosition4;
+
+	FVector MidPoint;
+	FVector Direction;
+
+
+	FVector BoxExtent;
+
+	bool IsComboAttacking = false;
+
+	TArray<AActor*> HitedActor;
+
+public:
+
+	bool IsAttack = false;
+
+	int32 ComboCount = 1;
+
+	int32 MaxComboCount = 1;
+
+
 };

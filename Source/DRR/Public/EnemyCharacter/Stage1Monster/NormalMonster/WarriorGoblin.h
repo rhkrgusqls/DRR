@@ -20,29 +20,14 @@ public:
 	//FORCEINLINE class UBoxComponent* GetTrigger() { return RightWeaponHitBox; }
 
 	AWarriorGoblin();
-
-	void CreateHitBoxBetweenBones();
+	
 	virtual void BeginPlay() override;
+	
 	virtual void Tick(float DeltaTime) override;
-	FRotator GetRotationForBone(FVector BoneX, FVector BoneY);
 
-	USkeletalMeshComponent* SkeletalMeshComp;
-	USkeletalMeshComponent* SkeletalMeshComp2;
-	FName BoneName1;
-	FName BoneName2;
-
-	FName BoneName3;
-	FName BoneName4;
-
-	FVector BonePosition1;
-	FVector BonePosition2;
-	FVector BonePosition3;
-	FVector BonePosition4;
-
-	FVector MidPoint;
-	FVector Direction;
+	virtual void SetCollision()override;
 
 
-	FVector BoxExtent;
+
 
 };
