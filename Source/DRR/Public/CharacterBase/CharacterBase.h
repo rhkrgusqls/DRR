@@ -58,6 +58,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
+	void ReciveRecovery(float physicsDamage/*, float MagicDamage*/);
 
 	void SetDotDamage(float TickDamage, float DurationTime);
 
@@ -135,6 +136,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DefaultPassive)
+	TSubclassOf<class ADRRAutomaticRecoveryEffect> AutomaticRecovery;
 
 	FOnHPChangedDelegate OnHPChanged;
 };

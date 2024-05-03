@@ -62,6 +62,7 @@ void DRREffect::Tick(float DeltaTime)
 
 bool DRREffect::CheckExpire()
 {
+	
 	switch (EffectActor->GetEffectData()->ExpirationType)
 	{
 	case EExpirationType::Duration:

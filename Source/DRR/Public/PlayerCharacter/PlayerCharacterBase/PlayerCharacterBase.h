@@ -95,6 +95,7 @@ protected:
 	//TestWeapon
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TSubclassOf<class ADRRWeaponBase> Weapon;
+	TObjectPtr<class ADRRWeaponBase> WeaponRef;
 
 
 private:

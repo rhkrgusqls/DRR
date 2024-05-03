@@ -6,22 +6,28 @@
 #include "PlayerCharacter/PlayerCharacterBase/PlayerControlDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Effect/DRRAutomaticRecoveryEffect.h"
 
 #include "CharacterBase/DRRActComponent.h"
 #include "CharacterBase/DRRPassiveActComponent.h"
+#include "Utilities/UtilityList.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
 
 	PassiveComponent = CreateDefaultSubobject<UDRRPassiveActComponent>(TEXT("Passive"));
+	
 
 }
 
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
+	if (AutomaticRecovery != nullptr)
+	{
+		CLog::Log("AddAutomaticRecovery");
+		PassiveComponent->AddEffect(AutomaticRecovery, this);
+	}
 }
 
 void ACharacterBase::ActFunc()
@@ -75,6 +81,12 @@ void ACharacterBase::Tick(float DeltaTime)
 void ACharacterBase::ReciveAttack(float physicsDamage/*, float MagicDamage*/)
 {
 	CurrentHP = CurrentHP - physicsDamage/ physicsDef/*-MagicDamage/MagicDef*/;
+	OnHPChanged.Broadcast(CurrentHP);
+}
+
+void ACharacterBase::ReciveRecovery(float physicsDamage)
+{
+	CurrentHP = FMath::Min(CurrentHP + physicsDamage,MaxHP) ;
 	OnHPChanged.Broadcast(CurrentHP);
 }
 

@@ -17,12 +17,12 @@ ADRRWeaponBase::ADRRWeaponBase()
 IDRRActableInterface* ADRRWeaponBase::GetFirstAct()
 {
 	CLog::Log("FirstWeaponAct");
-	return Cast<IDRRActableInterface>(FirstAct->ClassDefaultObject);
+	return Cast<IDRRActableInterface>(FirstActRef);
 }
 IDRRActableInterface* ADRRWeaponBase::GetSecondAct()
 {
 	CLog::Log("SecondWeaponAct");
-	return Cast<IDRRActableInterface>(SecondAct->ClassDefaultObject);
+	return Cast<IDRRActableInterface>(SecondActRef);
 }
 
 // Called when the game starts or when spawned
@@ -30,7 +30,12 @@ void ADRRWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FirstActRef = Cast<ADRRActUnitBase>(GetWorld()->SpawnActor(FirstAct));
+	SecondActRef = Cast<ADRRActUnitBase>(GetWorld()->SpawnActor(SecondAct));
 
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+	FirstActRef->AttachToActor(this, AttachmentRules);
+	SecondActRef->AttachToActor(this, AttachmentRules);
 	
 }
 

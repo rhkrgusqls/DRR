@@ -149,11 +149,13 @@ void UDRRPassiveActComponent::AddEffect(TSubclassOf<class ADRREffectUnitBase> Ef
 	{
 		return;
 	}
-	ADRREffectUnitBase* Default = Cast<ADRREffectUnitBase>(Effect->GetDefaultObject());
-
-	ADRREffectUnitBase* Temp = NewObject<ADRREffectUnitBase>();
-	Temp->SetData(Default->GetEffectData());
+	//ADRREffectUnitBase* Default = Cast<ADRREffectUnitBase>(Effect->GetDefaultObject());
+	//ADRREffectUnitBase* Temp = NewObject<ADRREffectUnitBase>();
+	ADRREffectUnitBase* Temp = GetWorld()->SpawnActor <ADRREffectUnitBase>(Effect);
+	//Temp->SetData(Default->GetEffectData());
 	Temp->SetUser(User);
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+	Temp->AttachToActor(User, AttachmentRules);
 	Temp->SetTarget(GetOwner());
 	switch (Temp->GetEffectData()->UseType)
 	{
@@ -182,7 +184,13 @@ void UDRRPassiveActComponent::AddEffect(TSubclassOf<class ADRREffectUnitBase> Ef
 
 }
 
-bool UDRRPassiveActComponent::RemoveEffect(ADRREffectUnitBase* Effect)
+bool UDRRPassiveActComponent::RemoveEffect(TSubclassOf<class ADRREffectUnitBase> Effect)
+{
+	
+	return false;
+}
+
+bool UDRRPassiveActComponent::RemoveEffect(TSubclassOf<class ADRREffectUnitBase> Effect, AActor* User)
 {
 	return false;
 }

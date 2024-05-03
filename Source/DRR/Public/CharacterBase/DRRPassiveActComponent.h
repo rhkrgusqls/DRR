@@ -31,7 +31,8 @@ public:
 	void HittedUse(AActor* Attacker);
 	UFUNCTION(BlueprintCallable)
 	void AddEffect(TSubclassOf<class ADRREffectUnitBase> Effect,AActor* User);
-	bool RemoveEffect(class ADRREffectUnitBase* Effect);
+	bool RemoveEffect(TSubclassOf<class ADRREffectUnitBase> Effect);
+	bool RemoveEffect(TSubclassOf<class ADRREffectUnitBase> Effect, AActor* User);
 private:
 	bool CheckDuplicate(TSubclassOf<class ADRREffectUnitBase> Effect, AActor* User);
 
