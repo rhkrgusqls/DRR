@@ -73,6 +73,7 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 
 	end = start + UserChar->GetActorForwardVector() * attackRange;
 	isHit = GetWorld()->SweepSingleByProfile(outHitResult, start, end, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel4, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
 	
 
 
