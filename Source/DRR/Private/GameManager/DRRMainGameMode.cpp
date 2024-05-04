@@ -8,6 +8,7 @@
 ADRRMainGameMode::ADRRMainGameMode()
 {
 	// Default Pawn
+	/*
 	static ConstructorHelpers::FClassFinder<APawn> PlayerCharRef(TEXT("/Game/AdvancedInventory/Character/ThirdPersonBP/Blueprints/ThirdPersonCharacter.ThirdPersonCharacter_C"));
 	if (PlayerCharRef.Class)
 	{
@@ -28,7 +29,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 		MainHUDWidgetClass = MainHUDWidgetRef.Class;
 	}
 
-
+	*/
 	
 	////ItemListWidget
 	//static ConstructorHelpers::FClassFinder<UUserWidget> ItemListUIRef(TEXT("/Game/Asset/UI/Main/WBP_ItemList.WBP_ItemList_C"));
