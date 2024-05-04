@@ -8,7 +8,6 @@
 #include "DRRActableInterface.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnActFuncDelegate,AActor* Owner)
-DECLARE_DELEGATE_RetVal_OneParam( bool, FOnActCheckConditionDelegate, AActor*)
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -25,11 +24,14 @@ class DRR_API IDRRActableInterface
 	GENERATED_BODY()
 
 public:
-	virtual FOnActFuncDelegate GetBeginActFunc() = 0;
+
+	virtual void BeginFunc(AActor* User) =0;
+	virtual void EndFunc(AActor* User) =0;
 	virtual TArray<FOnActFuncDelegate> GetActFunc() = 0;
-	virtual FOnActFuncDelegate GetEndActFunc() = 0;
 	virtual class UDA_ActData* GetActData() = 0;
-	virtual FOnActCheckConditionDelegate GetAchieveCondition() = 0;
+
+
+	virtual class IDRRActableInterface* IsAchieveCondition(float Threshold) =0;
 
 
 };

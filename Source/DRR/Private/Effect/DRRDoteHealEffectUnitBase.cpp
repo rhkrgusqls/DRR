@@ -9,4 +9,6 @@
 void ADRRDoteHealEffectUnitBase::UpdateFunc(AActor* target)
 {
 	CLog::Log("Healing");
+	ACharacterBase* Temp = Cast<ACharacterBase>(target);
+	Temp->ReciveRecovery(10.0f);
 }

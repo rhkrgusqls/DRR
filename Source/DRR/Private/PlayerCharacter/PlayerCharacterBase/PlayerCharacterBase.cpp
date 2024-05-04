@@ -187,29 +187,14 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 			QueryParams
 		);
 
-		if (bHit)
-		{
-			AActor* HitActor = OutHitResult.GetActor();
-
-			if (HitActor)
-			{
-				HitActor->SetActorHiddenInGame(true);
-				if (HitedActor)
-				{
-					if (HitedActor != HitActor)
-					{
-						HitedActor->SetActorHiddenInGame(false);
-						HitedActor = HitActor;
-					}
-				}
-				else { HitedActor = HitActor; }
-			}
-		}
-		else
-		{
-			if (HitedActor) { HitedActor->SetActorHiddenInGame(false); }
-		}
+	SetupCharacterWidget(HUDWidget);
+	if (Weapon != nullptr)
+	{
+		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+		WeaponRef->AttachToActor(this, AttachmentRules);
 	}
+}
 
 }
 
@@ -345,12 +330,12 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 //Attack Type
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr)
+	if (Weapon == nullptr||WeaponRef==nullptr)
 	{
 		return;
 	}
 
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
+	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
 	if (Temp)
 	{
 
@@ -360,12 +345,12 @@ void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 
 void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr)
+	if (Weapon == nullptr || WeaponRef == nullptr)
 	{
 		return;
 	}
 
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
+	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
 	{
 
@@ -375,12 +360,12 @@ void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value
 
 void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr)
+	if (Weapon == nullptr || WeaponRef == nullptr)
 	{
 		return;
 	}
 
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetFirstAct();
+	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
 	if (Temp)
 	{
 
@@ -390,12 +375,12 @@ void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Val
 
 void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr)
+	if (Weapon == nullptr || WeaponRef == nullptr)
 	{
 		return;
 	}
 
-	IDRRActableInterface* Temp = Cast<ADRRWeaponBase>(Weapon->GetDefaultObject())->GetSecondAct();
+	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
 	{
 

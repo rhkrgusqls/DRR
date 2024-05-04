@@ -6,6 +6,7 @@
 
 #include "CharacterBase/CharacterBase.h"
 #include "CharacterBase/DRRActComponent.h"
+#include "Interface/DRRActableInterface.h"
 
 #include "Utilities/UtilityList.h"
 
@@ -46,11 +47,18 @@ void ADRRChargeActUnitProto::EndFunc(AActor* User)
     
 }
 
-bool ADRRChargeActUnitProto::IsAchieveCondition(AActor* User)
+IDRRActableInterface* ADRRChargeActUnitProto::IsAchieveCondition(float Threshold)
 {
-
-    return true;
+    if (Threshold == 1.0f)
+    {
+        return CheckNextAct(0);
+    }
+    else
+    {
+        return nullptr;
+    }
 }
+
 
 void ADRRChargeActUnitProto::Func1(AActor* User)
 {

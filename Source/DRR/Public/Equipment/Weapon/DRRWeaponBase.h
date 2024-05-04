@@ -35,8 +35,10 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ActData)
 	TSubclassOf<class ADRRActUnitBase> FirstAct;
+	TObjectPtr<class ADRRActUnitBase> FirstActRef;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ActData)
 	TSubclassOf<class ADRRActUnitBase> SecondAct;
+	TObjectPtr<class ADRRActUnitBase> SecondActRef;
 
 
 

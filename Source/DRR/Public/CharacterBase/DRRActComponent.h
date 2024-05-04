@@ -44,6 +44,8 @@ public:
 
 	
 	void ActFunc();
+
+	float GetProgress();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -68,7 +70,7 @@ protected:
 	void CheckAct();
 	void EndAct(UAnimMontage* targetMontage, bool isInteruped);
 	void ClearMontageAct();
-
+	
 
 	virtual void BeginDestroy() override;
 private:

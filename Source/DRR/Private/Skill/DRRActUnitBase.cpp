@@ -3,6 +3,7 @@
 
 #include "Skill/DRRActUnitBase.h"
 #include "DataAsset/Item/DA_WeaponData.h"
+#include "Interface/DRRActableInterface.h"
 #include "DataAsset/DA_ActData.h"
 
 // Sets default values
@@ -16,36 +17,10 @@ TArray<FOnActFuncDelegate> ADRRActUnitBase::GetActFunc()
 	return TArray<FOnActFuncDelegate>();
 }
 
-FOnActFuncDelegate ADRRActUnitBase::GetBeginActFunc()
-{
-	FOnActFuncDelegate Temp;
-
-	Temp.BindUObject(this, &ADRRActUnitBase::BeginFunc);
-
-	return Temp;
-
-}
-
-FOnActFuncDelegate ADRRActUnitBase::GetEndActFunc()
-{
-	FOnActFuncDelegate Temp;
-
-	Temp.BindUObject(this, &ADRRActUnitBase::EndFunc);
-
-	return Temp;
-}
 
 UDA_ActData* ADRRActUnitBase::GetActData()
 {
 	return ActData;
-}
-
-FOnActCheckConditionDelegate ADRRActUnitBase::GetAchieveCondition()
-{
-	FOnActCheckConditionDelegate Temp;
-	
-	Temp.BindUObject(this, &ADRRActUnitBase::IsAchieveCondition);
-	return Temp;
 }
 
 void ADRRActUnitBase::BeginFunc(AActor* User)
@@ -57,10 +32,41 @@ void ADRRActUnitBase::EndFunc(AActor* User)
 
 }
 
-bool ADRRActUnitBase::IsAchieveCondition(AActor* User)
+IDRRActableInterface* ADRRActUnitBase::IsAchieveCondition(float Threshold)
 {
-	return true;
+	return nullptr;
 }
+
+void ADRRActUnitBase::BeginPlay()
+{
+	Super::BeginPlay();
+	for (auto i : NextActClass)
+	{
+		ADRRActUnitBase* Temp = GetWorld()->SpawnActor<ADRRActUnitBase>(i);
+		if (Temp)
+		{
+			NextActUnit.Add(Temp);
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+			Temp->AttachToActor(this, AttachmentRules);
+
+		}
+		
+	}
+}
+
+IDRRActableInterface* ADRRActUnitBase::CheckNextAct(uint8 num)
+{
+	if (NextActUnit.Num() > num)
+	{
+		return NextActUnit[num];
+	}
+	else
+	{
+
+		return nullptr;
+	}
+}
+
 
 
 

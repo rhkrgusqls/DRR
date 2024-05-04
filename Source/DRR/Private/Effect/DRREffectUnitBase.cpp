@@ -13,6 +13,7 @@ ADRREffectUnitBase::ADRREffectUnitBase()
 
 void ADRREffectUnitBase::RemoveEffect()
 {
+	CLog::Log("RemoveEffect");
 	Destroy();
 }
 
@@ -30,3 +31,4 @@ void ADRREffectUnitBase::EndFunc( AActor* target)
 
 	CLog::Log("EffectEndFunc");
 }
+
