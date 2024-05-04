@@ -19,6 +19,7 @@ public:
 
 protected:
 	//TSubclassOf<UUserWidget> MainHUDWidgetClass;
+	//TSubclassOf<AHUD> MainHUDWidget;
 
 	//AHUD* MainHUDWidget;
 };

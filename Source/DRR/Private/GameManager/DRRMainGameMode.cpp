@@ -7,29 +7,28 @@
 
 ADRRMainGameMode::ADRRMainGameMode()
 {
-	// Default Pawn
-	/*
-	static ConstructorHelpers::FClassFinder<APawn> PlayerCharRef(TEXT("/Game/AdvancedInventory/Character/ThirdPersonBP/Blueprints/ThirdPersonCharacter.ThirdPersonCharacter_C"));
-	if (PlayerCharRef.Class)
-	{
-		DefaultPawnClass = PlayerCharRef.Class;
-	}
+	//// Default Pawn
+	//static ConstructorHelpers::FClassFinder<APawn> PlayerCharRef(TEXT("/Game/AdvancedInventory/Character/ThirdPersonBP/Blueprints/ThirdPersonCharacter.ThirdPersonCharacter_C"));
+	//if (PlayerCharRef.Class)
+	//{
+	//	DefaultPawnClass = PlayerCharRef.Class;
+	//}
 
-	// Player Controller
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerRef(TEXT("/Script/DRR.ABPlayerController"));
-	if (PlayerControllerRef.Class)
-	{
-		PlayerControllerClass = PlayerControllerRef.Class;
-	}
+	//// Player Controller
+	//static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerRef(TEXT("/Script/DRR.ABPlayerController"));
+	//if (PlayerControllerRef.Class)
+	//{
+	//	PlayerControllerClass = PlayerControllerRef.Class;
+	//}
 
-	// MainWidget
-	static ConstructorHelpers::FClassFinder<UUserWidget> MainHUDWidgetRef(TEXT("/Game/Asset/UI/Main/WBP_MainHUD.WBP_MainHUD"));
-	if (MainHUDWidgetRef.Class)
-	{
-		MainHUDWidgetClass = MainHUDWidgetRef.Class;
-	}
+	//// MainWidget
+	//static ConstructorHelpers::FClassFinder<UUserWidget> MainHUDWidgetRef(TEXT("/Game/Asset/UI/Main/WBP_MainHUD.WBP_MainHUD_C"));
+	//if (MainHUDWidgetRef.Class)
+	//{
+	//	MainHUDWidgetClass = MainHUDWidgetRef.Class;
+	//}
 
-	*/
+	
 	
 	////ItemListWidget
 	//static ConstructorHelpers::FClassFinder<UUserWidget> ItemListUIRef(TEXT("/Game/Asset/UI/Main/WBP_ItemList.WBP_ItemList_C"));
@@ -64,7 +63,6 @@ void ADRRMainGameMode::BeginPlay()
 		
 		if (IsValid(MainHUDWidget))
 		{
-			//ChangeMenuWidget(MainHUDWidgetClass);
 			MainHUDWidget->AddToViewport();			
 		}
 	}

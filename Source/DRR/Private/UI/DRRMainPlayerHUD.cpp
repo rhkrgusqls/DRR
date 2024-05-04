@@ -5,12 +5,18 @@
 
 ADRRMainPlayerHUD::ADRRMainPlayerHUD()
 {
-	
-	//static ConstructorHelpers::FClassFinder<AHUD> DRRHUDRef(TEXT("/Game/Blueprints/UI/BP_HUD.BP_HUD_C"));
-	/*
-	if (DRRHUDRef.Class)
-	{
-		//MainHUD = DRRHUDRef.Class;
-	}
-	*/
+
+	// MainWidget
+	//static ConstructorHelpers::FClassFinder<UUserWidget> MainHUDWidgetRef(TEXT("/Game/Asset/UI/Main/WBP_MainHUD.WBP_MainHUD_C"));
+	//if (MainHUDWidgetRef.Class)
+	//{
+	//	MainHUDWidgetClass = MainHUDWidgetRef.Class;
+
+	//}
+	//
+	//if (IsValid(MainHUDWidget))
+	//{
+	//	//ChangeMenuWidget(MainHUDWidgetClass);
+	//	MainHUDWidget->AddToViewport();
+	//}
 }

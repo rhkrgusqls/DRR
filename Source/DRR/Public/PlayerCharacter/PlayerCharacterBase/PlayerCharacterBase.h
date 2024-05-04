@@ -85,7 +85,7 @@ protected:
 private:
 	ECharacterControlType CurrentCharacterControlType;
 
-	TObjectPtr<class UDRRUserWidget> HUDWidget;
+	//TObjectPtr<class UDRRUserWidget> HUDWidget;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))

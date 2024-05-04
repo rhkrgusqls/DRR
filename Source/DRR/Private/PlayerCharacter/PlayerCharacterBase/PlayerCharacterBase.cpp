@@ -158,10 +158,10 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxGold(999999);
 	SetGold(0);
 
-	ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
+	//ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	//HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
 
-	SetupCharacterWidget(HUDWidget);
+	//SetupCharacterWidget(HUDWidget);
 }
 
 AActor* HitedActor;
