@@ -24,21 +24,13 @@ void DRRAct::ActRelease()
 
 DRRAct::~DRRAct()
 {
-	if (BeginActFunc.IsBound())
-	{
-		BeginActFunc.Unbind();
-
-	}
-	if (BeginActFunc.IsBound())
-	{
-		EndActFunc.Unbind();
-
-	}
+	
 	for (FOnActFuncDelegate f : ActFunc)
 	{
 		f.Unbind();
 	}
 	ActFunc.Empty();
+	Actor = nullptr;
 }
 
 float DRRAct::GetNextTime()
@@ -81,12 +73,11 @@ uint8 DRRAct::GetCurFuncCount()
 	return Temp;
 }
 
-FOnActFuncDelegate DRRAct::DoBeginAct()
+void DRRAct::DoBeginAct(AActor* User)
 {
-	
-	return BeginActFunc;
-	
+	Actor->BeginFunc(User);
 }
+
 
 FOnActFuncDelegate DRRAct::DoAct()
 {
@@ -101,11 +92,9 @@ FOnActFuncDelegate DRRAct::DoAct()
 	return (ActFunc[Result]);
 }
 
-FOnActFuncDelegate DRRAct::DoEndAct()
+void DRRAct::DoEndAct(AActor* User)
 {
-
-
-	return EndActFunc;
+	Actor->EndFunc(User);
 }
 
 const UDA_ActData* DRRAct::GetCurAct()
@@ -133,23 +122,22 @@ FName DRRAct::GetMontgeSectionName()
 void DRRAct::EndAct()
 {
 	CLog::Log("DRRAct::EndAct");
-	if (BeginActFunc.IsBound())
-	{
-		BeginActFunc.Unbind();
 
-	}
-	if (BeginActFunc.IsBound())
-	{
-		EndActFunc.Unbind();
-
-	}
 	for (FOnActFuncDelegate f : ActFunc)
 	{
 		f.Unbind();
 	}
 	ActFunc.Empty();
-	
+	Actor = nullptr;
 
+}
+
+void DRRAct::IncreaseThreshold()
+{
+	if (GetCurAct()->HasAnotherAct)
+	{
+		threshold = GetCurAct()->CheckPerChargeValue[curActCount];
+	}
 }
 
 
@@ -161,16 +149,14 @@ bool DRRAct::AfterAct()
 void DRRAct::SetActs(IDRRActableInterface* Target)
 {
 	CLog::Log("DRRAct::SetActs");
-	BeginActFunc = Target->GetBeginActFunc();
+	Actor = Target;
 	ActFunc = Target->GetActFunc( );
-	EndActFunc = Target->GetEndActFunc();
-	ConditionCheckFunc = Target->GetAchieveCondition();
 	CLog::Log(ActFunc.Num());
-	CLog::Log("NextActBound");
-	CLog::Log(ConditionCheckFunc.IsBound() == true);
 	
 	
 }
+
+
 
 bool DRRAct::IsLastNumAct()
 {

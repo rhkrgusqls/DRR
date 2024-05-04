@@ -54,6 +54,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = Section)
 	TArray<float> EffectiveFrameCount;
 
+
+	UPROPERTY(EditAnywhere, Category = Section)
+	TArray<float> CheckPerChargeValue;
+
 	UPROPERTY(EditAnywhere, Category = Section)
 	TArray<uint8> FuncCountPerAct;
 
@@ -69,6 +73,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
 	uint8 HasAnotherAct : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
-	TSubclassOf<class ADRRActUnitBase> NextActUnit;
 };

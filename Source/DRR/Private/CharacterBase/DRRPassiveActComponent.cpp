@@ -86,8 +86,6 @@ void UDRRPassiveActComponent::AutoUse()
 	{
 		if (AutoEffects[i]->CheckReadyToUse())
 		{
-			CLog::Log("Use");
-			CLog::Log(i);
 			AutoEffects[i]->UseEffect(GetOwner());
 			AutoEffects[i]->DelayReset();
 		}
@@ -149,10 +147,7 @@ void UDRRPassiveActComponent::AddEffect(TSubclassOf<class ADRREffectUnitBase> Ef
 	{
 		return;
 	}
-	//ADRREffectUnitBase* Default = Cast<ADRREffectUnitBase>(Effect->GetDefaultObject());
-	//ADRREffectUnitBase* Temp = NewObject<ADRREffectUnitBase>();
 	ADRREffectUnitBase* Temp = GetWorld()->SpawnActor <ADRREffectUnitBase>(Effect);
-	//Temp->SetData(Default->GetEffectData());
 	Temp->SetUser(User);
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
 	Temp->AttachToActor(User, AttachmentRules);
@@ -161,19 +156,15 @@ void UDRRPassiveActComponent::AddEffect(TSubclassOf<class ADRREffectUnitBase> Ef
 	{
 	case EPassiveType::Hit :
 		CreateHit(Temp);
-		CLog::Log("CreateHit");
 		break;
 	case EPassiveType::Attack:
 		CreateAttack(Temp);
-		CLog::Log("CreateAttack");
 		break;
 	case EPassiveType::Auto:
 		CreateAuto(Temp);
-		CLog::Log("CreateAuto");
 		break;
 	case EPassiveType::Damage:
 		CreateDamage(Temp);
-		CLog::Log("CreateDamage");
 
 		break;
 	default:

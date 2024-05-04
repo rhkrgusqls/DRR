@@ -75,8 +75,6 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 {
 
 
-	CLog::Log("Act");
-	CLog::Log((uint8)Actable->GetActData()->Type);
 	
 
 	//실행중인 행동이 없거나 이번에 들어온 행동입력이 다른행동일경우
@@ -98,6 +96,8 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 		return;
 	}
 
+	CLog::Log("InValidAct");
+
 }
 
 void UDRRActComponent::ActRelease(IDRRActableInterface* Actable)
@@ -106,7 +106,6 @@ void UDRRActComponent::ActRelease(IDRRActableInterface* Actable)
 	{
 		return;
 	}
-	CLog::Log("KeyRelease");
 	Actor->ActRelease();
 	if (Actor->GetCurAct()->Type==EActType::Charging)
 	{
@@ -128,9 +127,19 @@ void UDRRActComponent::ActFunc()
 	Actor->DoAct().ExecuteIfBound(GetOwner());
 
 }
+float UDRRActComponent::GetProgress()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(ActTimerHandle) == false)
+	{
+		return(0.0f);
+
+	}
+	float ElapsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(ActTimerHandle);
+	float MaxTime = Actor->GetNextTime();
+	return ElapsedTime/MaxTime;
+}
 DRRAct* UDRRActComponent::ShortShot( IDRRActableInterface* Target)
 {
-	CLog::Log("MakeShortShot");
 	Actor = new DRRShortShotAct();
 
 	return Actor;
@@ -139,21 +148,18 @@ DRRAct* UDRRActComponent::ShortShot( IDRRActableInterface* Target)
 
 DRRAct* UDRRActComponent::Charging(IDRRActableInterface* Target)
 {
-	CLog::Log("MakeCharging");
 	Actor = new DRRChargeAct();;;
 	return Actor;
 }	
 
 DRRAct* UDRRActComponent::Casting(IDRRActableInterface* Target)
 {
-	CLog::Log("MakeCasting");
 	Actor = new DRRCastAct();;
 	return Actor;
 }
 
 DRRAct* UDRRActComponent::Combo(IDRRActableInterface* Target)
 {
-	CLog::Log("MakeCombo");
 	Actor = new DRRComboAct();;
 
 	return Actor;
@@ -161,7 +167,6 @@ DRRAct* UDRRActComponent::Combo(IDRRActableInterface* Target)
 
 DRRAct* UDRRActComponent::Trigger(IDRRActableInterface* Target)
 {
-	CLog::Log("MakeCombo");
 	Actor = new DRRTriggerAct();;
 
 	return Actor;
@@ -177,7 +182,7 @@ void UDRRActComponent::BeginAct()
 	animInstance->Montage_Play(Actor->GetCurAct()->ActionMontage);
 
 
-	Actor->DoBeginAct().ExecuteIfBound(GetOwner());
+	Actor->DoBeginAct(GetOwner());
 	//몽타주가 끝날떄 호출되는델리게이트
 	FOnMontageEnded endDelegate;
 	//델리게이트 바인딩
@@ -216,18 +221,19 @@ void UDRRActComponent::CheckAct()
 	EndTimer();
 	
 	CLog::Log("UDRRActComponent::CheckAct");
-
+	
 
 	if (hasNextAct)
 	{
 		CLog::Log("ActNextMotion");
 		
+		Actor->IncreaseThreshold();
+
 		uint8 curActCount=Actor->NextAct();
 
 		UAnimInstance* animInstance = Cast<ACharacter>(GetOwner())->GetMesh()->GetAnimInstance();
 		//실행할 색션이름 지정 포맷 FString 앞에는 *을 꼭붙여줘야함
 
-		CLog::Log("UDRRActComponent::GetMontgeSectionName");
 		FName nextSectionName(Actor->GetMontgeSectionName());
 		CLog::Log(nextSectionName.ToString());
 			//몽타주 실행
@@ -252,17 +258,17 @@ void UDRRActComponent::CheckAct()
 			return;
 		}
 		bool another = PrevActor->GetCurAct()->HasAnotherAct;
-		auto nextAct = PrevActor->GetCurAct()->NextActUnit.GetDefaultObject();
-		bool check = PrevActor->GetConditionCheckFunc().Execute(GetOwner());
-		if(PrevActor!=nullptr&& another && check &&nextAct!=nullptr)
+		auto NextAct = PrevActor->GetConditionCheckFunc();
+		if(PrevActor!=nullptr&& another  && NextAct !=nullptr)
 		{
 			CLog::Log("TryTriggerAct");
-			Act(nextAct);
+			Act(NextAct);
 		}
 
 	}
 
 }
+
 
 void UDRRActComponent::EndAct(UAnimMontage* targetMontage, bool isInteruped)
 {
@@ -270,9 +276,9 @@ void UDRRActComponent::EndAct(UAnimMontage* targetMontage, bool isInteruped)
 	CLog::Log(targetMontage->GetName());
 
 	
-	if (PrevActor!=nullptr&&PrevActor->DoEndAct().IsBound())
+	if (PrevActor!=nullptr)
 	{
-		PrevActor->DoEndAct().Execute(GetOwner());
+		PrevActor->DoEndAct(GetOwner());
 
 	}
 	EraseAct();

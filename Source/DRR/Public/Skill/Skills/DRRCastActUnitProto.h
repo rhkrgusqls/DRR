@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Skill/DRRActUnitBase.h"
+#include "Interface/DRRActableInterface.h"
 #include "DRRCastActUnitProto.generated.h"
 
 /**
@@ -17,7 +18,7 @@ public:
 	ADRRCastActUnitProto();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
-	virtual bool IsAchieveCondition(AActor* User) override;
+	virtual IDRRActableInterface* IsAchieveCondition(float Threshold) override;
 
 
 

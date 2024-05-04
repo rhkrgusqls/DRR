@@ -6,6 +6,7 @@
 
 #include "CharacterBase/CharacterBase.h"
 #include "CharacterBase/DRRActComponent.h"
+#include "Interface/DRRActableInterface.h"
 
 #include "Utilities/UtilityList.h"
 
@@ -24,10 +25,18 @@ TArray<FOnActFuncDelegate> ADRRCastActUnitProto::GetActFunc()
     return TArray<FOnActFuncDelegate>();
 }
 
-bool ADRRCastActUnitProto::IsAchieveCondition(AActor* User)
+IDRRActableInterface* ADRRCastActUnitProto::IsAchieveCondition(float Threshold)
 {
-    return true;
+    if (Threshold == 1.0f)
+    {
+        return CheckNextAct(0);
+    }
+    else
+    {
+        return nullptr;
+    }
 }
+
 
 void ADRRCastActUnitProto::BeginFunc(AActor* User)
 {

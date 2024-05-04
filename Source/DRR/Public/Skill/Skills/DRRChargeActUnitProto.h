@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Skill/DRRActUnitBase.h"
+#include "Interface/DRRActableInterface.h"
 #include "DRRChargeActUnitProto.generated.h"
 
 /**
@@ -23,12 +24,14 @@ public:
 protected:
 	virtual void BeginFunc(AActor* User) override;
 	virtual void EndFunc(AActor* User) override;
-	virtual bool IsAchieveCondition(AActor* User) override;
+	virtual IDRRActableInterface* IsAchieveCondition(float Threshold) override;
 
 private:
 	void Func1(AActor* User);
 	void Func2(AActor* User);
 	void Func3(AActor* User);
 
-private:
+protected:
+
+
 };

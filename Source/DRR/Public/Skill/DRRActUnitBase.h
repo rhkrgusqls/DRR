@@ -17,18 +17,16 @@ public:
 	ADRRActUnitBase();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
-	virtual FOnActFuncDelegate GetBeginActFunc() override;
-	virtual FOnActFuncDelegate GetEndActFunc() override;
 	virtual class UDA_ActData* GetActData() override;
 
-	virtual FOnActCheckConditionDelegate GetAchieveCondition() override;
+	virtual void BeginFunc(AActor* User) override;
+	virtual void EndFunc(AActor* User) override;
 
+	virtual IDRRActableInterface* IsAchieveCondition(float Threshold) override;
 protected:
-	virtual void BeginFunc(AActor* User);
-	virtual void EndFunc(AActor* User);
+	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	virtual bool IsAchieveCondition(AActor* User);
+	IDRRActableInterface* CheckNextAct(uint8 num);
 
 public:	
 
@@ -38,6 +36,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ActData)
 	TObjectPtr<class UDA_ActData> ActData;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = NextActData)
+	TArray<TSubclassOf<class ADRRActUnitBase>> NextActClass;
+
+	TArray<TObjectPtr<class ADRRActUnitBase>> NextActUnit;
 
 
 };
