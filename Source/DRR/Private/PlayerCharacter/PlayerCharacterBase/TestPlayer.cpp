@@ -49,14 +49,14 @@ ATestPlayer::ATestPlayer()
 
 
 	//Set Mesh and Anim BP-Kwakhyunbin
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Player/TestAsset/Animation/Sword_And_Shield.Sword_And_Shield'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/Player/TestAsset/Animation/Sword_And_Shield.Sword_And_Shield'"));
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 
 	//Animation
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Script/Engine.AnimBlueprint'/Game/Blueprints/Player/Test/ABP_PlayerAnimInstance.ABP_PlayerAnimInstance_C'"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Blueprints/Player/Test/ABP_PlayerAnimInstance.ABP_PlayerAnimInstance_C'"));
 	if (AnimInstanceClassRef.Class)
 	{
 		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
@@ -70,24 +70,24 @@ ATestPlayer::ATestPlayer()
 	//}
 
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/PressLeftFireAction.PressLeftFireAction'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Game/Player/Input/Action/PressLeftFireAction.PressLeftFireAction"));
 	if (InputActionLeftPressRef.Object)
 	{
 		ActLeftPressAction = InputActionLeftPressRef.Object;
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/PressRightFireAction.PressRightFireAction'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Game/Player/Input/Action/PressRightFireAction.PressRightFireAction"));
 	if (InputActionRightPressRef.Object)
 	{
 		ActRightPressAction = InputActionRightPressRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftReleaseRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/ReleaseLeftFireAction.ReleaseLeftFireAction'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftReleaseRef(TEXT("/Game/Player/Input/Action/ReleaseLeftFireAction.ReleaseLeftFireAction"));
 	if (InputActionLeftReleaseRef.Object)
 	{
 		ActLeftReleaseAction = InputActionLeftReleaseRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightReleaseRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Player/Input/Action/ReleaseRightFireAction.ReleaseRightFireAction'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightReleaseRef(TEXT("/Game/Player/Input/Action/ReleaseRightFireAction.ReleaseRightFireAction"));
 	if (InputActionRightReleaseRef.Object)
 	{
 		ActRightReleaseAction = InputActionRightReleaseRef.Object;

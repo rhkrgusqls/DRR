@@ -58,14 +58,14 @@ APlayerCharacterBase::APlayerCharacterBase()
 	bUseControllerRotationYaw = false;
 
 	//Set Mesh
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/Asset/Character/Meshes/Player.Player"));
+	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/Asset/Character/Meshes/Player.Player"));
 
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	}
+	}*/
 
 	//SetInputDataAsset
 	static ConstructorHelpers::FObjectFinder<UPlayerControlDataAsset> QuaterDataAssetRef(TEXT("/Game/Asset/Character/CharacterControlData/DA_CCQuater.DA_CCQuater"));
@@ -75,11 +75,11 @@ APlayerCharacterBase::APlayerCharacterBase()
 	}
 
 	//Animation
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Blueprints/Animation/ABP_PlayerAnim.ABP_PlayerAnim_C"));
-	if (AnimInstanceClassRef.Class)
-	{
-		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-	}
+	//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Blueprints/Animation/ABP_PlayerAnim.ABP_PlayerAnim_C"));
+	//if (AnimInstanceClassRef.Class)
+	//{
+	//	GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
+	//}
 
 	/*---------------------------------------------------*/
 
@@ -114,46 +114,31 @@ APlayerCharacterBase::APlayerCharacterBase()
 		SitAction = InputActionSitRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionAttackRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Attack.IA_Attack"));
-	if (InputActionJumpRef.Object)
-	{		
-		AttackAction = InputActionAttackRef.Object;
-	}
-
-
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction"));
 	if (InputActionLeftPressRef.Object)
 	{
 		ActLeftPressAction = InputActionLeftPressRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressRightFireAction.IA_PressRightFireAction'"));
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionRightPressRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_PressRightFireAction.IA_PressRightFireAction"));
 	if (InputActionRightPressRef.Object)
 	{
 		ActRightPressAction = InputActionRightPressRef.Object;
 	}
 
 
-
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionChangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
-	if (InputActionJumpRef.Object)
-	{
-		weaponChangeAction = InputActionChangeRef.Object;
-	}
-
 	// UI Widget
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
-	ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
+	//ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/Main/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
 	{
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
-		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
+		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);		
 	}
 
 	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
-
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -179,11 +164,54 @@ void APlayerCharacterBase::BeginPlay()
 	SetupCharacterWidget(HUDWidget);
 }
 
-//void APlayerCharacterBase::Tick(float Deltatime)
-//{
-//	Super::Tick(Deltatime);
-//	SetupCharacterWidget(HUDWidget);
-//}
+AActor* HitedActor;
+void APlayerCharacterBase::Tick(float DeltaTime)
+{		
+	Super::Tick(DeltaTime);
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+
+		FCollisionQueryParams QueryParams;
+		QueryParams.bTraceComplex = true;
+		QueryParams.AddIgnoredActor(this);
+
+		FHitResult OutHitResult;
+
+		bool bHit = World->LineTraceSingleByChannel(
+			OutHitResult,
+			FollowCamera->GetComponentLocation(),
+			this->GetActorLocation(),
+			ECC_Visibility,
+			QueryParams
+		);
+
+		if (bHit)
+		{
+			AActor* HitActor = OutHitResult.GetActor();
+
+			if (HitActor)
+			{
+				HitActor->SetActorHiddenInGame(true);
+				if (HitedActor)
+				{
+					if (HitedActor != HitActor)
+					{
+						HitedActor->SetActorHiddenInGame(false);
+						HitedActor = HitActor;
+					}
+				}
+				else { HitedActor = HitActor; }
+			}
+		}
+		else
+		{
+			if (HitedActor) { HitedActor->SetActorHiddenInGame(false); }
+		}
+	}
+
+}
 
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
@@ -252,6 +280,7 @@ void APlayerCharacterBase::SetGold(int NewGold)
 	OnGoldChanged.Broadcast(CurrentGold);
 }
 
+//Key Input
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -264,7 +293,6 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
-	EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -314,11 +342,7 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
-void APlayerCharacterBase::Attack(const FInputActionValue& Value) {
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
-
-}
-
+//Attack Type
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
 	if (Weapon == nullptr)
@@ -379,7 +403,7 @@ void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Va
 	}
 }
 
-
+//ETC Action
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
 	if (IsSit == true ) {
@@ -392,25 +416,6 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 		Crouch();
 	}	
 }
-
-
-//Change weapon
-
-void APlayerCharacterBase::weaponChange(const FInputActionValue& Value) {
-	
-	if (curWeapon == 0) {
-		UE_LOG(LogTemp, Log, TEXT("Change :: 0"));
-		curWeapon++;
-	}
-	else if (curWeapon == 1) {
-		UE_LOG(LogTemp, Log, TEXT("Change :: 1"));
-		curWeapon--;
-	}
-	
-	//Weapon->SetSkeletalMesh(WeaponList[curWeapon]->WeaponMesh.Get());
-	//Stat->SetModifierStat(WeaponList[curWeapon]->ModifierStat);
-}
-
 
 void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType)
 {

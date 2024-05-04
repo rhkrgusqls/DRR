@@ -21,5 +21,5 @@ protected:
 	//TSubclassOf<UUserWidget> MainHUDWidgetClass;
 
 	//AHUD* MainHUDWidget;
-	
 };
+
