@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/WidgetComponent.h"
 #include "EnemyCharacter/EnemyCharacterBase/EnemyCharacterBase.h"
 #include "NormalMonster.generated.h"
 
@@ -14,8 +15,18 @@ class DRR_API ANormalMonster : public AEnemyCharacterBase
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UWidgetComponent> HPBarUI;
+	TObjectPtr<class UProgressBar> HPPrgressBar;
+
 	ANormalMonster();
 	ANormalMonster(int Type);
 	virtual void BeginPlay() override;
-	
+	virtual void Tick(float DeltaTime) override;
+	virtual void ReciveAttack(float physicsDamage/*, float MagicDamage*/) override;
+	void SetHPBarHiddenTimer();
+	void HideHPBar();
+
+private:
+	FTimerHandle HPBarHideTimerHandle;
 };
