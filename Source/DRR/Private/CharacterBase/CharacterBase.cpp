@@ -109,5 +109,11 @@ void ACharacterBase::RemoveDotDamage(float TickDamage)
 
 void ACharacterBase::IsDead()
 {
+	bIsDead = true;
 
+	PlayAnimMontage(DeadMontage);
+
+	//DisableCharacterMovement();
+
+	//GetWorldTimerManager().SetTimer(DeathTimerHandle, this, &ACharacterBase::HandleDeath, 5.0f, false);
 }

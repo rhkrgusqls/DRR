@@ -82,7 +82,7 @@ void ADRRMainGameMode::BeginPlay()
 		{
 			// add the function of Adding this UI after the event of Item Collect
 
-			ItemListWidget->AddToViewport();
+			//ItemListWidget->AddToViewport();
 
 			// add the function of deleting this UI after 3 seconds
 			//GetWorldTimerManager().SetTimer(TimerHandle, ItemListWidget, ItemListWidget->SetVisibility(ESlateVisibility::Hidden), 3.0f, false);
