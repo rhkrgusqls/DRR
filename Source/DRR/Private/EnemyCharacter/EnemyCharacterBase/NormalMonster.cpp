@@ -2,10 +2,16 @@
 
 
 #include "EnemyCharacter/EnemyCharacterBase/NormalMonster.h"
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "GameFramework/Actor.h"
 #include "EnemyCharacter/Enemy/NormalEnemyData/DBNormalEnemyAnimMongtage.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
+#include "Engine/World.h"
 #include "EnemyCharacter/AIController/NormalAIController.h"
 
+#include "Components/ProgressBar.h"
 ANormalMonster::ANormalMonster()
 {
 	AIControllerClass = ANormalAIController::StaticClass();
@@ -35,6 +41,23 @@ ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(Type)
 		StiffnessMontage = EnemyAnim.StiffnessMontage;
 		DeadMontage = EnemyAnim.DeadMontage;
 	}
+
+	HPBarUI = CreateDefaultSubobject<UWidgetComponent>(TEXT("BPBarHUD"));
+	static ConstructorHelpers::FClassFinder<UUserWidget>HPBarRef(TEXT("/Game/Asset/UI/EnemyUI/Normal/WBP_HPBarNormalEnemy.WBP_HPBarNormalEnemy_C"));
+	if (HPBarRef.Class)
+	{
+		HPBarUI->SetWidgetClass(HPBarRef.Class);;
+		HPBarUI->SetupAttachment(RootComponent);
+
+		HPBarUI->SetWidgetSpace(EWidgetSpace::Screen);
+
+		HPBarUI->SetDrawSize(FVector2D(180.0f, 20.0f));
+		HPBarUI->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		HPBarUI->SetVisibility(false);
+	}
+
+
 	AIControllerClass = ANormalAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
@@ -53,4 +76,43 @@ void ANormalMonster::BeginPlay()
             BlackboardComp->SetValueAsBool(TEXT("IsPatrolUnit"), IsAggressive);
         }
     }
+	HPPrgressBar = Cast<UProgressBar>(HPBarUI->GetWidget()->GetWidgetFromName(TEXT("HP_ProgressBar")));
+}
+
+void ANormalMonster::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (DotDamage!=0)
+	{
+		HPBarUI->SetVisibility(true);
+		SetHPBarHiddenTimer();
+	}
+	if (HPPrgressBar)
+	{
+		HPPrgressBar->SetPercent(CurrentHP / MaxHP);
+	}
+}
+
+void ANormalMonster::ReciveAttack(float physicsDamage)
+{
+	Super::ReciveAttack(physicsDamage);
+	{
+		HPBarUI->SetVisibility(true);
+		SetHPBarHiddenTimer();
+	}
+}
+
+void ANormalMonster::SetHPBarHiddenTimer()
+{
+	GetWorldTimerManager().ClearTimer(HPBarHideTimerHandle);
+
+	GetWorldTimerManager().SetTimer(HPBarHideTimerHandle, this, &ANormalMonster::HideHPBar, 5.0f, false);
+}
+
+void ANormalMonster::HideHPBar()
+{
+	if (HPBarUI)
+	{
+		HPBarUI->SetVisibility(false);
+	}
 }

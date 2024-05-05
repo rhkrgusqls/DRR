@@ -57,7 +57,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
+	virtual void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
 	void ReciveRecovery(float physicsDamage/*, float MagicDamage*/);
 
 	void SetDotDamage(float TickDamage, float DurationTime);
