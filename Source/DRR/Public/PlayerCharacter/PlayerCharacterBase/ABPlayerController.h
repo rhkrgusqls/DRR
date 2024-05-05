@@ -17,4 +17,8 @@ class DRR_API AABPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 
+	void RespawnPlayer();
+	UFUNCTION(Exec)
+	void KillPlayer();
+		
 };

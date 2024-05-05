@@ -9,6 +9,7 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
+#include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
 
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
@@ -161,7 +162,11 @@ APlayerCharacterBase::APlayerCharacterBase()
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	SetCharacterControl(ECharacterControlType::Quater);
+	if (GetController() != nullptr)
+	{
+		SetCharacterControl(ECharacterControlType::Quater);
+
+	}
 
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
@@ -213,6 +218,27 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->UpdateGold(CurrentGold);
 		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);		<-AddUObject makes error and I don't know why
 	}
+}
+
+void APlayerCharacterBase::IsDead()
+{
+
+	AABPlayerController* CurrentController = Cast< AABPlayerController>(  GetController());
+
+	Super::IsDead();
+
+	if (CurrentController)
+	{
+		CurrentController->RespawnPlayer();
+	}
+
+}
+
+void APlayerCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	SetCharacterControl(ECharacterControlType::Quater);
 }
 
 void APlayerCharacterBase::SetMaxHP(float NewHP)

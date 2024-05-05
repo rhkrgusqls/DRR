@@ -20,6 +20,10 @@ public:
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
 	
+
+
+	virtual void IsDead() override;
+	virtual void PossessedBy(AController* NewController) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
