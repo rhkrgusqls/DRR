@@ -72,7 +72,7 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 	float halfHeight = attackRange / 2.0f;
 
 	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel4, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
 	
 
 
