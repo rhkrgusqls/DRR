@@ -28,6 +28,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/DRRMainGameMode.h"
 
+#include"Utilities/UtilityList.h"
+
 APlayerCharacterBase::APlayerCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -335,7 +337,7 @@ void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
 	if (Temp)
 	{
-
+		CLog::Log("LeftPress");
 		ActComponent->Act(Temp);
 	}
 }
@@ -350,6 +352,7 @@ void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value
 	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
 	{
+		CLog::Log("RightPress");
 
 		ActComponent->Act(Temp);
 	}
