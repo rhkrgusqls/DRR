@@ -16,6 +16,7 @@ public:
 	DRRAct();
 	
 	void SetActor(class IDRRActableInterface* Target);
+	IDRRActableInterface* GetActor() { return Actor; }
 	virtual void ActRelease();
 	const class UDA_ActData* GetCurAct();
 	//다음 행동을 위한 입력

@@ -91,7 +91,7 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 	CLog::Log(Actor->GetCurAct()->ActionName);
 	CLog::Log(Actable->GetActData()->ActionName);
 	//같은 명령이라면 같은 행동선에서 다음 행동을 실행
-	if (Actor->GetCurAct()->ActionName.Equals(Actable->GetActData()->ActionName))
+	if (Actor->GetActor()==Actable)
 	{
 		CLog::Log("AfterAct");
 		AfterAct();
