@@ -66,6 +66,8 @@ public:
 
 	virtual void IsDead();
 
+	void DestroySelf();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
 
@@ -143,4 +145,6 @@ public:
 	FOnHPChangedDelegate OnHPChanged;
 
 	bool bIsDead;
+	
+	FTimerHandle DeathTimer;
 };
