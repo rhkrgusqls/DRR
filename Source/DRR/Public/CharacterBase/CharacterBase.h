@@ -141,4 +141,6 @@ public:
 	TSubclassOf<class ADRRAutomaticRecoveryEffect> AutomaticRecovery;
 
 	FOnHPChangedDelegate OnHPChanged;
+
+	bool bIsDead;
 };
