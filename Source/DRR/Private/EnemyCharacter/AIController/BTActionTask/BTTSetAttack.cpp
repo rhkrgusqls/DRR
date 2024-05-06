@@ -24,6 +24,11 @@ EBTNodeResult::Type UBTTSetAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp
         // Get the target actor from the blackboard
         AActor* Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));
 
+        if (Target == nullptr)
+        {
+            return EBTNodeResult::Failed;
+        }
+
         // Perform a melee attack towards the target location
         OwnerEnemy->MeleeAttack(Target->GetActorLocation());
     }

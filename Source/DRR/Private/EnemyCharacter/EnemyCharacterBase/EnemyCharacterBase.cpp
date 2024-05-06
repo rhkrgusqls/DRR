@@ -122,7 +122,6 @@ void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
 void AEnemyCharacterBase::BeginPlay()
 {
     Super::BeginPlay();
-    UWorld* World = GetWorld();
     UGameManager* GameInstance = Cast<UGameManager>(GetGameInstance());
     if (GameInstance)
     {
@@ -138,17 +137,6 @@ void AEnemyCharacterBase::BeginPlay()
     // MagicAttack = MagicAttack * (100 + Level);
     physicsDef = physicsDef * (10 + Level);
     // MagicDef = MagicDef * (100 + Level);
-    if (World != nullptr)
-    {
-        for (TActorIterator<AEnemyManager> It(World); It; ++It)
-        {
-            Manager = *It;
-        }
-    }
-    if (Manager != nullptr)
-    {
-        MonsterNum = Manager->SetMonsterNum(this);
-    }
 }
 
 void AEnemyCharacterBase::Tick(float DeltaTime)

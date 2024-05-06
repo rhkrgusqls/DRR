@@ -29,12 +29,15 @@ public:
 
 	bool IsLeader(int32 MonsterNumber);
 
+	void SetDeadMonster(int32 MonsterNumber);
+
 	FVector GetPatrolPoint(int32 PatrolUnitNum);
 
 	FVector FPatrolPoint;
 
 	int32 SetMonsterNum(AActor* Self);
 
+	TArray<bool> IsDeadMonster;
 	TArray<AActor*> PatrolPoint;
 	TArray<AActor*> ArrayPatrolUnit;
 	//MonsterNumber, GroupNumber
