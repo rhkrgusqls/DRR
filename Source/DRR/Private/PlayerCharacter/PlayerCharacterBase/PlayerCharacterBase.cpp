@@ -27,6 +27,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/DRRMainGameMode.h"
+#include "GameManager/ABGameInstance.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
@@ -114,6 +115,12 @@ APlayerCharacterBase::APlayerCharacterBase()
 		SitAction = InputActionSitRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActioItemUseRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_UseItem.IA_UseItem"));
+	if (InputActioItemUseRef.Object)
+	{
+		ItemUseAction = InputActioItemUseRef.Object;
+	}
+
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction"));
 	if (InputActionLeftPressRef.Object)
 	{
@@ -125,6 +132,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		ActRightPressAction = InputActionRightPressRef.Object;
 	}
+
 
 
 	// UI Widget
@@ -161,18 +169,17 @@ void APlayerCharacterBase::BeginPlay()
 	//ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	//HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
 
-	//SetupCharacterWidget(HUDWidget);
+	SetupCharacterWidget(HUDWidget);
 }
 
 AActor* HitedActor;
 void APlayerCharacterBase::Tick(float DeltaTime)
-{		
+{			
 	Super::Tick(DeltaTime);
 
 	UWorld* World = GetWorld();
 	if (World)
 	{
-
 		FCollisionQueryParams QueryParams;
 		QueryParams.bTraceComplex = true;
 		QueryParams.AddIgnoredActor(this);
@@ -187,14 +194,38 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 			QueryParams
 		);
 
-	SetupCharacterWidget(HUDWidget);
+		if (bHit)
+		{
+			AActor* HitActor = OutHitResult.GetActor();
+
+			if (HitActor)
+			{
+				HitActor->SetActorHiddenInGame(true);
+				if (HitedActor)
+				{
+					if (HitedActor != HitActor)
+					{
+						HitedActor->SetActorHiddenInGame(false);
+						HitedActor = HitActor;
+					}
+				}
+				else { HitedActor = HitActor; }
+			}
+		}
+		else
+		{
+			if (HitedActor)
+			{ HitedActor->SetActorHiddenInGame(false); }
+		}
+
+
 	if (Weapon != nullptr)
 	{
 		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
 		WeaponRef->AttachToActor(this, AttachmentRules);
 	}
-}
+	}
 
 }
 
@@ -220,6 +251,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 	}
 }
 
+//Set PlayerStat
 void APlayerCharacterBase::SetMaxHP(float NewHP)
 {
 	MaxHP = FMath::Clamp(NewHP, 0.0f, 1000.0f);
@@ -278,6 +310,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
+	EnhancedInputComponent->BindAction(ItemUseAction, ETriggerEvent::Started, this, &APlayerCharacterBase::ItemUse);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -305,6 +338,12 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 	CameraBoom->bInheritPitch = CharacterControlData->bInheritPitch;
 	CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
+}
+
+void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType)
+{
+	UPlayerControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
+	SetCharacterControlData(NewCharacterControlData);
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -402,11 +441,41 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	}	
 }
 
-void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType)
+//ItemUse
+void APlayerCharacterBase::ItemUse(const FInputActionValue& Value)
 {
-	UPlayerControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
-	SetCharacterControlData(NewCharacterControlData);
+	UABGameInstance* ABGameInstance = Cast<UABGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (nullptr == ABGameInstance) return;
+	
+	//int index = 10;
+	//FData_Item* ItemData = ABGameInstance->GetABItemData(index);
+
+
+
+	//if (ItemData)
+	//{
+	//	
+	//	switch (index) {
+	//	case 10:
+	//		if (CurrentHP < 100.0f) { CurrentHP += 10.0f; }
+
+	//		break;
+	//	}
+	//	SetHP(CurrentHP);
+	//}
+	//else
+	//{
+	//	// 데이터 테이블에 없는 레벨일 때
+	//	UE_LOG(LogClass, Warning, TEXT("item %d data doesn't exist."), index);
+	//}
+
+	
+	
+
 }
+
+
+
 
 
 //float APlayerCharacterBase::ApplyDamage(float InDamage)

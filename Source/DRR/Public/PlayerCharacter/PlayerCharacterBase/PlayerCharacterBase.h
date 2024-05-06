@@ -28,6 +28,7 @@ protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
 	void SetMaxHP(float NewHP);
+	UFUNCTION(BlueprintCallable)
 	void SetHP(float NewHP);
 
 	void SetMaxMP(float NewMP);
@@ -48,8 +49,10 @@ private:
 	void WeaponRightAttackRelaease(const FInputActionValue& Value);
 
 	void Sit(const FInputActionValue& Value);
+	void ItemUse(const FInputActionValue& Value);
 	
 	void SetCharacterControl(ECharacterControlType ControlType);
+
 
 protected:
 	//Camera
@@ -70,6 +73,9 @@ protected:
 	TObjectPtr<class UInputAction> SitAction;	
 	bool IsSit = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ItemUseAction;
+
 	//Attack
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ActLeftPressAction;
@@ -86,7 +92,7 @@ protected:
 private:
 	ECharacterControlType CurrentCharacterControlType;
 
-	//TObjectPtr<class UDRRUserWidget> HUDWidget;
+	TObjectPtr<class UDRRUserWidget> HUDWidget;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
@@ -97,6 +103,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	int32 CurrentGold;
+
 
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;
