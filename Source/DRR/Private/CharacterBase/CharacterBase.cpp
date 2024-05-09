@@ -11,6 +11,10 @@
 #include "CharacterBase/DRRActComponent.h"
 #include "CharacterBase/DRRPassiveActComponent.h"
 #include "Utilities/UtilityList.h"
+#include "Physics/PhysicsInterfacePhysX.h"
+#include "PhysicsEngine/PhysicsAsset.h"
+#include "PhysicsEngine/PhysicsConstraintTemplate.h"
+#include "PhysicsEngine/ConstraintTypes.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -66,6 +70,10 @@ void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	HPRegenHandle++;
+	if (bIsDead)
+	{
+		return;
+	}
 	if (HPRegenHandle == 9)
 	{
 		CurrentHP = CurrentHP + HPRegenSpeed * (MaxHP - CurrentHP) * 0.01 - DotDamage;
@@ -109,5 +117,64 @@ void ACharacterBase::RemoveDotDamage(float TickDamage)
 
 void ACharacterBase::IsDead()
 {
+	bIsDead = true;
 
+	PlayAnimMontage(DeadMontage);
+	
+
+
+	AController* CurrentController = GetController();
+
+	if (CurrentController)
+	{
+		CurrentController->UnPossess();
+	}
+	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+
+	if (MovementComponent)
+	{
+		MovementComponent->StopMovementImmediately();
+		MovementComponent->DisableMovement();
+	}
+	GetWorldTimerManager().SetTimer(DeathTimer, this, &ACharacterBase::DestroySelf, 5.0f, false);
+
+	USkeletalMeshComponent* TempMesh = GetMesh();
+	if (TempMesh)
+	{
+		TempMesh->SetSimulatePhysics(true);
+		TempMesh->SetAllBodiesSimulatePhysics(true);
+		TempMesh->SetCollisionProfileName(TEXT("Ragdoll"));
+
+		UPhysicsAsset* TempPhysicsAsset = TempMesh->GetPhysicsAsset();
+		if (TempPhysicsAsset)
+		{
+
+			for (UPhysicsConstraintTemplate* TempConstraintTemplate : TempPhysicsAsset->ConstraintSetup)
+			{
+				if (TempConstraintTemplate)
+				{
+
+					FConstraintInstance& TempConstraintInstance = TempConstraintTemplate->DefaultInstance;
+					TempConstraintInstance.SetLinearLimits(ELinearConstraintMotion::LCM_Free, ELinearConstraintMotion::LCM_Free, ELinearConstraintMotion::LCM_Free, 0.0f);
+
+				}
+			}
+		}
+	}
+
+	UCapsuleComponent* TempCapsule = GetCapsuleComponent();
+	if (TempCapsule)
+	{
+		TempCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	if (TempMesh && TempCapsule)
+	{
+		TempMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	}
+}
+
+void ACharacterBase::DestroySelf()
+{
+	Destroy();
 }

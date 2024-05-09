@@ -5,7 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/DamageEvents.h"
-
+#include "CharacterBase/CharacterBase.h"
 
 #include "Utilities/CLog.h"
 ADRRPlayerActUnitProto::ADRRPlayerActUnitProto()
@@ -72,7 +72,7 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 	float halfHeight = attackRange / 2.0f;
 
 	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByProfile(outHitResult, start, end, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
 	
 
 
@@ -92,11 +92,15 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 		//충돌대상의 액터 가져와 피해를 입히는 함수 호출
 		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
 		//피해, 이벤트, 나의컨트롤러,가해자 액터
-
+		ACharacterBase* Temp;
 		if (outHitResult.GetActor())
 		{
+			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
+			if (Temp != nullptr)
+			{
+				Temp->ReciveAttack(40.0f);
 
-			outHitResult.GetActor()->TakeDamage(40.0f, damageEvent, UserChar->GetController(), UserChar);
+			}
 		}
 	}
 

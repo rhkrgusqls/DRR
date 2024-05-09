@@ -24,6 +24,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void ReciveAttack(float physicsDamage/*, float MagicDamage*/) override;
+	virtual void IsDead()override;
 	void SetHPBarHiddenTimer();
 	void HideHPBar();
 

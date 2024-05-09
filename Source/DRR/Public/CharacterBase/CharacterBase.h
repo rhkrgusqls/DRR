@@ -66,6 +66,8 @@ public:
 
 	virtual void IsDead();
 
+	void DestroySelf();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxHP;
 
@@ -141,4 +143,8 @@ public:
 	TSubclassOf<class ADRRAutomaticRecoveryEffect> AutomaticRecovery;
 
 	FOnHPChangedDelegate OnHPChanged;
+
+	bool bIsDead;
+	
+	FTimerHandle DeathTimer;
 };

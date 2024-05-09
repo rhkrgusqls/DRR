@@ -102,12 +102,12 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
                     BlackboardComp->SetValueAsEnum("BattleState", 2);
                     UE_LOG(LogTemp, Warning, TEXT("Casted:%s"), *EnemyCharacter->GetName());
                     BlackboardComp->SetValueAsFloat("LastPerceivedTime", LastPerceivedTime);
-                    GetWorld()->GetTimerManager().ClearTimer(S);
+                    GetWorld()->GetTimerManager().ClearTimer(FRemoveTargetTimer);
                     // Additional logic to handle the perceived actor can be added here
                 }
                 else
                 {
-                    GetWorld()->GetTimerManager().SetTimer(S, this, &ABaseAIController::RemoveTarget, 10.0f, false);
+                    GetWorld()->GetTimerManager().SetTimer(FRemoveTargetTimer, this, &ABaseAIController::RemoveTarget, 10.0f, false);
                 }
                 return;
             }
@@ -124,6 +124,8 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
             {
                 Manager = *It;
                 Manager->SetGroupNum(Character->GetEnemyCharacterNum(), CastedCharacter->GetEnemyCharacterNum());
+                GetWorld()->GetTimerManager().ClearTimer(FRemoveGroupTimer);
+               GetWorld()->GetTimerManager().SetTimer(FRemoveGroupTimer, this, &ABaseAIController::RemoveGroup, 10.0f, false);
             }
         }
         return;
@@ -188,4 +190,9 @@ void ABaseAIController::OnBlackboardValueChanged(FName KeyName)
 void ABaseAIController::RestartBehaviorTree()
 {
     RunBehaviorTree(BTAsset);
+}
+
+void ABaseAIController::RemoveGroup()
+{
+    Manager->NullGroup(Character->GetEnemyCharacterNum());
 }

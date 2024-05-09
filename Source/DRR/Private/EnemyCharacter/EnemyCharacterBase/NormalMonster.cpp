@@ -10,8 +10,18 @@
 #include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
 #include "Engine/World.h"
 #include "EnemyCharacter/AIController/NormalAIController.h"
-
+#include "GameManager/EnemyManager.h"
 #include "Components/ProgressBar.h"
+#include "DRR.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "DBEnemyCharacterSetting.h"
+#include "Components/CapsuleComponent.h"
+#include "GameManager/GameManager.h"
+#include "Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
+
 ANormalMonster::ANormalMonster()
 {
 	AIControllerClass = ANormalAIController::StaticClass();
@@ -76,7 +86,20 @@ void ANormalMonster::BeginPlay()
             BlackboardComp->SetValueAsBool(TEXT("IsPatrolUnit"), IsAggressive);
         }
     }
+
 	HPPrgressBar = Cast<UProgressBar>(HPBarUI->GetWidget()->GetWidgetFromName(TEXT("HP_ProgressBar")));
+	UWorld* World = GetWorld();
+	if (World != nullptr)
+	{
+		for (TActorIterator<AEnemyManager> It(World); It; ++It)
+		{
+			Manager = *It;
+		}
+	}
+	if (Manager != nullptr)
+	{
+		MonsterNum = Manager->SetMonsterNum(this);
+	}
 }
 
 void ANormalMonster::Tick(float DeltaTime)
@@ -107,6 +130,15 @@ void ANormalMonster::SetHPBarHiddenTimer()
 	GetWorldTimerManager().ClearTimer(HPBarHideTimerHandle);
 
 	GetWorldTimerManager().SetTimer(HPBarHideTimerHandle, this, &ANormalMonster::HideHPBar, 5.0f, false);
+}
+
+void ANormalMonster::IsDead()
+{
+	Super::IsDead();
+	if (Manager)
+	{
+		Manager->SetDeadMonster(MonsterNum);
+	}
 }
 
 void ANormalMonster::HideHPBar()

@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Public/EnemyCharacter/AIController/BaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTSLenghtToTarget::UBTSLenghtToTarget()
@@ -26,6 +27,7 @@ void UBTSLenghtToTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
     AActor* Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));
     if (Target == nullptr)
     {
+        Cast<ABaseAIController>(ControllingPawn->GetController())->RemoveTarget();
         return;
     }
     else

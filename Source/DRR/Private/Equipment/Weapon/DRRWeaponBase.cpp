@@ -14,11 +14,13 @@ ADRRWeaponBase::ADRRWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
+
 IDRRActableInterface* ADRRWeaponBase::GetFirstAct()
 {
 	CLog::Log("FirstWeaponAct");
 	return Cast<IDRRActableInterface>(FirstActRef);
 }
+
 IDRRActableInterface* ADRRWeaponBase::GetSecondAct()
 {
 	CLog::Log("SecondWeaponAct");

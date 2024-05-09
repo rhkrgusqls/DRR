@@ -25,4 +25,8 @@ public:
 	
 	virtual void BeginPlay() override;
 
+	void RespawnPlayer();
+	UFUNCTION(Exec)
+	void KillPlayer();
+		
 };

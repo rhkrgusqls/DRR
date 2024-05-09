@@ -87,8 +87,11 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 		BeginAct();
 		return;
 	}
-	//같은 명령이라면 같은 행동선에서 다른 행동. 아니라면 새로운 행동, 트리거타입의 행동이 진행중일떄.
-	if (Actor->GetCurAct()->ActionName.Equals(Actable->GetActData()->ActionName))
+
+	CLog::Log(Actor->GetCurAct()->ActionName);
+	CLog::Log(Actable->GetActData()->ActionName);
+	//같은 명령이라면 같은 행동선에서 다음 행동을 실행
+	if (Actor->GetActor()==Actable)
 	{
 		CLog::Log("AfterAct");
 		AfterAct();

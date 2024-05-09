@@ -32,6 +32,7 @@ public:
 	void RemoveTarget();
 	void OnBlackboardValueChanged(FName KeyName);
 	void RestartBehaviorTree();
+	void RemoveGroup();
 
 	UPROPERTY(BlueprintReadWrite)
 	class AEnemyCharacterBase* Agent;
@@ -64,5 +65,7 @@ public:
 
 	UBlackboardComponent* BlackboardComp;
 
-	FTimerHandle S;
+	FTimerHandle FRemoveTargetTimer;
+
+	FTimerHandle FRemoveGroupTimer;
 };
