@@ -2,7 +2,6 @@
 
 #include "GameManager/DRRMainGameMode.h"
 #include "Engine/DataTable.h"
-#include "Item/ABItemDataTable.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 
@@ -50,12 +49,6 @@ ADRRMainGameMode::ADRRMainGameMode()
 		InteractAlertClass = InteractAlertRef.Class;
 	}
 
-	// ItemDataTable
-	static ConstructorHelpers::FObjectFinder <UDataTable> ItemDataRef(TEXT("/Game/Blueprints/Item/ItemData.ItemData"));
-	if (ItemDataRef.Object)
-	{
-		ItemDataTable = ItemDataRef.Object;
-	}
 }
 
 void ADRRMainGameMode::BeginPlay()
@@ -114,10 +107,4 @@ void ADRRMainGameMode::BeginPlay()
 	}
 
 
-	if (ItemDataTable != nullptr)
-	{
-		FItem* ItemTableRow = ItemDataTable->FindRow<FItem>(FName("20"), FString());
-		//데이터 정보 정상적으로 들어오는거 확인 완료
-		//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
-	}
 }

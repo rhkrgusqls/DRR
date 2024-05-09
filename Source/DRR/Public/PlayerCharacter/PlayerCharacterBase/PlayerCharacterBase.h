@@ -32,6 +32,7 @@ protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
 	void SetMaxHP(float NewHP);
+
 	UFUNCTION(BlueprintCallable)
 	void SetHP(float NewHP);
 

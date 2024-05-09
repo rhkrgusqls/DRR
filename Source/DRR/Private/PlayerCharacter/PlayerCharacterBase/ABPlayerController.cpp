@@ -8,6 +8,10 @@
 #include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
 #include "Utilities/UtilityList.h"
 
+AABPlayerController::AABPlayerController()
+{
+}
+
 void AABPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

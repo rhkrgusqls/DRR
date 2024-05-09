@@ -20,9 +20,9 @@ public:
 	virtual void BeginPlay() override;
 
 	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
-	//FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
-	//FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
-	//FORCEINLINE UUserWidget* GetActAlertWidget() { return InteractAlert; }
+	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
+	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
+	FORCEINLINE UUserWidget* GetActAlertWidget() { return InteractAlert; }
 
 	//UFUNCTION(BlueprintCallable, Category = Widget)
 	//void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass); // Widget change function
@@ -33,17 +33,17 @@ protected:
 	TSubclassOf<UUserWidget> MainHUDWidgetClass;
 	UUserWidget* MainHUDWidget;
 
-	////Collected Item Alert List UI
-	//TSubclassOf<UUserWidget> ItemListWidgetClass;
-	//UUserWidget* ItemListWidget;
-	//
-	////ItemCard content UI(Used inside of Collected Item Alert List UI)
-	//TSubclassOf<UUserWidget> ItemCardWidgetClass;
-	//UUserWidget* ItemCardWidget;
+	//Collected Item Alert List UI
+	TSubclassOf<UUserWidget> ItemListWidgetClass;
+	UUserWidget* ItemListWidget;
+	
+	//ItemCard content UI(Used inside of Collected Item Alert List UI)
+	TSubclassOf<UUserWidget> ItemCardWidgetClass;
+	UUserWidget* ItemCardWidget;
 
-	////Interact Alert UI
-	//TSubclassOf<UUserWidget> InteractAlertClass;
-	//UUserWidget* InteractAlert;
+	//Interact Alert UI
+	TSubclassOf<UUserWidget> InteractAlertClass;
+	UUserWidget* InteractAlert;
 
 	FTimerHandle TimerHandle;
 
