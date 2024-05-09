@@ -9,6 +9,7 @@
 /**
  * 
  */
+
 UCLASS()
 class DRR_API UDA_UseableData : public UDA_ItemData
 {

@@ -27,11 +27,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	//virtual void Tick(float Deltatime) override;
+	virtual void Tick(float Deltatime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
 	void SetMaxHP(float NewHP);
+	UFUNCTION(BlueprintCallable)
 	void SetHP(float NewHP);
 
 	void SetMaxMP(float NewMP);
@@ -45,17 +46,17 @@ protected:
 
 private:
 	void QuaterMove(const FInputActionValue& Value);
-	void Attack(const FInputActionValue& Value);
-
+	
 	void WeaponLeftAttackPress(const FInputActionValue& Value);
 	void WeaponRightAttackPress(const FInputActionValue& Value);
 	void WeaponLeftAttackRelaease(const FInputActionValue& Value);
 	void WeaponRightAttackRelaease(const FInputActionValue& Value);
 
 	void Sit(const FInputActionValue& Value);
-	void weaponChange(const FInputActionValue& Value);
-
+	void ItemUse(const FInputActionValue& Value);
+	
 	void SetCharacterControl(ECharacterControlType ControlType);
+
 
 protected:
 	//Camera
@@ -73,28 +74,18 @@ protected:
 	TObjectPtr<class UInputAction> JumpAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> SitAction;
+	TObjectPtr<class UInputAction> SitAction;	
+	bool IsSit = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> AttackAction;
+	TObjectPtr<class UInputAction> ItemUseAction;
 
+	//Attack
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ActLeftPressAction;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ActRightPressAction;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> weaponChangeAction;
-
-	//ChangeWeapon
-	TArray<TObjectPtr<class UABWeaponItemData>> WeaponList;
-
-	uint8 curWeapon = 0;
-
-	bool IsSit = false;
 
 	//TestWeapon
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
@@ -116,6 +107,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	int32 CurrentGold;
+
 
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;

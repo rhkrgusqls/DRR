@@ -62,7 +62,7 @@ ABaseAIController::ABaseAIController(const FObjectInitializer& ObjectInitializer
     // Hearing Sense Configuration
     Hearing = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
     Hearing->HearingRange = 800.0f;
-    Hearing->LoSHearingRange = 1200.0f;
+    //Hearing->LoSHearingRange = 1200.0f;
     Hearing->DetectionByAffiliation.bDetectNeutrals = true;
     Hearing->SetMaxAge(10.0f);
     Hearing->DetectionByAffiliation.bDetectEnemies = true;

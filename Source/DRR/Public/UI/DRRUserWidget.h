@@ -40,6 +40,7 @@ protected:
 	TObjectPtr<class UProgressBar> PlayerMPBar;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
 	TObjectPtr<class UProgressBar> PlayerSTBar;
+
 	float MaxHP;
 	float MaxMP;
 	float MaxST;
@@ -47,4 +48,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
 	TObjectPtr<class UTextBlock> CurrentGold;
 	FText GoldText;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
+	//TObjectPtr<class UUserWidget> Inventory_UI;
+
 };

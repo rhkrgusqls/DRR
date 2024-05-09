@@ -53,6 +53,8 @@ void UDRRUserWidget::NativeConstruct()
 	PlayerMPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerMPBar")));
 	PlayerSTBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PlayerSTBar")));
 	CurrentGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("CurrentGold")));
+	
+	//Inventory_UI = Cast<UUserWidget>(GetWidgetFromName(TEXT("WB_Inventory")));
 
 	IDRRCharacterWidgetInterface* CharacterWidget = Cast<IDRRCharacterWidgetInterface>(OwningActor);
 	if (CharacterWidget)
