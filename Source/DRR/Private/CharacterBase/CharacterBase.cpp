@@ -15,6 +15,10 @@
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "PhysicsEngine/ConstraintTypes.h"
+
+
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -51,6 +55,11 @@ void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* Char
 	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
 	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
 	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+}
+
+void ACharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 

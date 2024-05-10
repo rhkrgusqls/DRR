@@ -2,10 +2,16 @@
 
 
 #include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
+#include "PlayerCharacter/PlayerCharacterBase/Multiplayer/DRRMultiplayerManager.h"
+
+#include "UI/DRRUserWidget.h"
 #include "GameManager/DRRMainGameMode.h"
 #include "GameFramework/PlayerStart.h"
 #include "EngineUtils.h"
 #include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
+#include "Utilities/Multiplay/CMultiplaySubsystem.h"
+#include "Online.h"
+
 #include "Utilities/UtilityList.h"
 
 AABPlayerController::AABPlayerController()
@@ -18,6 +24,25 @@ void AABPlayerController::BeginPlay()
 
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
+
+    MultiPlayManager = NewObject<UDRRMultiplayerManager>();
+    MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
+    
+    
+    ADRRMainGameMode* GM = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
+
+    if (GetGameInstance()->GetFirstLocalPlayerController() == this)
+    {
+        if (GM)
+        {
+            GM->SetHUDWidgets(this);
+
+        }
+
+    }
+
+
+    
 
 }
 
@@ -63,3 +88,22 @@ void AABPlayerController::KillPlayer()
         MyCharacter->ReciveAttack(MyCharacter->MaxHP * 3.0f);
     }
 }
+void AABPlayerController::HostSession(FString RoomName)
+{
+    MultiPlayManager->HostSession(RoomName);
+}
+
+void AABPlayerController::FindSession()
+{
+
+    MultiPlayManager->FindSession();
+
+}
+
+void AABPlayerController::JoinSession(uint32 RoomNum)
+{
+
+    MultiPlayManager->JoinSession(RoomNum);
+
+}
+

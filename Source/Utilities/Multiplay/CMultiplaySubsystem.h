@@ -9,6 +9,10 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "CMultiplaySubsystem.generated.h"
 
+
+
+
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete, bool, bWasSuccesssful);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerOnFindSessionComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bwasSuccessful);
 DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnJoinSessionComplete, EOnJoinSessionCompleteResult::Type Result);
@@ -23,11 +27,13 @@ class UTILITIES_API UCMultiplaySubsystem : public UGameInstanceSubsystem
 public:
 	UCMultiplaySubsystem();
 
-	UFUNCTION(BlueprintCallable)
-	void CreateSession(int32 NumPublicConnections, FString MatchType);
+	FString GetSessionInfo(FOnlineSessionSearchResult result, FName name);
 
 	UFUNCTION(BlueprintCallable)
-	void FindSession(int32 MaxSearchResults);
+	void CreateSession(int32 NumPublicConnections, FString MatchType,FString GameName, FString RoomName);
+
+	UFUNCTION(BlueprintCallable)
+	void FindSession(int32 MaxSearchResults, FString GameName);
 
 	UFUNCTION(BlueprintCallable)
 	void TryJoin(int32 SessionNum);

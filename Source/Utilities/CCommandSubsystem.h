@@ -17,20 +17,8 @@ class UTILITIES_API UCCommandSubsystem : public UGameInstanceSubsystem
 public:
 	UCCommandSubsystem();
 	
-	UFUNCTION(Exec)
-	void Host();
-
-	UFUNCTION(Exec)
-	void Join_Address();
-	UFUNCTION(Exec)
-	void Find();
-
-
-	UFUNCTION(Exec)
-	void Join(uint32 RoomNum);
-
 protected:
-	void FindFinish(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bwasSuccessful);
+
 private:
 
 };

@@ -6,6 +6,7 @@
 #include "OnlineSubsystemUtils.h"
 #include "OnlineSessionSettings.h"
 
+#include "Utilities/UtilityList.h"
 
 UCMultiplaySubsystem::UCMultiplaySubsystem()
 	: CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete))
@@ -22,7 +23,21 @@ UCMultiplaySubsystem::UCMultiplaySubsystem()
 	}
 }
 
-void UCMultiplaySubsystem::CreateSession(int32 NumPublicConnections, FString MatchType)
+FString UCMultiplaySubsystem::GetSessionInfo(FOnlineSessionSearchResult result, FName name)
+{
+	FString Temp;
+	if (result.Session.SessionSettings.Get(name, Temp))
+	{
+		return Temp;
+	}
+	else
+	{
+		return FString();
+	}
+
+}
+
+void UCMultiplaySubsystem::CreateSession(int32 NumPublicConnections, FString MatchType, FString GameName,FString RoomName)
 {
 	if (!SessionInterface.IsValid())
 		return;
@@ -52,6 +67,8 @@ void UCMultiplaySubsystem::CreateSession(int32 NumPublicConnections, FString Mat
 	LastSessionSettings->bUseLobbiesIfAvailable = true;
 	LastSessionSettings->bIsDedicated = false;
 	LastSessionSettings->Set(FName("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	LastSessionSettings->Set(FName("GameName"), GameName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	LastSessionSettings->Set(FName("RoomName"), RoomName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	LastSessionSettings->BuildUniqueId = 1;
 
 	// Create Session
@@ -61,13 +78,15 @@ void UCMultiplaySubsystem::CreateSession(int32 NumPublicConnections, FString Mat
 		// Remove the delegate from the delegate list using the handle.
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
 
+		
 		UE_LOG(LogNet, Error, TEXT("%s: couldn't Create session."), *GetFullName())
+
 		// Broadcast that the session creation has failed.
 		MultiplayerOnCreateSessionComplete.Broadcast(false);
 	}
 }
 
-void UCMultiplaySubsystem::FindSession(int32 MaxSearchResults)
+void UCMultiplaySubsystem::FindSession(int32 MaxSearchResults,FString GameName)
 {
 	if (!SessionInterface.IsValid())
 		return;
@@ -81,12 +100,13 @@ void UCMultiplaySubsystem::FindSession(int32 MaxSearchResults)
 	UE_LOG(LogNet, Error, TEXT("%s: Session Type"), IOnlineSubsystem::Get()->GetSubsystemName())
 	LastSessionSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL" ? true : false;
 	LastSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-
+	LastSessionSearch->QuerySettings.Set(FName("GameName"), GameName, EOnlineComparisonOp::Equals);
 	UE_LOG(LogNet, Error, TEXT("%s: Try Find session."), *GetFullName())
 	// Find sessions
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!SessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), LastSessionSearch.ToSharedRef()))
 	{
+		CDisplayLog::Log(TEXT("couldn't Find Session"));
 
 		UE_LOG(LogNet, Error, TEXT("%s: couldn't Find session."), *GetFullName())
 		// Clear the delegate from the delegate list
@@ -256,7 +276,17 @@ void UCMultiplaySubsystem::OnDestroySessionComplete(FName SessionName, bool bWas
 	if (bWasSuccessful && bCreateSessionOnDestroy)
 	{
 		bCreateSessionOnDestroy = false;
-		CreateSession(LastNumPublicConnections, LastMatchType);
+		FString RoomName;
+		if(LastSessionSettings->Get<FString>(FName("RoomName"), RoomName))
+		{
+			CreateSession(LastNumPublicConnections, LastMatchType, FApp::GetProjectName(), RoomName);
+
+		}
+		else
+		{
+			CreateSession(LastNumPublicConnections, LastMatchType, FApp::GetProjectName(), "Temp");
+
+		}
 	}
 
 	MultiplayerOnDestroySessionComplete.Broadcast(bWasSuccessful);

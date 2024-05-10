@@ -7,7 +7,7 @@
 
 void ADRRAutomaticRecoveryEffect::UpdateFunc(AActor* target)
 {
-	//CLog::Log("AutomaticHealUpdate");
+	CLog::Log("AutomaticHealUpdate");
 	ACharacterBase* Temp = Cast<ACharacterBase>(target);
 	Temp->ReciveRecovery(Temp->HPRegenSpeed);
 }

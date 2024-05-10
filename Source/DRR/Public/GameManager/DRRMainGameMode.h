@@ -19,6 +19,11 @@ public:
 
 	virtual void BeginPlay() override;
 
+
+	virtual void PostLogin(APlayerController* newPlayer) override;
+
+	void SetHUDWidgets(APlayerController* Player);
+
 	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }

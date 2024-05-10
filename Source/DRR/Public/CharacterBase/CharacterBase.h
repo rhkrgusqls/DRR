@@ -7,6 +7,9 @@
 #include "Components/WidgetComponent.h"
 #include "Interface/DRRActorInterface.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "CharacterBase.generated.h"
 
 
@@ -36,6 +39,8 @@ public:
 
 protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData);
+
+	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
 
 	
 
@@ -73,7 +78,7 @@ public:
 
 	float DotDamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	UPROPERTY( Replicated,EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")

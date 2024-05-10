@@ -6,8 +6,14 @@
 #include "InputActionValue.h"
 #include "CharacterBase/CharacterBase.h"
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
+
+#include "Interface/DRRActableInterface.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
 #include "Components/ProgressBar.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
+
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
@@ -31,6 +37,10 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+
 	void SetMaxHP(float NewHP);
 
 	UFUNCTION(BlueprintCallable)
@@ -52,6 +62,37 @@ private:
 	void WeaponRightAttackPress(const FInputActionValue& Value);
 	void WeaponLeftAttackRelaease(const FInputActionValue& Value);
 	void WeaponRightAttackRelaease(const FInputActionValue& Value);
+	
+	void WeaponLeftAct();
+	void WeaponLeftActRelease();
+	void WeaponRightAct();
+	void WeaponRightActRelease();
+
+	UFUNCTION(Server,Reliable,WithValidation,Category="RPC_Character")
+	void ServerLeftAct();
+
+	UFUNCTION(NetMulticast,Unreliable,Category="RPC_Character")
+	void MulticastLeftAct();
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
+	void ServerLeftActRelease();
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
+	void MulticastLeftActRelease();
+
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
+	void ServerRightAct();
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
+	void MulticastRightAct();
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
+	void ServerRightActRelease();
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
+	void MulticastRightActRelease();
+
 
 	void Sit(const FInputActionValue& Value);
 	void ItemUse(const FInputActionValue& Value);

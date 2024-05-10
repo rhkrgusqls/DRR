@@ -4,6 +4,7 @@
 #include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "Utilities/UtilityList.h"
 
 ADRRMainGameMode::ADRRMainGameMode()
 {
@@ -54,11 +55,31 @@ ADRRMainGameMode::ADRRMainGameMode()
 void ADRRMainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
+	if (ItemDataTable != nullptr)
+	{
+		FItem* ItemTableRow = ItemDataTable->FindRow<FItem>(FName("20"), FString());
+		//데이터 정보 정상적으로 들어오는거 확인 완료
+		//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
+	}
+}
+
+void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
+{
+	Super::PostLogin(newPlayer);
+	
+}
+
+void ADRRMainGameMode::SetHUDWidgets(APlayerController* Player)
+{
+	CDisplayLog::Log(TEXT("Try SetHUDWidgets"));
 	//MainHUD
 	if (IsValid(MainHUDWidgetClass))
 	{
-		MainHUDWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), MainHUDWidgetClass));
+
+		CDisplayLog::Log(TEXT("IsValid Widget"));
+		MainHUDWidget = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), MainHUDWidgetClass));
 
 		if (IsValid(MainHUDWidget))
 		{
@@ -69,7 +90,7 @@ void ADRRMainGameMode::BeginPlay()
 	//ItemList (It will be moved to other function() when GetItem() function or else is ready)
 	if (IsValid(ItemListWidgetClass))
 	{
-		ItemListWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), ItemListWidgetClass));
+		ItemListWidget = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), ItemListWidgetClass));
 
 		if (IsValid(ItemListWidget))
 		{
@@ -86,7 +107,7 @@ void ADRRMainGameMode::BeginPlay()
 	//ItemCard (It will be moved to other function() when GetItem() function or else is ready)
 	if (IsValid(ItemCardWidgetClass))
 	{
-		ItemCardWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), ItemCardWidgetClass));
+		ItemCardWidget = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), ItemCardWidgetClass));
 
 		if (IsValid(ItemCardWidget))
 		{
@@ -97,7 +118,7 @@ void ADRRMainGameMode::BeginPlay()
 	// Interact Alert (It will be moved to other function() soon)
 	if (IsValid(InteractAlertClass))
 	{
-		InteractAlert = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractAlertClass));
+		InteractAlert = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), InteractAlertClass));
 
 		if (IsValid(InteractAlert))
 		{

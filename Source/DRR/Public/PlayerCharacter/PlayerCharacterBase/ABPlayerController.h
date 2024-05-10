@@ -28,5 +28,25 @@ public:
 	void RespawnPlayer();
 	UFUNCTION(Exec)
 	void KillPlayer();
+
+
+	UFUNCTION(Exec)
+	void HostSession(FString RoomName);
+
+	UFUNCTION(Exec)
+	void FindSession();
+
+
+	UFUNCTION(Exec)
+	void JoinSession(uint32 RoomNum);
+
+
+
+protected:
 		
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UDRRMultiplayerManager> MultiPlayManager;
+
 };

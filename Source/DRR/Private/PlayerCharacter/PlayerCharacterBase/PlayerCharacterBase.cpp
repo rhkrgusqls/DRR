@@ -29,6 +29,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/DRRMainGameMode.h"
 
+#include "Net/UnrealNetwork.h"
 #include"Utilities/UtilityList.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
@@ -137,6 +138,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
 	{
+
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
 		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
@@ -167,10 +169,21 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxGold(999999);
 	SetGold(0);
 
-	ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
+	if (GetController() != nullptr)
+	{
+		ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
+		if (MyMode)
+		{
+			CDisplayLog::Log(TEXT("MyMode Is Valid"));
+			HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
+			
 
-	SetupCharacterWidget(HUDWidget);
+			SetupCharacterWidget(HUDWidget);
+
+
+		}
+
+	}
 	if (Weapon != nullptr)
 	{
 		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
@@ -238,8 +251,11 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
+
 	if (InUserWidget)
 	{
+		InUserWidget->AddToViewport();
+		CDisplayLog::Log(TEXT("UserWidget Is Valid"));
 		InUserWidget->SetMaxHP(MaxHP);
 		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
@@ -366,6 +382,13 @@ void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 }
 
+void APlayerCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(APlayerCharacterBase, CurrentHP);
+}
+
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -387,19 +410,74 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 }
 
 
+
+
+
+
+bool APlayerCharacterBase::ServerLeftAct_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerLeftAct_Implementation()
+{
+	MulticastLeftAct();
+}
+void APlayerCharacterBase::MulticastLeftAct_Implementation()
+{
+	WeaponLeftAct();
+
+}
+
+bool APlayerCharacterBase::ServerLeftActRelease_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerLeftActRelease_Implementation()
+{
+	MulticastLeftActRelease();
+}
+void APlayerCharacterBase::MulticastLeftActRelease_Implementation()
+{
+	WeaponLeftActRelease();
+
+}
+
+bool APlayerCharacterBase::ServerRightAct_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerRightAct_Implementation()
+{
+	MulticastRightAct();
+}
+void APlayerCharacterBase::MulticastRightAct_Implementation()
+{
+	WeaponRightAct();
+}
+
+bool APlayerCharacterBase::ServerRightActRelease_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerRightActRelease_Implementation()
+{
+	MulticastRightActRelease();
+}
+void APlayerCharacterBase::MulticastRightActRelease_Implementation()
+{
+	WeaponRightActRelease();
+}
+
+
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
+
 	if (Weapon == nullptr||WeaponRef==nullptr)
 	{
 		return;
 	}
-
-	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
-	if (Temp)
-	{
-		CLog::Log("LeftPress");
-		ActComponent->Act(Temp);
-	}
+	ServerLeftAct();
+	
 }
 
 void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
@@ -408,6 +486,49 @@ void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value
 	{
 		return;
 	}
+	ServerRightAct();
+}
+
+void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr || WeaponRef == nullptr)
+	{
+		return;
+	}
+	ServerLeftActRelease();
+}
+
+void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr || WeaponRef == nullptr)
+	{
+		return;
+	}
+	ServerRightActRelease();
+}
+
+void APlayerCharacterBase::WeaponLeftAct()
+{
+	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
+	if (Temp)
+	{
+		CLog::Log("LeftPress");
+		ActComponent->Act(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponLeftActRelease()
+{
+	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
+	if (Temp)
+	{
+
+		ActComponent->ActRelease(Temp);
+	}
+}
+
+void APlayerCharacterBase::WeaponRightAct()
+{
 
 	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
@@ -418,27 +539,8 @@ void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value
 	}
 }
 
-void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
+void APlayerCharacterBase::WeaponRightActRelease()
 {
-	if (Weapon == nullptr || WeaponRef == nullptr)
-	{
-		return;
-	}
-
-	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
-	if (Temp)
-	{
-
-		ActComponent->ActRelease(Temp);
-	}
-}
-
-void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
-{
-	if (Weapon == nullptr || WeaponRef == nullptr)
-	{
-		return;
-	}
 
 	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
