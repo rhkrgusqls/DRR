@@ -172,10 +172,13 @@ APlayerCharacterBase::APlayerCharacterBase()
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (GetController() != nullptr)
+	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
+	if (PlayerController != nullptr&&GetGameInstance()->GetFirstLocalPlayerController()==PlayerController)
 	{
 		SetCharacterControl(ECharacterControlType::Quater);
-
+		SetHUDWidgets(PlayerController);
+		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
+		SetupCharacterWidget(HUDWidget);
 	}
 
 	SetMaxHP(100.0f);
@@ -190,21 +193,7 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxGold(999999);
 	SetGold(0);
 
-	if (GetController() != nullptr)
-	{
-		/*ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
-		if (MyMode)
-		{
-			CDisplayLog::Log(TEXT("MyMode Is Valid"));
-			HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
-			
-
-			SetupCharacterWidget(HUDWidget);
-
-
-		}*/
-
-	}
+	
 	if (Weapon != nullptr)
 	{
 		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
