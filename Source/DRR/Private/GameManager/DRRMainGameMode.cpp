@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "Utilities/UtilityList.h"
+#include "TimerManager.h"
 
 ADRRMainGameMode::ADRRMainGameMode()
 {
@@ -22,7 +23,18 @@ ADRRMainGameMode::ADRRMainGameMode()
 		PlayerControllerClass = PlayerControllerRef.Class;
 	}
 
+	// Loding Screen
+	static ConstructorHelpers::FClassFinder<UUserWidget> LodingScreenRef(TEXT("/Game/Asset/UI/Main/WBP_LodingScreen.WBP_LodingScreen_C"));
+	if (LodingScreenRef.Class)
+	{
+		LodingScreenWidgetClass = LodingScreenRef.Class;
+	}
+
+	//LodingScreen = CreateDefaultSubobject<UWidgetComponent>(TEXT("LodingScreen"));
+
 }
+
+
 
 void ADRRMainGameMode::BeginPlay()
 {
@@ -35,10 +47,32 @@ void ADRRMainGameMode::BeginPlay()
 	//	//데이터 정보 정상적으로 들어오는거 확인 완료
 	//	//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
 	//}
+
+	if (IsValid(LodingScreenWidgetClass))
+	{
+		LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
+		if (IsValid(LodingScreenWidget))
+		{
+			LodingScreenWidget->AddToViewport();
+		}
+	}
+
+	float TimeToDelegate = 5.0f;
+
+	GetWorldTimerManager().SetTimer(LodingTimer, this, &ADRRMainGameMode::DeleteLodingScreen,
+		 TimeToDelegate, false);
 }
 
 void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 {
 	Super::PostLogin(newPlayer);
 	
+}
+
+void ADRRMainGameMode::DeleteLodingScreen()
+{
+	if (LodingScreenWidget)
+	{
+		LodingScreenWidget->RemoveFromParent();
+	}
 }

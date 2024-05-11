@@ -178,6 +178,10 @@ void APlayerCharacterBase::BeginPlay()
 
 	}
 
+	SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
+
+	SetupCharacterWidget(HUDWidget);
+
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
 
@@ -203,7 +207,7 @@ void APlayerCharacterBase::BeginPlay()
 
 
 		}*/
-
+		
 	}
 	if (Weapon != nullptr)
 	{
@@ -217,6 +221,8 @@ AActor* HitedActor;
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	SetupCharacterWidget(HUDWidget);
 
 	UWorld* World = GetWorld();
 	if (World)
@@ -276,7 +282,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 	if (InUserWidget)
 	{
 		InUserWidget->AddToViewport();
-		CDisplayLog::Log(TEXT("UserWidget Is Valid"));
+		//CDisplayLog::Log(TEXT("UserWidget Is Valid"));
 		InUserWidget->SetMaxHP(MaxHP);
 		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);

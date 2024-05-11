@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "TimerManager.h"
 #include "DRRMainGameMode.generated.h"
 
 /**
@@ -19,21 +20,24 @@ public:
 
 	virtual void BeginPlay() override;
 
-
 	virtual void PostLogin(APlayerController* newPlayer) override;
 
+	void DeleteLodingScreen();
 
-	
+	FORCEINLINE UUserWidget* GetLodingScreenWidget() { return LodingScreenWidget; }
 	
 
 	//UFUNCTION(BlueprintCallable, Category = Widget)
 	//void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass); // Widget change function
 
-	
+	//TObjectPtr<class UWidgetComponent> LodingScreen;
+
+	FTimerHandle LodingTimer;
 
 protected:
 	
-
+	TSubclassOf<UUserWidget> LodingScreenWidgetClass;
+	UUserWidget* LodingScreenWidget;
 
 
 private:
