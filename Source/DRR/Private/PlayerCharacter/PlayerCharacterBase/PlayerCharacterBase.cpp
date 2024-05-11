@@ -207,11 +207,15 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UWorld* World = GetWorld();
+	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
+		return;
+
+	UWorld* World = GetController()->GetWorld();
+	
 	if (World)
 	{
-
 		FCollisionQueryParams QueryParams;
+
 		QueryParams.bTraceComplex = true;
 		QueryParams.AddIgnoredActor(this);
 
@@ -229,9 +233,11 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		{
 			AActor* HitActor = OutHitResult.GetActor();
 
+			CDisplayLog::Log(TEXT("%s"),*GetController()->GetName());
 
 			if (HitActor)
 			{
+				CDisplayLog::Log(TEXT("%s"),*HitActor->GetName());
 				HitActor->SetActorHiddenInGame(true);
 				if (HitedActor)
 				{
