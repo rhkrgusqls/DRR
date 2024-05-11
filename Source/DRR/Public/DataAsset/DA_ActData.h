@@ -46,6 +46,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = Section)
 	FString MontageSectionPrefix;
 
+	UPROPERTY(EditAnywhere, Category = Section)
+	float SkillCoefficient;
 
 	UPROPERTY(EditAnywhere, Category = Section)
 	uint8 MaxActCount;
