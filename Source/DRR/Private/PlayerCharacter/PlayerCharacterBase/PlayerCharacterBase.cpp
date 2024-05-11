@@ -172,10 +172,13 @@ APlayerCharacterBase::APlayerCharacterBase()
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (GetController() != nullptr)
+	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
+	if (PlayerController != nullptr&&GetGameInstance()->GetFirstLocalPlayerController()==PlayerController)
 	{
 		SetCharacterControl(ECharacterControlType::Quater);
-
+		SetHUDWidgets(PlayerController);
+		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
+		SetupCharacterWidget(HUDWidget);
 	}
 
 	SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
@@ -221,14 +224,16 @@ AActor* HitedActor;
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	SetupCharacterWidget(HUDWidget);
+	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
+		return;
 
-	UWorld* World = GetWorld();
+	UWorld* World = GetController()->GetWorld();
+	
 	if (World)
 	{
-
 		FCollisionQueryParams QueryParams;
+
 		QueryParams.bTraceComplex = true;
 		QueryParams.AddIgnoredActor(this);
 
@@ -246,9 +251,11 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		{
 			AActor* HitActor = OutHitResult.GetActor();
 
+			CDisplayLog::Log(TEXT("%s"),*GetController()->GetName());
 
 			if (HitActor)
 			{
+				CDisplayLog::Log(TEXT("%s"),*HitActor->GetName());
 				HitActor->SetActorHiddenInGame(true);
 				if (HitedActor)
 				{
@@ -423,7 +430,7 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	float MovementVectorsizeSquared = MovementVector.SquaredLength();
 	if (MovementVectorsizeSquared > 1.0f)
 	{
-		//Å©±â¸¦ 1·Î °íÁ¤
+		//Å©ï¿½â¸¦ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		MovementVector.Normalize();
 		MovementVectorsizeSquared = 1.0f;
 	}

@@ -37,6 +37,7 @@ public:
 	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
