@@ -200,6 +200,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	UWorld* World = GetWorld();
 	if (World)
 	{
+
 		FCollisionQueryParams QueryParams;
 		QueryParams.bTraceComplex = true;
 		QueryParams.AddIgnoredActor(this);
@@ -218,6 +219,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		{
 			AActor* HitActor = OutHitResult.GetActor();
 
+
 			if (HitActor)
 			{
 				HitActor->SetActorHiddenInGame(true);
@@ -233,6 +235,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 				{
 					HitedActor = HitActor;
 				}
+
 			}
 		}
 		else
