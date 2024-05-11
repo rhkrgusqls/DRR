@@ -28,4 +28,9 @@ protected:
 private:
 	void Func1(AActor* User);
 
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	TSubclassOf<class ADRRPlayerStonePillarProto> StonePillar;
+
 };

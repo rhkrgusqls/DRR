@@ -45,7 +45,7 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 {
 	CLog::Log("DamageTestActFunc1");
 
-	ACharacter* UserChar = Cast<ACharacter>(User);
+	ACharacterBase* UserChar = Cast<ACharacterBase>(User);
 
 	UE_LOG(LogTemp, Log, TEXT("AttackHitCheck"));
 
@@ -98,7 +98,10 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
 			if (Temp != nullptr)
 			{
-				Temp->ReciveAttack(40.0f);
+				const float defaultDamage = 10.0f;
+				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
+
+				Temp->ReciveAttack(damageResult);
 
 			}
 		}
