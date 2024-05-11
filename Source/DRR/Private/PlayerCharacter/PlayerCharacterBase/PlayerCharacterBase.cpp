@@ -144,6 +144,27 @@ APlayerCharacterBase::APlayerCharacterBase()
 		
 	}
 
+	// MainWidget
+	static ConstructorHelpers::FClassFinder<UUserWidget> MainHUDWidgetRef(TEXT("/Game/Asset/UI/Main/WBP_MainHUD.WBP_MainHUD_C"));
+	if (MainHUDWidgetRef.Class)
+	{
+		MainHUDWidgetClass = MainHUDWidgetRef.Class;
+	}
+
+	//ItemListWidget
+	static ConstructorHelpers::FClassFinder<UUserWidget> ItemListUIRef(TEXT("/Game/Asset/UI/Main/WBP_ItemList.WBP_ItemList_C"));
+	if (ItemListUIRef.Class)
+	{
+		ItemListWidgetClass = ItemListUIRef.Class;
+	}
+
+	//ItemCardWidget (used inside of ItemListWidget)
+	static ConstructorHelpers::FClassFinder<UUserWidget> ItemCardRef(TEXT("/Game/Asset/UI/Main/WBP_ItemListCard.WBP_ItemListCard_C"));
+	if (ItemCardRef.Class)
+	{
+		ItemCardWidgetClass = ItemCardRef.Class;
+	}
+
 	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
 
 }
@@ -171,7 +192,7 @@ void APlayerCharacterBase::BeginPlay()
 
 	if (GetController() != nullptr)
 	{
-		ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
+		/*ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
 		if (MyMode)
 		{
 			CDisplayLog::Log(TEXT("MyMode Is Valid"));
@@ -181,7 +202,7 @@ void APlayerCharacterBase::BeginPlay()
 			SetupCharacterWidget(HUDWidget);
 
 
-		}
+		}*/
 
 	}
 	if (Weapon != nullptr)
@@ -569,6 +590,53 @@ void APlayerCharacterBase::SetCharacterControl(ECharacterControlType ControlType
 {
 	UPlayerControlDataAsset* NewCharacterControlData = CharacterControlManager[ControlType];
 	SetCharacterControlData(NewCharacterControlData);
+}
+
+void APlayerCharacterBase::SetHUDWidgets(APlayerController* Player)
+{
+	CDisplayLog::Log(TEXT("Try SetHUDWidgets"));
+	//MainHUD
+	if (IsValid(MainHUDWidgetClass))
+	{
+
+		CDisplayLog::Log(TEXT("IsValid Widget"));
+		MainHUDWidget = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), MainHUDWidgetClass));
+
+		if (IsValid(MainHUDWidget))
+		{
+			MainHUDWidget->AddToViewport();
+		}
+	}
+
+	//ItemList (It will be moved to other function() when GetItem() function or else is ready)
+	if (IsValid(ItemListWidgetClass))
+	{
+		ItemListWidget = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), ItemListWidgetClass));
+
+		if (IsValid(ItemListWidget))
+		{
+			// add the function of Adding this UI after the event of Item Collect
+
+			//ItemListWidget->AddToViewport();
+
+			// add the function of deleting this UI after 3 seconds
+			//GetWorldTimerManager().SetTimer(TimerHandle, ItemListWidget, ItemListWidget->SetVisibility(ESlateVisibility::Hidden), 3.0f, false);
+			// Seems it need Other Function() to use it
+		}
+	}
+
+	//ItemCard (It will be moved to other function() when GetItem() function or else is ready)
+	if (IsValid(ItemCardWidgetClass))
+	{
+		ItemCardWidget = Cast<UUserWidget>(CreateWidget(Player->GetWorld(), ItemCardWidgetClass));
+
+		if (IsValid(ItemCardWidget))
+		{
+			// contents about (1) Getting the name of collected Item / (2) Getting the amount of collected Item
+		}
+	}
+
+
 }
 
 
