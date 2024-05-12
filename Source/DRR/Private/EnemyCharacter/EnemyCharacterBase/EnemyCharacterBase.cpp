@@ -113,9 +113,7 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 
 int32 AEnemyCharacterBase::GetEnemyCharacterNum()
 {
-    return MonsterNum;
-
-    
+     return MonsterNum;
 }
 
 void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)
