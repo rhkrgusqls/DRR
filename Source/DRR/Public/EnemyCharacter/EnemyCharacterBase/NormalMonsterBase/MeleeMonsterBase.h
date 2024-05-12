@@ -18,6 +18,7 @@ class DRR_API AMeleeMonsterBase : public ANormalMonster
 	GENERATED_BODY()
 public:
 	AMeleeMonsterBase();
+	AMeleeMonsterBase(int Index);
 
 	void CreateHitBoxBetweenBones(FName RightBoneName1, FName RightBoneName2, FName LeftBoneName1, FName LeftBoneName2);
 

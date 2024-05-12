@@ -68,7 +68,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
-		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
+		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f)); // If You want Other PawnMesh, Change FVector 1.0f
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
 
@@ -270,7 +270,6 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 				{
 					HitedActor = HitActor;
 				}
-
 			}
 		}
 		else
@@ -387,7 +386,6 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
-	//EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -444,11 +442,6 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
-
-
-
-
-
 bool APlayerCharacterBase::ServerLeftAct_Validate()
 {
 	return true;
@@ -502,7 +495,6 @@ void APlayerCharacterBase::MulticastRightActRelease_Implementation()
 {
 	WeaponRightActRelease();
 }
-
 
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
@@ -584,7 +576,6 @@ void APlayerCharacterBase::WeaponRightActRelease()
 		ActComponent->ActRelease(Temp);
 	}
 }
-
 
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	

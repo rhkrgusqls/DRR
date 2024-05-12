@@ -25,12 +25,9 @@ public:
 	APlayerCharacterBase();
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
-	
-
 
 	virtual void IsDead() override;
 	virtual void PossessedBy(AController* NewController) override;
-
 
 	void SetHUDWidgets(APlayerController* Player);
 
@@ -46,8 +43,6 @@ protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
-
-
 
 	void SetMaxHP(float NewHP);
 
@@ -103,7 +98,6 @@ private:
 
 
 	void Sit(const FInputActionValue& Value);
-	void ItemUse(const FInputActionValue& Value);
 	
 	void SetCharacterControl(ECharacterControlType ControlType);
 
