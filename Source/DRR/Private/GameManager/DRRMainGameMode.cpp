@@ -73,6 +73,6 @@ void ADRRMainGameMode::DeleteLodingScreen()
 {
 	if (LodingScreenWidget)
 	{
-		LodingScreenWidget->RemoveFromParent();
+		//LodingScreenWidget->RemoveFromParent();
 	}
 }
