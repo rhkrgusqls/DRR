@@ -98,7 +98,6 @@ private:
 
 
 	void Sit(const FInputActionValue& Value);
-	void ItemUse(const FInputActionValue& Value);
 	
 	void SetCharacterControl(ECharacterControlType ControlType);
 

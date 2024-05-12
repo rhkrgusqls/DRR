@@ -68,7 +68,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
-		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
+		GetMesh()->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f)); // If You want Other PawnMesh, Change FVector 1.0f
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
 
@@ -151,8 +151,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		MainHUDWidgetClass = MainHUDWidgetRef.Class;
 	}
-
-	//Inventory
 
 	//ItemListWidget
 	static ConstructorHelpers::FClassFinder<UUserWidget> ItemListUIRef(TEXT("/Game/Asset/UI/Main/WBP_ItemList.WBP_ItemList_C"));
@@ -272,7 +270,6 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 				{
 					HitedActor = HitActor;
 				}
-
 			}
 		}
 		else
@@ -591,11 +588,6 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 		IsSit = true;		
 		Crouch();
 	}	
-}
-
-void APlayerCharacterBase::ItemUse(const FInputActionValue& Value)
-{
-
 }
 
 
