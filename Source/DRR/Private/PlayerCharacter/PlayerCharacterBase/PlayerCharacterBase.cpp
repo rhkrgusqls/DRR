@@ -25,6 +25,7 @@
 
 #include "UI/DRRWidgetComponent.h"
 #include "UI/DRRUserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/DRRMainGameMode.h"
@@ -183,6 +184,8 @@ void APlayerCharacterBase::BeginPlay()
 		SetupCharacterWidget(HUDWidget);
 	}
 
+	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
+
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
 
@@ -195,7 +198,21 @@ void APlayerCharacterBase::BeginPlay()
 	SetMaxGold(999999);
 	SetGold(0);
 
-	
+	if (GetController() != nullptr)
+	{
+		/*ADRRMainGameMode* MyMode = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
+		if (MyMode)
+		{
+			CDisplayLog::Log(TEXT("MyMode Is Valid"));
+			HUDWidget = Cast<UDRRUserWidget>(MyMode->GetMainHUDWidget());
+			
+
+			SetupCharacterWidget(HUDWidget);
+
+
+		}*/
+		
+	}
 	if (Weapon != nullptr)
 	{
 		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
@@ -208,6 +225,8 @@ AActor* HitedActor;
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	SetupCharacterWidget(HUDWidget);
 
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
@@ -273,7 +292,7 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 	if (InUserWidget)
 	{
 		InUserWidget->AddToViewport();
-		CDisplayLog::Log(TEXT("UserWidget Is Valid"));
+		//CDisplayLog::Log(TEXT("UserWidget Is Valid"));
 		InUserWidget->SetMaxHP(MaxHP);
 		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
@@ -413,7 +432,7 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	float MovementVectorsizeSquared = MovementVector.SquaredLength();
 	if (MovementVectorsizeSquared > 1.0f)
 	{
-		//Å©±â¸¦ 1·Î °íÁ¤
+		//Å©ï¿½â¸¦ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		MovementVector.Normalize();
 		MovementVectorsizeSquared = 1.0f;
 	}
