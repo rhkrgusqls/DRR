@@ -29,7 +29,7 @@ void AABPlayerController::BeginPlay()
     MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
     
     
-    ADRRMainGameMode* GM = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
+    /*ADRRMainGameMode* GM = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
 
     if (GetGameInstance()->GetFirstLocalPlayerController() == this)
     {
@@ -39,7 +39,7 @@ void AABPlayerController::BeginPlay()
 
         }
 
-    }
+    }*/
 
 
     

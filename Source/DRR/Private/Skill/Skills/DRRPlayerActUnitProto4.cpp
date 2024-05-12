@@ -1,48 +1,41 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Skill/Skills/DRRPlayerActUnitProto.h"
+#include "Skill/Skills/DRRPlayerActUnitProto4.h"
+
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/DamageEvents.h"
 #include "CharacterBase/CharacterBase.h"
+#include "Skill/SkillElements/DRRPlayerStonePillarProto.h"
 
-#include "Utilities/CLog.h"
-ADRRPlayerActUnitProto::ADRRPlayerActUnitProto()
+#include "Utilities/UtilityList.h"
+ADRRPlayerActUnitProto4::ADRRPlayerActUnitProto4()
 {
-	ConstructorHelpers::FObjectFinder<UDA_ActData> DataAssetRef(TEXT("/Script/DRR.DA_ShortShotActData'/Game/Blueprints/Weapon/PlayerTestWeapon/DA_PlayerWeaponProtoAct1.DA_PlayerWeaponProtoAct1'"));
-	if (DataAssetRef.Object)
-	{
-		ActData = DataAssetRef.Object;
-	}
-	CLog::Log("ActDataCheck");
-	CLog::Log(ActData != nullptr);
-	CLog::Log(ActData->ActionName);
-	
 }
 
-TArray<FOnActFuncDelegate> ADRRPlayerActUnitProto::GetActFunc()
+TArray<FOnActFuncDelegate> ADRRPlayerActUnitProto4::GetActFunc()
 {
+
 	TArray<FOnActFuncDelegate> arr;
 
 	FOnActFuncDelegate temp;
-	temp.BindUObject(this, &ADRRPlayerActUnitProto::Func1);
+	temp.BindUObject(this, &ADRRPlayerActUnitProto4::Func1);
 	arr.Add(temp);
 	return arr;
 }
 
-void ADRRPlayerActUnitProto::BeginFunc(AActor* User)
+void ADRRPlayerActUnitProto4::BeginFunc(AActor* User)
 {
-	CLog::Log("ActBeginFunc");
 }
 
-void ADRRPlayerActUnitProto::EndFunc(AActor* User)
+void ADRRPlayerActUnitProto4::EndFunc(AActor* User)
 {
-	CLog::Log("ActEndFunc");
 }
 
-void ADRRPlayerActUnitProto::Func1(AActor* User)
+void ADRRPlayerActUnitProto4::Func1(AActor* User)
 {
+
 	CLog::Log("DamageTestActFunc1");
 
 	ACharacterBase* UserChar = Cast<ACharacterBase>(User);
@@ -56,8 +49,8 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 	FHitResult outHitResult;
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
-	const float attackRange = 150.0f;
-	const float capsuleRadius = 50.0f;
+	const float attackRange = 600.0f;
+	const float capsuleRadius = 200.0f;
 	bool isHit;
 
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
@@ -72,8 +65,8 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 	float halfHeight = attackRange / 2.0f;
 
 	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
-	
+	isHit = GetWorld()->SweepMultiByChannel(outHitResults, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+
 
 
 	//DebugDraw
@@ -92,19 +85,30 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 		//충돌대상의 액터 가져와 피해를 입히는 함수 호출
 		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
 		//피해, 이벤트, 나의컨트롤러,가해자 액터
-		ACharacterBase* Temp;
-		if (outHitResult.GetActor())
+
+		for (auto i : outHitResults)
 		{
-			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
-			if (Temp != nullptr)
+			ACharacterBase* Temp;
+			if (i.GetActor())
 			{
-				const float defaultDamage = 10.0f;
-				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
+				Temp = Cast< ACharacterBase>(i.GetActor());
+				if (Temp != nullptr)
+				{
+					float damageResult = GetActData()->SkillCoefficient * UserChar->physicsAttack;
 
-				Temp->ReciveAttack(damageResult);
 
+
+					CDisplayLog::Log(TEXT("Pillar"));
+
+					ADRRPlayerStonePillarProto* Pillar = GetWorld()->SpawnActor<ADRRPlayerStonePillarProto>(StonePillar, Temp->GetActorLocation(), Temp->GetActorRotation());
+					Pillar->Init(User, damageResult);
+
+
+				}
 			}
 		}
+
+		
 	}
 
 	//드로우 디버그 가능한 상태일때만

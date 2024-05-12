@@ -30,6 +30,14 @@ public:
 
 	virtual void IsDead() override;
 	virtual void PossessedBy(AController* NewController) override;
+
+
+	void SetHUDWidgets(APlayerController* Player);
+
+	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
+	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
+	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -133,6 +141,19 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TSubclassOf<class ADRRWeaponBase> Weapon;
 	TObjectPtr<class ADRRWeaponBase> WeaponRef;
+
+
+	//UI
+	TSubclassOf<UUserWidget> MainHUDWidgetClass;
+	UUserWidget* MainHUDWidget;
+
+	//Collected Item Alert List UI
+	TSubclassOf<UUserWidget> ItemListWidgetClass;
+	UUserWidget* ItemListWidget;
+
+	//ItemCard content UI(Used inside of Collected Item Alert List UI)
+	TSubclassOf<UUserWidget> ItemCardWidgetClass;
+	UUserWidget* ItemCardWidget;
 
 
 private:
