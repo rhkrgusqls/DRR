@@ -151,6 +151,8 @@ APlayerCharacterBase::APlayerCharacterBase()
 		MainHUDWidgetClass = MainHUDWidgetRef.Class;
 	}
 
+	//Inventory
+
 	//ItemListWidget
 	static ConstructorHelpers::FClassFinder<UUserWidget> ItemListUIRef(TEXT("/Game/Asset/UI/Main/WBP_ItemList.WBP_ItemList_C"));
 	if (ItemListUIRef.Class)
@@ -368,7 +370,6 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
-	//EnhancedInputComponent->BindAction(weaponChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::weaponChange);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -425,11 +426,6 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
-
-
-
-
-
 bool APlayerCharacterBase::ServerLeftAct_Validate()
 {
 	return true;
@@ -483,7 +479,6 @@ void APlayerCharacterBase::MulticastRightActRelease_Implementation()
 {
 	WeaponRightActRelease();
 }
-
 
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
@@ -566,7 +561,6 @@ void APlayerCharacterBase::WeaponRightActRelease()
 	}
 }
 
-
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
 	if (IsSit == true ) {
@@ -578,6 +572,11 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 		IsSit = true;		
 		Crouch();
 	}	
+}
+
+void APlayerCharacterBase::ItemUse(const FInputActionValue& Value)
+{
+
 }
 
 
