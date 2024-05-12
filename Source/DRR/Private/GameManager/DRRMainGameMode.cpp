@@ -38,7 +38,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 
 void ADRRMainGameMode::BeginPlay()
 {
-	//Super::BeginPlay();
+	Super::BeginPlay();
 	////SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
 	//if (ItemDataTable != nullptr)

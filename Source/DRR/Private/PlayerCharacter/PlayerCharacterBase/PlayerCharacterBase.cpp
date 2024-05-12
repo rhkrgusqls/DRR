@@ -277,7 +277,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		{
 			if (HitedActor)
 			{
-				HitedActor->SetActorHiddenInGame(false);
+				//HitedActor->SetActorHiddenInGame(false);
 			}
 		}
 	}
