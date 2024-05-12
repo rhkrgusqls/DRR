@@ -2,7 +2,7 @@
 #include "GameFramework/Actor.h"
 
 
-AWarriorGoblin::AWarriorGoblin()
+AWarriorGoblin::AWarriorGoblin() : AMeleeMonsterBase(0)
 {
     // Constructor for AWarriorGoblin class
     // Add any necessary initialization code here

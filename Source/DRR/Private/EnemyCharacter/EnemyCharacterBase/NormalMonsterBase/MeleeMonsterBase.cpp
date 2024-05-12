@@ -17,9 +17,13 @@
 #include "Engine/World.h"
 
 // Constructor for AMeleeMonsterBase
-AMeleeMonsterBase::AMeleeMonsterBase() : ANormalMonster(0)
+AMeleeMonsterBase::AMeleeMonsterBase()
 {
     // Initialization code can be added here
+}
+
+AMeleeMonsterBase::AMeleeMonsterBase(int Index) : ANormalMonster(Index)
+{
 }
 
 // Function for melee attack
