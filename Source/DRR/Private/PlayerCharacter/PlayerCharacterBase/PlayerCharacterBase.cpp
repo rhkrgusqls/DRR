@@ -25,6 +25,7 @@
 
 #include "UI/DRRWidgetComponent.h"
 #include "UI/DRRUserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/DRRMainGameMode.h"
@@ -181,9 +182,7 @@ void APlayerCharacterBase::BeginPlay()
 		SetupCharacterWidget(HUDWidget);
 	}
 
-	SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
-
-	SetupCharacterWidget(HUDWidget);
+	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
 	SetMaxHP(100.0f);
 	SetHP(MaxHP);
@@ -224,7 +223,9 @@ AActor* HitedActor;
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	SetupCharacterWidget(HUDWidget);
+
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
 
