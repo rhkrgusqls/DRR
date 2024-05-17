@@ -5,6 +5,9 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "Utilities/UtilityList.h"
+#include "GameManager/DRRPlayerState.h"
+#include "GameManager/DRRGameState.h"
+#include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
 #include "TimerManager.h"
 
 ADRRMainGameMode::ADRRMainGameMode()
@@ -16,12 +19,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 		DefaultPawnClass = PlayerCharRef.Class;
 	}
 
-	// Player Controller
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerRef(TEXT("/Script/DRR.ABPlayerController"));
-	if (PlayerControllerRef.Class)
-	{
-		PlayerControllerClass = PlayerControllerRef.Class;
-	}
+	
 
 	// Loding Screen
 	static ConstructorHelpers::FClassFinder<UUserWidget> LodingScreenRef(TEXT("/Game/Asset/UI/Main/WBP_LodingScreen.WBP_LodingScreen_C"));
@@ -31,7 +29,12 @@ ADRRMainGameMode::ADRRMainGameMode()
 	}
 
 	//LodingScreen = CreateDefaultSubobject<UWidgetComponent>(TEXT("LodingScreen"));
+	
+	PlayerControllerClass =  AABPlayerController::StaticClass();
+	
+	PlayerStateClass=ADRRPlayerState::StaticClass();
 
+	GameStateClass = ADRRGameState::StaticClass();
 }
 
 
@@ -66,6 +69,16 @@ void ADRRMainGameMode::BeginPlay()
 void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 {
 	Super::PostLogin(newPlayer);
+
+	// Ensure the new player has a pawn
+	if (newPlayer && newPlayer->GetPawn() == nullptr)
+	{
+		APawn* NewPawn = GetWorld()->SpawnActor<APawn>(DefaultPawnClass);
+		if (NewPawn)
+		{
+			newPlayer->Possess(NewPawn);
+		}
+	}
 	
 }
 

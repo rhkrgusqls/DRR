@@ -22,24 +22,19 @@ void AABPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FInputModeGameOnly GameOnlyInputMode;
-	SetInputMode(GameOnlyInputMode);
-
-    MultiPlayManager = NewObject<UDRRMultiplayerManager>();
-    MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
-    
-    
-    /*ADRRMainGameMode* GM = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
-
-    if (GetGameInstance()->GetFirstLocalPlayerController() == this)
+    CDisplayLog::Log(TEXT("ControllerValid"));
+    if (this == GetGameInstance()->GetFirstLocalPlayerController())
     {
-        if (GM)
-        {
-            GM->SetHUDWidgets(this);
 
-        }
+        FInputModeGameOnly GameOnlyInputMode;
+        SetInputMode(GameOnlyInputMode);
 
-    }*/
+
+        MultiPlayManager = NewObject<UDRRMultiplayerManager>();
+        MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
+    }
+    
+    
 
 
     

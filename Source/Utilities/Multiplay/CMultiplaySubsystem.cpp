@@ -2,6 +2,8 @@
 
 
 #include "Multiplay/CMultiplaySubsystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSubsystemUtils.h"
 #include "OnlineSessionSettings.h"
@@ -102,6 +104,7 @@ void UCMultiplaySubsystem::FindSession(int32 MaxSearchResults,FString GameName)
 	LastSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 	LastSessionSearch->QuerySettings.Set(FName("GameName"), GameName, EOnlineComparisonOp::Equals);
 	UE_LOG(LogNet, Error, TEXT("%s: Try Find session."), *GetFullName())
+
 	// Find sessions
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!SessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), LastSessionSearch.ToSharedRef()))
@@ -148,6 +151,8 @@ void UCMultiplaySubsystem::JoinSession(const FOnlineSessionSearchResult& Session
 	// Add JoinSessionCompleteDelegate to the session interface delegate list.
 	JoinSessionCompleteDelegateHandle = SessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
 
+
+
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!SessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionResult))
 	{
@@ -165,12 +170,6 @@ void UCMultiplaySubsystem::LeaveSession()
 		return;
 	if (SessionInterface->GetNamedSession(NAME_GameSession))
 	{
-		
-
-
-
-
-
 		SessionInterface->DestroySession(NAME_GameSession);
 	}
 
@@ -211,10 +210,10 @@ void UCMultiplaySubsystem::OnCreateSessionComplete(FName SessionName, bool bWasS
 	UE_LOG(LogNet, Error, TEXT("%s: Create session Success"), *GetFullName())
 	// Broadcast a success message for the session creation.
 	MultiplayerOnCreateSessionComplete.Broadcast(true);
-	//상속받은로컬플레이어 필요
-	//Cast<>(LPC.GetLocalPlayer())->CurrentLevel = ECurrentLevel::SomeLevel;
 	//이동할 레벨
-	GetWorld()->ServerTravel("/Game/Levels/DebugTestLevel?listen");
+	FString CurrentLevelPath = GetWorld()->GetOutermost()->GetName() + "?listen";
+	CDisplayLog::Log(TEXT("%s"), *CurrentLevelPath);
+	GetWorld()->ServerTravel(CurrentLevelPath);
 }
 
 void UCMultiplaySubsystem::OnFindSessionComplete(bool bWasSuccessful)
@@ -248,18 +247,46 @@ void UCMultiplaySubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessi
 		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegateHandle);
 	}
 
-	// Broadcast a message for the session joining with the result.
-	MultiplayerOnJoinSessionComplete.Broadcast(Result);
-	if (GetGameInstance()->ClientTravelToSession(GetWorld()->GetFirstLocalPlayerFromController()->GetControllerId(), NAME_GameSession))
-	{
 
-		UE_LOG(LogNet, Error, TEXT("%s: Travel Success"), *GetFullName())
-		//Cast<UMyLocalPlayer>(LPC.GetLocalPlayer())->CurrentLevel = NewLevel;
+	if (Result == EOnJoinSessionCompleteResult::Success)
+	{
+		FString TravelURL;
+		if (SessionInterface->GetResolvedConnectString(SessionName, TravelURL))
+		{
+			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+			if (PlayerController)
+			{
+				PlayerController->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
+				UE_LOG(LogNet, Log, TEXT("Traveling to %s"), *TravelURL);
+				CDisplayLog::Log(TEXT("Traveling to %s"), *TravelURL);
+			}
+		}
+		else
+		{
+			UE_LOG(LogNet, Error, TEXT("Failed to get resolved connect string for session: %s"), *SessionName.ToString());
+			CDisplayLog::Log(TEXT("Failed to get resolved connect string for session: %s"), *SessionName.ToString());
+		}
 	}
 	else
 	{
-		UE_LOG(LogNet, Error, TEXT("%s: travel to session failed"), *GetFullName())
+		UE_LOG(LogNet, Error, TEXT("Join session failed with result: %d"), static_cast<int32>(Result));
+		CDisplayLog::Log(TEXT("Join session failed with result: %d"), static_cast<int32>(Result));
 	}
+
+	//// Broadcast a message for the session joining with the result.
+	//MultiplayerOnJoinSessionComplete.Broadcast(Result);
+	//if (GetGameInstance()->ClientTravelToSession(GetWorld()->GetFirstLocalPlayerFromController()->GetControllerId(), NAME_GameSession))
+	//{
+	//
+	//	UE_LOG(LogNet, Error, TEXT("%s: Travel Success"), *GetFullName())
+	//		CDisplayLog::Log(TEXT("Travel Success"));
+	//	//Cast<UMyLocalPlayer>(LPC.GetLocalPlayer())->CurrentLevel = NewLevel;
+	//}
+	//else
+	//{
+	//		CDisplayLog::Log(TEXT("travel to session failed"));
+	//	UE_LOG(LogNet, Error, TEXT("%s: travel to session failed"), *GetFullName())
+	//}
 }
 
 void UCMultiplaySubsystem::OnStartSessionComplete(FName SessionName, bool bWasSuccessful)
@@ -276,17 +303,20 @@ void UCMultiplaySubsystem::OnDestroySessionComplete(FName SessionName, bool bWas
 	if (bWasSuccessful && bCreateSessionOnDestroy)
 	{
 		bCreateSessionOnDestroy = false;
-		FString RoomName;
-		if(LastSessionSettings->Get<FString>(FName("RoomName"), RoomName))
-		{
-			CreateSession(LastNumPublicConnections, LastMatchType, FApp::GetProjectName(), RoomName);
-
-		}
-		else
-		{
-			CreateSession(LastNumPublicConnections, LastMatchType, FApp::GetProjectName(), "Temp");
-
-		}
+		FString CurrentLevelPath = GetWorld()->GetOutermost()->GetName() + "?listen";
+		CDisplayLog::Log(TEXT("%s"), *CurrentLevelPath);
+		UGameplayStatics::OpenLevel(GetWorld(), *CurrentLevelPath);
+		//FString RoomName;
+		//if(LastSessionSettings->Get<FString>(FName("RoomName"), RoomName))
+		//{
+		//	CreateSession(LastNumPublicConnections, LastMatchType, FApp::GetProjectName(), RoomName);
+		//
+		//}
+		//else
+		//{
+		//	CreateSession(LastNumPublicConnections, LastMatchType, FApp::GetProjectName(), "Temp");
+		//
+		//}
 	}
 
 	MultiplayerOnDestroySessionComplete.Broadcast(bWasSuccessful);
