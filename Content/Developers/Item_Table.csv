@@ -5,9 +5,12 @@
 13,13,M_Potion1,0,TRUE,50,None,/Script/Engine.Texture2D'/Game/Asset/Item/Potion/Textures/M_Potion_1.M_Potion_1',/Script/Engine.StaticMesh'/Game/ProtoTypeAsset/DownLoadAsset/PolygonFantasyCharacters/Items/SM_Item_WaterCanteen.SM_Item_WaterCanteen',FALSE,Potion,(()),(()),(()),FALSE
 14,14,M_Potion2,0,TRUE,50,None,/Script/Engine.Texture2D'/Game/Asset/Item/Potion/Textures/M_Potion_2.M_Potion_2',/Script/Engine.StaticMesh'/Game/ProtoTypeAsset/DownLoadAsset/PolygonFantasyCharacters/Items/SM_Item_WaterCanteen.SM_Item_WaterCanteen',FALSE,Potion,(()),(()),(()),FALSE
 15,15,M_Potion3,0,TRUE,50,None,/Script/Engine.Texture2D'/Game/Asset/Item/Potion/Textures/M_Potion_3.M_Potion_3',/Script/Engine.StaticMesh'/Game/ProtoTypeAsset/DownLoadAsset/PolygonFantasyCharacters/Items/SM_Item_WaterCanteen.SM_Item_WaterCanteen',FALSE,Potion,(()),(()),(()),TRUE
-20,20,Staff1,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Weapon/Blade_Bubblewand/T_Blade_Bubblewand1_D.T_Blade_Bubblewand1_D',/Script/Engine.StaticMesh'/Game/Asset/Item/Weapon/Blade_Bubblewand/Bubblewand.Bubblewand',FALSE,Weapon,(()),(()),(()),TRUE
-21,21,Staff2,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Weapon/Blade_Sucker/T_Blade_Sucker1_D.T_Blade_Sucker1_D',/Script/Engine.StaticMesh'/Game/Asset/Item/Weapon/Blade_Sucker/Sucker.Sucker',FALSE,Weapon,(()),(()),(()),TRUE
-22,22,Staff3,0,FALSE,1,None,None,None,FALSE,Weapon,(()),(()),(()),TRUE
+20,20,Weapon1,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Weapon/Blade_Bubblewand/T_Blade_Bubblewand1_D.T_Blade_Bubblewand1_D',/Script/Engine.StaticMesh'/Game/Asset/Item/Weapon/Blade_Bubblewand/Bubblewand.Bubblewand',FALSE,Weapon,(()),(()),(()),TRUE
+21,21,Weapon2,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Weapon/Blade_Sucker/T_Blade_Sucker1_D.T_Blade_Sucker1_D',/Script/Engine.StaticMesh'/Game/Asset/Item/Weapon/Blade_Sucker/Sucker.Sucker',FALSE,Weapon,(()),(()),(()),TRUE
+22,22,Weapon3,0,FALSE,1,None,None,None,FALSE,Weapon,(()),(()),(()),TRUE
+23,23,Weapon4,0,FALSE,1,None,None,None,FALSE,Weapon,(()),(()),(()),TRUE
+24,24,Weapon5,0,FALSE,1,None,None,None,FALSE,Weapon,(()),(()),(()),TRUE
+25,25,Weapon6,0,FALSE,1,None,None,None,FALSE,Weapon,(()),(()),(()),TRUE
 30,30,Ring1,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Ring/T_Ring_2.T_Ring_2',/Script/Engine.StaticMesh'/Game/ProtoTypeAsset/Map/Props/TreasureBox/Meshes/SM_Band_01a.SM_Band_01a',FALSE,Armor,(()),(()),(()),TRUE
 31,31,Ring2,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Ring/T_Ring_3.T_Ring_3',/Script/Engine.StaticMesh'/Game/ProtoTypeAsset/Map/Props/TreasureBox/Meshes/SM_Bangle_01b.SM_Bangle_01b',FALSE,Armor,(()),(()),(()),TRUE
 32,32,Ring3,0,FALSE,1,None,/Script/Engine.Texture2D'/Game/Asset/Item/Ring/T_Ring_9.T_Ring_9',/Script/Engine.StaticMesh'/Game/ProtoTypeAsset/Map/Props/TreasureBox/Meshes/SM_Bangle_01i.SM_Bangle_01i',FALSE,Armor,(()),(()),(()),TRUE
