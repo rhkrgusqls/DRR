@@ -224,7 +224,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetupCharacterWidget(HUDWidget);
+	SetupCharacterWidget2(HUDWidget);
 
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
@@ -290,6 +290,15 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 	{
 		InUserWidget->AddToViewport();
 		//CDisplayLog::Log(TEXT("UserWidget Is Valid"));
+		
+		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);		<-AddUObject makes error and I don't know why
+	}
+}
+
+void APlayerCharacterBase::SetupCharacterWidget2(UDRRUserWidget* InUserWidget)
+{
+	if (InUserWidget)
+	{
 		InUserWidget->SetMaxHP(MaxHP);
 		InUserWidget->UpdateHP(CurrentHP);
 		OnHPChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateHP);
@@ -301,10 +310,9 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		InUserWidget->SetMaxST(MaxST);
 		InUserWidget->UpdateST(CurrentST);
 		OnSTChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateST);
-		
+
 		InUserWidget->GetGoldAmount()->SetText(FText::AsNumber(CurrentGold));
 		InUserWidget->UpdateGold(CurrentGold);
-		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);		<-AddUObject makes error and I don't know why
 	}
 }
 
