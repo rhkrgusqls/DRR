@@ -38,6 +38,7 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 
 AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 {
+    MonsterNum = 0;
     // Set this character to call Tick() every frame. You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
@@ -112,7 +113,11 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 
 int32 AEnemyCharacterBase::GetEnemyCharacterNum()
 {
-    return MonsterNum;
+    if (IsSetMonsterNum)
+    {
+        return MonsterNum;
+    }
+    return 0;
 }
 
 void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)

@@ -12,7 +12,7 @@
 #include "WarriorGoblin.generated.h"
 
 UCLASS()
-class DRR_API AWarriorGoblin : public AMeleeMonsterBase
+class DRR_API AWarriorGoblin : public AMeleeMonsterBase 
 {
 	GENERATED_BODY()
 public:

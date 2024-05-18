@@ -30,7 +30,19 @@ EBTNodeResult::Type UBTTSetAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp
         }
 
         // Perform a melee attack towards the target location
-        OwnerEnemy->MeleeAttack(Target->GetActorLocation());
+        int Length = OwnerComp.GetBlackboardComponent()->GetValueAsEnum("Length");
+        if (Length==0)
+        {
+            OwnerEnemy->LongAttack(Target->GetActorLocation());
+        }
+        else if (Length == 1)
+        {
+            OwnerEnemy->MiddleAttack(Target->GetActorLocation());
+        }
+        else if (Length == 2)
+        {
+            OwnerEnemy->MeleeAttack(Target->GetActorLocation());
+        }
     }
 
     // Return task result as succeeded

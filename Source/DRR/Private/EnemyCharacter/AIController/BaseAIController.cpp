@@ -123,7 +123,19 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
             for (TActorIterator<AEnemyManager> It(World); It; ++It)
             {
                 Manager = *It;
+
+                if (Character == nullptr || CastedCharacter == nullptr)
+                {
+                    return;
+                }
+
+                if (CastedCharacter->GetEnemyCharacterNum() == 0)
+                {
+                    return;
+                }
+
                 Manager->SetGroupNum(Character->GetEnemyCharacterNum(), CastedCharacter->GetEnemyCharacterNum());
+
                 GetWorld()->GetTimerManager().ClearTimer(FRemoveGroupTimer);
                GetWorld()->GetTimerManager().SetTimer(FRemoveGroupTimer, this, &ABaseAIController::RemoveGroup, 10.0f, false);
             }
