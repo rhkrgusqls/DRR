@@ -70,6 +70,7 @@ void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 {
 	Super::PostLogin(newPlayer);
 	CDisplayLog::Log(TEXT("NewLogin"));
+	CDisplayLog::Log(TEXT("%s"), *(MatchState.ToString()));
 	// Ensure the new player has a pawn
 	if (newPlayer && newPlayer->GetPawn() == nullptr)
 	{

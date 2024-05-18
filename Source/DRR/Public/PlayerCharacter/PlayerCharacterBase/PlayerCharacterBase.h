@@ -35,6 +35,9 @@ public:
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
 
+	bool WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot);
+	bool WeaponUnEquip(uint8 slot);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

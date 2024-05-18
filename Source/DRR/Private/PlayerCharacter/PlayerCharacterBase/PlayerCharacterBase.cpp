@@ -170,6 +170,18 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 }
 
+bool APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot)
+{
+
+
+	return false;
+}
+
+bool APlayerCharacterBase::WeaponUnEquip(uint8 slot)
+{
+	return false;
+}
+
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
