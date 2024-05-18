@@ -22,6 +22,7 @@ public:
 
 	virtual void PostLogin(APlayerController* newPlayer) override;
 
+	void ShowLodingScreen();
 	void DeleteLodingScreen();
 
 	FORCEINLINE UUserWidget* GetLodingScreenWidget() { return LodingScreenWidget; }
@@ -32,6 +33,7 @@ public:
 
 	//TObjectPtr<class UWidgetComponent> LodingScreen;
 
+	FTimerHandle ShowLodingTimer;
 	FTimerHandle LodingTimer;
 
 protected:

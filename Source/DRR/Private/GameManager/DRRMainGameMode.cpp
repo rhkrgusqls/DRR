@@ -48,14 +48,8 @@ void ADRRMainGameMode::BeginPlay()
 	//	//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
 	//}
 
-	if (IsValid(LodingScreenWidgetClass))
-	{
-		LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
-		if (IsValid(LodingScreenWidget))
-		{
-			LodingScreenWidget->AddToViewport();
-		}
-	}
+	float TimeToShowLoding = 0.2f;
+	GetWorldTimerManager().SetTimer(ShowLodingTimer, this, &ADRRMainGameMode::ShowLodingScreen, TimeToShowLoding, false);
 
 	float TimeToDelegate = 5.0f;
 
@@ -67,6 +61,18 @@ void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 {
 	Super::PostLogin(newPlayer);
 	
+}
+
+void ADRRMainGameMode::ShowLodingScreen()
+{
+	if (IsValid(LodingScreenWidgetClass))
+	{
+		LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
+		if (IsValid(LodingScreenWidget))
+		{
+			LodingScreenWidget->AddToViewport();
+		}
+	}
 }
 
 void ADRRMainGameMode::DeleteLodingScreen()
