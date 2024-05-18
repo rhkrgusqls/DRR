@@ -53,6 +53,12 @@ void UDRRMultiplayerManager::JoinSession(uint32 RoomNum)
 
 }
 
+void UDRRMultiplayerManager::LeaveSession()
+{
+
+    MultiSubsystem->LeaveSession();
+}
+
 void UDRRMultiplayerManager::FindFinish(const TArray<FOnlineSessionSearchResult>& SessionResults, bool bwasSuccessful)
 {
 

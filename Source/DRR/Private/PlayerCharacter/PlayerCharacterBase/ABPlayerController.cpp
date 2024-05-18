@@ -6,6 +6,8 @@
 
 #include "UI/DRRUserWidget.h"
 #include "GameManager/DRRMainGameMode.h"
+#include "GameManager/DRRGameState.h"
+#include "GameManager/DRRPlayerState.h"
 #include "GameFramework/PlayerStart.h"
 #include "EngineUtils.h"
 #include "PlayerCharacter/PlayerCharacterBase/PlayerCharacterBase.h"
@@ -22,24 +24,19 @@ void AABPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FInputModeGameOnly GameOnlyInputMode;
-	SetInputMode(GameOnlyInputMode);
-
-    MultiPlayManager = NewObject<UDRRMultiplayerManager>();
-    MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
-    
-    
-    /*ADRRMainGameMode* GM = Cast<ADRRMainGameMode>(GetWorld()->GetAuthGameMode());
-
-    if (GetGameInstance()->GetFirstLocalPlayerController() == this)
+    CDisplayLog::Log(TEXT("ControllerValid"));
+    if (this == GetGameInstance()->GetFirstLocalPlayerController())
     {
-        if (GM)
-        {
-            GM->SetHUDWidgets(this);
 
-        }
+        FInputModeGameOnly GameOnlyInputMode;
+        SetInputMode(GameOnlyInputMode);
 
-    }*/
+
+        MultiPlayManager = NewObject<UDRRMultiplayerManager>();
+        MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
+    }
+    Possess(GetPawn());
+    
 
 
     
@@ -87,6 +84,20 @@ void AABPlayerController::KillPlayer()
         
         MyCharacter->ReciveAttack(MyCharacter->MaxHP * 3.0f);
     }
+}
+TArray<TObjectPtr<APawn>> AABPlayerController::GetAnotherPlayerPawn()
+{
+    TArray<TObjectPtr<APawn>> Temp;
+    for (auto i : GetWorld()->GetGameState()->PlayerArray)
+    {
+        if (i->GetPawn() == this->GetPawn())
+        {
+            continue;
+        }
+        Temp.Add(i->GetPawn());
+    }
+
+    return Temp;
 }
 void AABPlayerController::HostSession(FString RoomName)
 {

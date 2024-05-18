@@ -4,27 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DRRPlayerChainDiskProto.generated.h"
-
+#include "DRRPlayerMagicArrowProto.generated.h"
 
 UENUM()
-enum class EDiskState : uint8
+enum class EArrowState : uint8
 {
 	Init,
-	FindTarget,
-	NoTarget,
+	Eject,
+	Stuck,
 	Max
 };
 
 
+
 UCLASS()
-class DRR_API ADRRPlayerChainDiskProto : public AActor
+class DRR_API ADRRPlayerMagicArrowProto : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ADRRPlayerChainDiskProto();
+	ADRRPlayerMagicArrowProto();
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,14 +35,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Init(AActor* user, float damage);
-	void NoTargetDead(float delta);
-	bool CheckArrive();
-	void CheckExpire();
-	void Guide();
-	bool FindTarget();
+	void SetDelay(float delay) { FireDelay = delay; }
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void SetTimer();
+protected:
+	void Eject();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
@@ -55,31 +54,24 @@ protected:
 
 	TObjectPtr<class ACharacterBase> User;
 
-	TObjectPtr<class AActor> Target;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
-	uint8 MaxTargetCount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
-	float DetectRadius;
-
-	uint8 CurTargetCount;
-	TArray<AActor*> Targeted;
-	
-	float ArriveThreshold=5.0f;
-
-	EDiskState DiskState;
-
 	float Damage;
 
-	float DeadTime = 3.0f;
-	float curDeadTime;
+	float FireDelay;
+
+	EArrowState ArrowState;
+
+
+	float ArrowInitialSpeed = 3000.0f;
+	float ArrowMaxSpeed = 3000.0f;
+	FVector ArrowVelocity;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UStaticMeshComponent> DiskMesh;
+	TObjectPtr<class UStaticMeshComponent> MissileMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UProjectileMovementComponent> ProjectileMovement;
 
+	FTimerHandle TimeHandler;
 
 };

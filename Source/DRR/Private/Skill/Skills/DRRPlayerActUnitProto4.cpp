@@ -86,7 +86,7 @@ void ADRRPlayerActUnitProto4::Func1(AActor* User)
 		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
 		//피해, 이벤트, 나의컨트롤러,가해자 액터
 
-		for (auto i : outHitResults)
+		for (auto& i : outHitResults)
 		{
 			ACharacterBase* Temp;
 			if (i.GetActor())
