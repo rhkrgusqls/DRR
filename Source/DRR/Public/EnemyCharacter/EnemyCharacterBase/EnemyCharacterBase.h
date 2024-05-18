@@ -84,7 +84,7 @@ protected:
 	class UAISensingConfig_Sight* Sight;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Group")
-	int32 MonsterNum;
+	int32 MonsterNum=0;
 
 	uint16 Level;
 
@@ -106,6 +106,8 @@ public:
 	virtual void LongAttack(FVector TargetLocation);
 
 	int32 GetEnemyCharacterNum();
+
+	bool IsSetMonsterNum = false;
 
 	AEnemyCharacterBase* ColleagueCharacter;
 	// UI Widget Component
