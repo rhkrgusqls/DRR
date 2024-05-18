@@ -113,7 +113,21 @@ AEnemyCharacterBase::AEnemyCharacterBase(int Type)
 
 int32 AEnemyCharacterBase::GetEnemyCharacterNum()
 {
-     return MonsterNum;
+    if (IsSetMonsterNum)
+    {
+        return MonsterNum;
+    }
+    return 0;
+}
+
+void AEnemyCharacterBase::IsDead()
+{
+    Super::IsDead();
+    DropItem();
+}
+
+void AEnemyCharacterBase::DropItem_Implementation()
+{
 }
 
 void AEnemyCharacterBase::OnPerception(AActor* Actor, FAIStimulus stimulus)

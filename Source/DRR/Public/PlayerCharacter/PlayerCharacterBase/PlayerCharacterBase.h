@@ -25,6 +25,7 @@ public:
 	APlayerCharacterBase();
 
 	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
+	void SetupCharacterWidget2(class UDRRUserWidget* InUserWidget);
 
 	virtual void IsDead() override;
 	virtual void PossessedBy(AController* NewController) override;

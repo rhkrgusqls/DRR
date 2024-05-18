@@ -74,6 +74,19 @@ ANormalMonster::ANormalMonster(int Type) : AEnemyCharacterBase(Type)
 void ANormalMonster::BeginPlay()
 {
     Super::BeginPlay();
+	UWorld* World = GetWorld();
+	if (World != nullptr)
+	{
+		for (TActorIterator<AEnemyManager> It(World); It; ++It)
+		{
+			Manager = *It;
+		}
+	}
+	if (Manager != nullptr)
+	{
+		MonsterNum = Manager->SetMonsterNum(this);
+	}
+
     AAIController* AIController = Cast<AAIController>(GetController());
 
     if (AIController)
@@ -88,18 +101,7 @@ void ANormalMonster::BeginPlay()
     }
 
 	HPPrgressBar = Cast<UProgressBar>(HPBarUI->GetWidget()->GetWidgetFromName(TEXT("HP_ProgressBar")));
-	UWorld* World = GetWorld();
-	if (World != nullptr)
-	{
-		for (TActorIterator<AEnemyManager> It(World); It; ++It)
-		{
-			Manager = *It;
-		}
-	}
-	if (Manager != nullptr)
-	{
-		MonsterNum = Manager->SetMonsterNum(this);
-	}
+	IsSetMonsterNum = true;
 }
 
 void ANormalMonster::Tick(float DeltaTime)
