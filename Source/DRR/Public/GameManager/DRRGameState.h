@@ -17,5 +17,5 @@ public:
 	ADRRGameState();
 	virtual void BeginPlay() override;
 	TArray<TObjectPtr<class ACharacterBase>> GetAnotherPlayerCharacters(AController* CurrentPlayerController);
-
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 };

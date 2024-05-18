@@ -29,7 +29,7 @@ public:
 	UFUNCTION(Exec)
 	void KillPlayer();
 
-
+	TArray<TObjectPtr<APawn>> GetAnotherPlayerPawn();
 	UFUNCTION(Exec)
 	void HostSession(FString RoomName);
 

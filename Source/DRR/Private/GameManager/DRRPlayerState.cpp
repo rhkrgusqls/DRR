@@ -9,5 +9,6 @@ ADRRPlayerState::ADRRPlayerState()
 }
 void ADRRPlayerState::BeginPlay()
 {
+	Super::BeginPlay();
 	CDisplayLog::Log(TEXT("PlayerState Valid"));
 }

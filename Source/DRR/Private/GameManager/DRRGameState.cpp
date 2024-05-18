@@ -8,9 +8,17 @@
 #include "Utilities/UtilityList.h"
 ADRRGameState::ADRRGameState()
 {
+	bReplicates = true;  
+	
+}
+void ADRRGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 }
 void ADRRGameState::BeginPlay()
 {
+	Super::BeginPlay();
 
 	CDisplayLog::Log(TEXT("GameState Valid"));
 }

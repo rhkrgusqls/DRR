@@ -33,7 +33,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 	PlayerControllerClass =  AABPlayerController::StaticClass();
 	
 	PlayerStateClass=ADRRPlayerState::StaticClass();
-
+	//
 	GameStateClass = ADRRGameState::StaticClass();
 }
 
@@ -64,6 +64,7 @@ void ADRRMainGameMode::BeginPlay()
 	//
 	//GetWorldTimerManager().SetTimer(LodingTimer, this, &ADRRMainGameMode::DeleteLodingScreen,
 	//	 TimeToDelegate, false);
+
 }
 
 void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
@@ -81,6 +82,8 @@ void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 			newPlayer->Possess(NewPawn);
 		}
 	}
+
+	
 	
 }
 
@@ -90,4 +93,9 @@ void ADRRMainGameMode::DeleteLodingScreen()
 	//{
 	//	LodingScreenWidget->RemoveFromParent();
 	//}
+}
+
+void ADRRMainGameMode::CMDGameStart()
+{
+	StartMatch();
 }
