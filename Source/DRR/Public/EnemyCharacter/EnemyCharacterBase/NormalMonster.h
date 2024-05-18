@@ -30,4 +30,5 @@ public:
 
 private:
 	FTimerHandle HPBarHideTimerHandle;
+
 };
