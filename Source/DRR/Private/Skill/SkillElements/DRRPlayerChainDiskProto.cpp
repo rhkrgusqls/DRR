@@ -166,7 +166,7 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 
 
     isHit = GetWorld()->SweepMultiByProfile(outHitResults, start, end, FQuat::Identity,TEXT("PlayerAttack"), FCollisionShape::MakeSphere(detectRadius), collisionParams);
-
+    
 
 
     //DebugDraw
@@ -281,6 +281,7 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 
 void ADRRPlayerChainDiskProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    CDisplayLog::Log(TEXT("DiskCollide"));
     Target = OtherActor;
     Trigger->SetCollisionProfileName(TEXT("NoCollision"));
     DiskState = EDiskState::FindTarget;

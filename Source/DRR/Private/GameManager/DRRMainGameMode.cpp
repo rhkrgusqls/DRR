@@ -51,28 +51,29 @@ void ADRRMainGameMode::BeginPlay()
 	//	//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
 	//}
 
-	if (IsValid(LodingScreenWidgetClass))
-	{
-		LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
-		if (IsValid(LodingScreenWidget))
-		{
-			LodingScreenWidget->AddToViewport();
-		}
-	}
+	//if (IsValid(LodingScreenWidgetClass))
+	//{
+	//	LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
+	//	if (IsValid(LodingScreenWidget))
+	//	{
+	//		LodingScreenWidget->AddToViewport();
+	//	}
+	//}
 
-	float TimeToDelegate = 5.0f;
-
-	GetWorldTimerManager().SetTimer(LodingTimer, this, &ADRRMainGameMode::DeleteLodingScreen,
-		 TimeToDelegate, false);
+	//float TimeToDelegate = 5.0f;
+	//
+	//GetWorldTimerManager().SetTimer(LodingTimer, this, &ADRRMainGameMode::DeleteLodingScreen,
+	//	 TimeToDelegate, false);
 }
 
 void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 {
 	Super::PostLogin(newPlayer);
-
+	CDisplayLog::Log(TEXT("NewLogin"));
 	// Ensure the new player has a pawn
 	if (newPlayer && newPlayer->GetPawn() == nullptr)
 	{
+		CDisplayLog::Log(TEXT("NoPawn"));
 		APawn* NewPawn = GetWorld()->SpawnActor<APawn>(DefaultPawnClass);
 		if (NewPawn)
 		{
@@ -84,8 +85,8 @@ void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 
 void ADRRMainGameMode::DeleteLodingScreen()
 {
-	if (LodingScreenWidget)
-	{
-		LodingScreenWidget->RemoveFromParent();
-	}
+	//if (LodingScreenWidget)
+	//{
+	//	LodingScreenWidget->RemoveFromParent();
+	//}
 }

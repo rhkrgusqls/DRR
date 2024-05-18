@@ -33,7 +33,7 @@ void AABPlayerController::BeginPlay()
         MultiPlayManager = NewObject<UDRRMultiplayerManager>();
         MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
     }
-    
+    Possess(GetPawn());
     
 
 
