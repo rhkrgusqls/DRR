@@ -41,7 +41,7 @@ void ADRRPlayerActUnitProto6::Func1(AActor* User)
 	{
 		ADRRPlayerMagicArrowProto* Temp = GetWorld()->SpawnActor<ADRRPlayerMagicArrowProto>(Projectile, RandomArrowLocSet(User->GetActorLocation() + Loc, LocRandomRadius), RandomArrowRotSet(User->GetActorRotation() + Rot, RotRandomRange));
 		Temp->Init(User, 15.0f);
-		Temp->SetDelay(FMath::RandRange(0.6f, ArrowShotDelay));
+		Temp->SetDelay(FMath::RandRange(ArrowShotDelay/2.0f, ArrowShotDelay));
 	}
 }
 
