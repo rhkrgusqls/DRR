@@ -21,10 +21,21 @@ public:
 	FORCEINLINE void SetMaxMP(float NewMP) { MaxMP = NewMP; }
 	FORCEINLINE void SetMaxST(float NewST) { MaxST = NewST; }
 	FORCEINLINE UTextBlock* GetGoldAmount() { return CurrentGold; }
+	UFUNCTION(BlueprintCallable)
 	void UpdateHP(float NewHP);
 	void UpdateMP(float NewMP);
 	void UpdateST(float NewST);
 	void UpdateGold(int32 NewGold);
+
+protected:
+	void FillAnimationMap();
+
+public:
+	UFUNCTION(BlueprintCallable)
+	UWidgetAnimation* GetAnimationByName(const FName& AnimationName) const;
+
+	UFUNCTION(BlueprintCallable)
+	bool PlayAnimationByName(const FName& AnimationName, float StartAtTime = 0.0f, int32 NumLoopsToPlay = 1, EUMGSequencePlayMode::Type PlayMode = EUMGSequencePlayMode::Forward, float PlayBackSpeed = 1.0f);
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -49,7 +60,9 @@ protected:
 	TObjectPtr<class UTextBlock> CurrentGold;
 	FText GoldText;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
-	//TObjectPtr<class UUserWidget> Inventory_UI;
+	TMap<FName, UWidgetAnimation*> AnimationsMap;
+
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (BindWidget, AllowPrivateAccess = "true"))
+	TObjectPtr<class UUserWidget> Inventory_UI;*/
 
 };
