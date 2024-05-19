@@ -42,7 +42,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 void ADRRMainGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	////SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
+	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
 	//if (ItemDataTable != nullptr)
 	//{
@@ -50,20 +50,14 @@ void ADRRMainGameMode::BeginPlay()
 	//	//데이터 정보 정상적으로 들어오는거 확인 완료
 	//	//UE_LOG(LogDataTable, Log, TEXT("Name: {}"), ItemTableRow);
 	//}
+	float TimeToShowLoding = 0.2f;
+	GetWorldTimerManager().SetTimer(ShowLodingTimer, this, &ADRRMainGameMode::ShowLodingScreen, TimeToShowLoding, false);
+	
 
-	//if (IsValid(LodingScreenWidgetClass))
-	//{
-	//	LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
-	//	if (IsValid(LodingScreenWidget))
-	//	{
-	//		LodingScreenWidget->AddToViewport();
-	//	}
-	//}
-
-	//float TimeToDelegate = 5.0f;
-	//
-	//GetWorldTimerManager().SetTimer(LodingTimer, this, &ADRRMainGameMode::DeleteLodingScreen,
-	//	 TimeToDelegate, false);
+	float TimeToDelegate = 5.0f;
+	
+	GetWorldTimerManager().SetTimer(LodingTimer, this, &ADRRMainGameMode::DeleteLodingScreen,
+		 TimeToDelegate, false);
 
 }
 
@@ -86,13 +80,24 @@ void ADRRMainGameMode::PostLogin(APlayerController* newPlayer)
 	
 	
 }
+void ADRRMainGameMode::ShowLodingScreen()
+{
+	if (IsValid(LodingScreenWidgetClass))
+	{
+		LodingScreenWidget = Cast<UUserWidget>(CreateWidget(GetWorld(), LodingScreenWidgetClass));
+		if (IsValid(LodingScreenWidget))
+		{
+			LodingScreenWidget->AddToViewport();
+		}
+	}
+}
 
 void ADRRMainGameMode::DeleteLodingScreen()
 {
-	//if (LodingScreenWidget)
-	//{
-	//	LodingScreenWidget->RemoveFromParent();
-	//}
+	if (LodingScreenWidget)
+	{
+		LodingScreenWidget->RemoveFromParent();
+	}
 }
 
 void ADRRMainGameMode::CMDGameStart()

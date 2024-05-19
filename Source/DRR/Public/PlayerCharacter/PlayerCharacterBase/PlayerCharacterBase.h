@@ -29,8 +29,10 @@ public:
 
 	virtual void IsDead() override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void ReciveAttack(float physicsDamage) override;
 
 	void SetHUDWidgets(APlayerController* Player);
+	void SetHUD();
 
 	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
@@ -47,6 +49,7 @@ protected:
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
+
 
 	void SetMaxHP(float NewHP);
 	void SetHP(float NewHP);
@@ -154,6 +157,7 @@ protected:
 private:
 	ECharacterControlType CurrentCharacterControlType;
 
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UDRRUserWidget> HUDWidget;
 
 public:
@@ -165,7 +169,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	int32 CurrentGold;
-
 
 	FOnHPZeroDelegate OnHPZero;
 	FOnHPChangedDelegate OnHPChanged;
