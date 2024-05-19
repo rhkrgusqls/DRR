@@ -48,6 +48,7 @@ protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
 
+
 	void SetMaxHP(float NewHP);
 
 	UFUNCTION(BlueprintCallable)
@@ -74,6 +75,8 @@ private:
 	void WeaponLeftActRelease();
 	void WeaponRightAct();
 	void WeaponRightActRelease();
+
+	void ChangeWeapon(const FInputActionValue& Value);
 
 	UFUNCTION(Server,Reliable,WithValidation,Category="RPC_Character")
 	void ServerLeftAct();
@@ -120,6 +123,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> JumpAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> WeaponChangeAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SitAction;	
@@ -137,9 +142,14 @@ protected:
 
 	//TestWeapon
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
-	TSubclassOf<class ADRRWeaponBase> Weapon;
-	TObjectPtr<class ADRRWeaponBase> WeaponRef;
+	TArray<TSubclassOf<class ADRRWeaponBase>> Weapons;
+	TArray<TObjectPtr<class ADRRWeaponBase>> WeaponRefs;
 
+
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
+	uint8 MaxWeaponNum;
+	uint8 CurWeaponNum=0;
 
 	//UI
 	TSubclassOf<UUserWidget> MainHUDWidgetClass;

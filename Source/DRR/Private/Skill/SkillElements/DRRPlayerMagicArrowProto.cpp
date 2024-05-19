@@ -51,7 +51,6 @@ void ADRRPlayerMagicArrowProto::BeginPlay()
     ProjectileMovement->MaxSpeed = 0.0f;
     ProjectileMovement->InitialSpeed = 0.0f;
     ProjectileMovement->Velocity=FVector::ZeroVector;
-    SetTimer();
 }
 
 // Called every frame
@@ -67,6 +66,12 @@ void ADRRPlayerMagicArrowProto::Init(AActor* user, float damage)
 {
     User = Cast<ACharacterBase>(user);
     Damage = damage;
+}
+
+void ADRRPlayerMagicArrowProto::SetDelay(float delay)
+{
+    FireDelay = delay;
+    SetTimer();
 }
 
 void ADRRPlayerMagicArrowProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

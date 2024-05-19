@@ -129,7 +129,11 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		ActRightPressAction = InputActionRightPressRef.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UInputAction> WeaponChangeUpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_WeaponChange.IA_WeaponChange'"));
+	if (WeaponChangeUpRef.Object)
+	{
+		WeaponChangeAction = WeaponChangeUpRef.Object;
+	}
 
 
 	// UI Widget
@@ -167,19 +171,37 @@ APlayerCharacterBase::APlayerCharacterBase()
 	}
 
 	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
-
+	MaxWeaponNum = 3;
 }
 
 bool APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot)
 {
+	if (slot >= MaxWeaponNum)
+		return false;
 
+	if (WeaponRefs[slot] != nullptr)
+		WeaponUnEquip(slot);
+	if (WeaponClass != nullptr)
+	{
+		WeaponRefs[slot] = GetWorld()->SpawnActor<ADRRWeaponBase>(WeaponClass);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+		WeaponRefs[slot]->AttachToActor(this, AttachmentRules);
+		return true;
+	}
 
 	return false;
 }
 
 bool APlayerCharacterBase::WeaponUnEquip(uint8 slot)
 {
-	return false;
+	if (slot >= MaxWeaponNum)
+		return false;
+	if(WeaponRefs[slot]==nullptr)
+		return false;
+
+	WeaponRefs[slot] = nullptr;
+
+	return true;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -194,7 +216,9 @@ void APlayerCharacterBase::BeginPlay()
 		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
 		SetupCharacterWidget(HUDWidget);
 	}
-
+	WeaponRefs.Add(nullptr);
+	WeaponRefs.Add(nullptr);
+	WeaponRefs.Add(nullptr);
 	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
 	SetMaxHP(100.0f);
@@ -224,12 +248,16 @@ void APlayerCharacterBase::BeginPlay()
 		}*/
 		
 	}
-	if (Weapon != nullptr)
+
+	for (int i=0;i<3;i++)
 	{
-		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
-		WeaponRef->AttachToActor(this, AttachmentRules);
+		if (Weapons[i] != nullptr)
+		{
+			WeaponEquip(Weapons[i], i);
+		}
+
 	}
+
 }
 
 AActor* HitedActor;
@@ -238,7 +266,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetupCharacterWidget2(HUDWidget);
-
+	return;
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
 
@@ -402,6 +430,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked <UEnhancedInputComponent>(PlayerInputComponent);	
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	EnhancedInputComponent->BindAction(WeaponChangeAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::ChangeWeapon);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
 	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
 	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
@@ -521,7 +550,7 @@ void APlayerCharacterBase::MulticastRightActRelease_Implementation()
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
 
-	if (Weapon == nullptr||WeaponRef==nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr)
 	{
 		return;
 	}
@@ -531,7 +560,7 @@ void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 
 void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr || WeaponRef == nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr)
 	{
 		return;
 	}
@@ -540,7 +569,7 @@ void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value
 
 void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr || WeaponRef == nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr)
 	{
 		return;
 	}
@@ -549,7 +578,7 @@ void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Val
 
 void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
 {
-	if (Weapon == nullptr || WeaponRef == nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr)
 	{
 		return;
 	}
@@ -558,7 +587,7 @@ void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Va
 
 void APlayerCharacterBase::WeaponLeftAct()
 {
-	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetFirstAct();
 	if (Temp)
 	{
 		CLog::Log("LeftPress");
@@ -568,7 +597,7 @@ void APlayerCharacterBase::WeaponLeftAct()
 
 void APlayerCharacterBase::WeaponLeftActRelease()
 {
-	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetFirstAct();
 	if (Temp)
 	{
 
@@ -579,7 +608,7 @@ void APlayerCharacterBase::WeaponLeftActRelease()
 void APlayerCharacterBase::WeaponRightAct()
 {
 
-	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
 	if (Temp)
 	{
 		CLog::Log("RightPress");
@@ -591,13 +620,32 @@ void APlayerCharacterBase::WeaponRightAct()
 void APlayerCharacterBase::WeaponRightActRelease()
 {
 
-	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
 	if (Temp)
 	{
 
 		ActComponent->ActRelease(Temp);
 	}
 }
+
+void APlayerCharacterBase::ChangeWeapon(const FInputActionValue& Value)
+{
+
+	uint8 Temp;
+	if (Value.Get<float>() > 0.0f)
+	{
+		Temp = (CurWeaponNum + MaxWeaponNum + 1) % MaxWeaponNum;
+
+	}
+	else if (Value.Get<float>() < 0.0f)
+	{
+		Temp = (CurWeaponNum + MaxWeaponNum -1) % MaxWeaponNum;
+
+	}
+	CurWeaponNum = Temp;
+	CDisplayLog::Log(TEXT("WeaponChange : %d"),Temp);
+}
+
 
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
