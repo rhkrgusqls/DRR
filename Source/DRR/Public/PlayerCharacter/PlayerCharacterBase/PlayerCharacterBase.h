@@ -103,7 +103,11 @@ private:
 	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
 	void MulticastRightActRelease();
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 
 protected:
@@ -159,6 +163,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UDRRUserWidget> HUDWidget;
+	UPROPERTY(VisibleAnywhere)
+	class UBoxComponent* BoxComponent;
+
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))

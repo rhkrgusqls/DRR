@@ -2,6 +2,17 @@
 
 
 #include "EnemyCharacter/PatrolPoint/PatrolPoint.h"
+#include "GameManager/EnemyManager.h"
+
+
+
+#include "DRR.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+
+
+
+
 
 // Sets default values
 APatrolPoint::APatrolPoint()
@@ -15,13 +26,23 @@ APatrolPoint::APatrolPoint()
 void APatrolPoint::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	FTimerHandle DelayedFunctionHandle;
+	GetWorldTimerManager().SetTimer(DelayedFunctionHandle, this, &APatrolPoint::SettingPT, 5.0f, false);
+
 }
 
-// Called every frame
-void APatrolPoint::Tick(float DeltaTime)
+void APatrolPoint::SettingPT()
 {
-	Super::Tick(DeltaTime);
-
+	UWorld* World = GetWorld();
+	if (World != nullptr)
+	{
+		for (TActorIterator<AEnemyManager> It(World); It; ++It)
+		{
+			Manager = *It;
+		}
+	}
+	if (Manager != nullptr)
+	{
+		Manager->SetPatrolPoint(this);
+	}
 }
-

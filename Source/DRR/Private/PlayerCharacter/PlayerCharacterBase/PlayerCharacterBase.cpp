@@ -33,11 +33,22 @@
 #include "Net/UnrealNetwork.h"
 #include"Utilities/UtilityList.h"
 
+#include "Components/BoxComponent.h"
+
 APlayerCharacterBase::APlayerCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->InitBoxExtent(FVector(10.0f, 10.0f, 10.0f));
+	BoxComponent->SetCollisionProfileName(TEXT("Trigger"));
+
+	BoxComponent->OnComponentHit.AddDynamic(this, &APlayerCharacterBase::OnHit);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacterBase::OnOverlapEnd);
+
+	BoxComponent->SetupAttachment(RootComponent);
+	BoxComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	// Create Capsule
 	GetCapsuleComponent()->InitCapsuleSize(40.0f, 100.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
@@ -195,6 +206,9 @@ void APlayerCharacterBase::BeginPlay()
 		SetupCharacterWidget(HUDWidget);
 	}
 
+	FVector NewLocation = GetActorLocation() + FVector(0, 0, 500);
+	BoxComponent->SetWorldLocation(NewLocation);
+
 	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
 	SetMaxHP(100.0f);
@@ -266,37 +280,75 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		if (bHit)
 		{
 			AActor* HitActor = OutHitResult.GetActor();
-
-			CDisplayLog::Log(TEXT("%s"),*GetController()->GetName());
-
-			if (HitActor)
+			bool IsWall = false;
+			CDisplayLog::Log(TEXT("%s"), *GetController()->GetName());
+			TArray<UPrimitiveComponent*> Components;
+			OutHitResult.GetActor()->GetComponents<UPrimitiveComponent>(Components);
+			for (UPrimitiveComponent* Component : Components)
 			{
-				CDisplayLog::Log(TEXT("%s"),*HitActor->GetName());
-				HitActor->SetActorHiddenInGame(true);
-				if (HitedActor)
+				if (Component->GetCollisionProfileName() == TEXT("Wall"))
 				{
+					IsWall = true;
+				}
+			}
+
+			if (IsWall)
+			{
+				if (HitActor)
+				{
+					HitActor->SetActorHiddenInGame(true);
 					if (HitedActor != HitActor)
 					{
-						//HitedActor->SetActorHiddenInGame(false);
+						if (HitedActor != nullptr)
+						{
+							HitedActor->SetActorHiddenInGame(false);
+						}
 						HitedActor = HitActor;
 					}
+					else
+					{
+						return;
+					}
 				}
-				else
+			}
+			else
+			{
+				if (HitedActor != nullptr)
 				{
-					HitedActor = HitActor;
+					HitedActor->SetActorHiddenInGame(false);
+					return;
 				}
 			}
 		}
 		else
 		{
-			if (HitedActor)
+			if (HitedActor!=nullptr)
 			{
-				//HitedActor->SetActorHiddenInGame(false);
+				HitedActor->SetActorHiddenInGame(false);
+				return;
 			}
 		}
 	}
 
 }
+
+
+void APlayerCharacterBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor && OtherActor != this)
+	{
+		OtherActor->SetActorHiddenInGame(true);
+	}
+}
+
+void APlayerCharacterBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this)
+	{
+		OtherActor->SetActorHiddenInGame(false);
+	}
+}
+
 
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {

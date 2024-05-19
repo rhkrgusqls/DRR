@@ -47,9 +47,6 @@ void UBTSSetPatrolPointFollowLeader::TickNode(UBehaviorTreeComponent& OwnerComp,
     // If a valid Manager instance is found
     if (Manager != nullptr)
     {
-        // Set the "IsImLeader" blackboard key based on whether the controlling pawn is a leader
-        OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsImLeader", Manager->IsLeader(ControllingPawn->GetEnemyCharacterNum()));
-
         // Set the "PatrolPoint" blackboard key to the patrol point for the controlling pawn
         OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPoint", Manager->GetPatrolPoint(ControllingPawn->GetEnemyCharacterNum()));
     }
