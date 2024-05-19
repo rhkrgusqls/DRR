@@ -15,7 +15,24 @@ AEnemyManager::AEnemyManager()
 void AEnemyManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	FTimerHandle DelayedFunctionHandle;
+	GetWorldTimerManager().SetTimer(DelayedFunctionHandle, this, &AEnemyManager::Logpat, 10.0f, false);
+}
+
+void AEnemyManager::Logpat()
+{
+	int32 NumPatrolPoints = PatrolPoint.Num();
+	for (int32 i = 0; i < NumPatrolPoints; ++i)
+	{
+		if (PatrolPoint[i] != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PatrolPoint[%d]: %s"), i, *PatrolPoint[i]->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PatrolPoint[%d]: nullptr"), i);
+		}
+	}
 }
 
 // Called every frame
@@ -49,22 +66,12 @@ void AEnemyManager::NullGroup(int32 MonsterNumber)
 	}
 }
 
-bool AEnemyManager::IsLeader(int32 MonsterNumber)
-{
-	
-	if (MonsterNumber == *MonsterNum.Find(MonsterNumber))
-	{
-		return true;
-	}
-	return false;
-}
-
 void AEnemyManager::SetDeadMonster(int32 MonsterNumber)
 {
-	IsDeadMonster[MonsterNumber-1] = true;
-	ArrayPatrolUnit[MonsterNumber-1] = nullptr;
+	IsDeadMonster[MonsterNumber] = true;
+	ArrayPatrolUnit[MonsterNumber] = nullptr;
 	/*			
-	if(IsDeadMonster[index-1])
+	if(IsDeadMonster[index])
 			{
 				if (MyGroup == MonsterNum.Find(index))
 				{
@@ -72,6 +79,11 @@ void AEnemyManager::SetDeadMonster(int32 MonsterNumber)
 				}
 			}
 	*/
+}
+
+void AEnemyManager::SetPatrolPoint(AActor* self)
+{
+	PatrolPoint.Add(self);
 }
 
 FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
@@ -118,9 +130,9 @@ FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
 					RotationOffset = FRotator(0, 225, 0);
 					Temp = Temp - 2;
 				}
-				FVector CurrentLocation = ArrayPatrolUnit[LeaderUnit-1]->GetActorLocation();
+				FVector CurrentLocation = ArrayPatrolUnit[LeaderUnit]->GetActorLocation();
 				
-				FRotator CurrentRotation = ArrayPatrolUnit[LeaderUnit-1]->GetActorRotation();
+				FRotator CurrentRotation = ArrayPatrolUnit[LeaderUnit]->GetActorRotation();
 
 				FVector Direction = FRotationMatrix(CurrentRotation + RotationOffset).GetUnitAxis(EAxis::X);
 				FVector Direction2 = FRotationMatrix(CurrentRotation).GetUnitAxis(EAxis::X);
@@ -143,17 +155,25 @@ FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
 	}
 	else
 	{
+		Logpat();
+		/*
+		if (ClosestPatrolPoints[PatrolUnitNum].Num() == 0)
+		{
+			FPatrolPoint = ClosestPatrolPoints[PatrolUnitNum][0]->GetActorLocation();
+		}
 		/*----------------------------------------------------------------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-		FVector CurrentLocation = ArrayPatrolUnit[PatrolUnitNum - 1]->GetActorLocation();
-		FRotator CurrentRotation = ArrayPatrolUnit[PatrolUnitNum - 1]->GetActorRotation();
-		FVector Direction = FRotationMatrix(CurrentRotation).GetUnitAxis(EAxis::X);
-		float Distance = 200.0f;
-		FVector Offset = Direction * Distance;
-		FVector PatrolLocation = CurrentLocation + Offset;
-		FPatrolPoint = PatrolLocation;
-
+		//else
+		//{
+			FVector CurrentLocation = ArrayPatrolUnit[PatrolUnitNum]->GetActorLocation();
+			FRotator CurrentRotation = ArrayPatrolUnit[PatrolUnitNum]->GetActorRotation();
+			FVector Direction = FRotationMatrix(CurrentRotation).GetUnitAxis(EAxis::X);
+			float Distance = 200.0f;
+			FVector Offset = Direction * Distance;
+			FVector PatrolLocation = CurrentLocation + Offset;
+			FPatrolPoint = PatrolLocation;
+		//}
+		
 		/*----------------------------------------------------------------------------------------------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------------------------------------------------------------------------*/
 	}
@@ -163,7 +183,7 @@ FVector AEnemyManager::GetPatrolPoint(int32 PatrolUnitNum)
 //Recive EnemyCharacterBase BeginPlay Event
 int32 AEnemyManager::SetMonsterNum(AActor* Self)
 {
-	int32 Temp = 1;
+	int32 Temp = 0;
     for (std::size_t index = 0; index < MonsterNum.Num(); ++index) {
 		Temp++;
 		if (IsDeadMonster[index] == NULL)
@@ -176,6 +196,20 @@ int32 AEnemyManager::SetMonsterNum(AActor* Self)
 			}
 		}
 	}
+
+	FVector LocationA = Self->GetActorLocation();
+
+	TArray<AActor*> SortedPatrolPoints = PatrolPoint;
+	TArray<AActor*> TempPoints;
+	SortedPatrolPoints.Sort([LocationA](const AActor& Point1, const AActor& Point2) {
+		return FVector::Dist(LocationA, Point1.GetActorLocation()) < FVector::Dist(LocationA, Point2.GetActorLocation());
+		});
+
+	for (int32 i = 0; i < FMath::Min(5, SortedPatrolPoints.Num()); ++i)
+	{
+		TempPoints.Add(SortedPatrolPoints[i]);
+	}
+	ClosestPatrolPoints.Add(TempPoints);
 	IsDeadMonster.Add(false);
 	ArrayPatrolUnit.Add(Self);
 	MonsterNum.Add(Temp,Temp);

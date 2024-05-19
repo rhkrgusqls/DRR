@@ -32,17 +32,20 @@ void AMonsterSpawner::BeginPlay()
 
 void AMonsterSpawner::SpawnCharacter()
 {
-    if (ASpawnCharacter)
+    if (HasAuthority())
     {
-        
-         FActorSpawnParameters SpawnParams;
-         SpawnParams.Owner = this;
+        if (ASpawnCharacter)
+        {
 
-         FVector SpawnLocation = GetActorLocation() + FVector(0, 0, 100);
-         FRotator SpawnRotation = GetActorRotation();
+            FActorSpawnParameters SpawnParams;
+            SpawnParams.Owner = this;
 
-         GetWorld()->SpawnActor<ACharacter>(ASpawnCharacter, SpawnLocation, SpawnRotation, SpawnParams);
-     
+            FVector SpawnLocation = GetActorLocation() + FVector(0, 0, 100);
+            FRotator SpawnRotation = GetActorRotation();
+
+            GetWorld()->SpawnActor<ACharacter>(ASpawnCharacter, SpawnLocation, SpawnRotation, SpawnParams);
+
+        }
     }
 }
 
