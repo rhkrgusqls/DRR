@@ -16,13 +16,17 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MissileMesh"));
-	RootComponent = MissileMesh;
     MissileMesh->SetStaticMesh(Mesh);
+    MissileMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
     Trigger->SetCollisionProfileName(TEXT("PlayerAttack"));
     Trigger->SetSphereRadius(50.0f);
+
+	RootComponent = Trigger;
+    MissileMesh->SetupAttachment(Trigger);
+
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerProjectileProto::OnOverlapBegin);
 
     // Create a projectile movement component

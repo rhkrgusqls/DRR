@@ -107,6 +107,12 @@ public:
 
 	int32 GetEnemyCharacterNum();
 
+	virtual void IsDead()override;
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Item")
+	void DropItem();
+	virtual void DropItem_Implementation();
+
 	bool IsSetMonsterNum = false;
 
 	AEnemyCharacterBase* ColleagueCharacter;

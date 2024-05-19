@@ -36,6 +36,9 @@ public:
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
 
+	bool WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot);
+	bool WeaponUnEquip(uint8 slot);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -46,8 +49,6 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void SetMaxHP(float NewHP);
-
-	UFUNCTION(BlueprintCallable)
 	void SetHP(float NewHP);
 
 	void SetMaxMP(float NewMP);
@@ -61,7 +62,10 @@ protected:
 
 private:
 	void QuaterMove(const FInputActionValue& Value);
-	
+	void Sit(const FInputActionValue& Value);
+	void SetCharacterControl(ECharacterControlType ControlType);
+
+
 	void WeaponLeftAttackPress(const FInputActionValue& Value);
 	void WeaponRightAttackPress(const FInputActionValue& Value);
 	void WeaponLeftAttackRelaease(const FInputActionValue& Value);
@@ -84,7 +88,6 @@ private:
 	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
 	void MulticastLeftActRelease();
 
-
 	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
 	void ServerRightAct();
 
@@ -98,10 +101,7 @@ private:
 	void MulticastRightActRelease();
 
 
-	void Sit(const FInputActionValue& Value);
 	
-	void SetCharacterControl(ECharacterControlType ControlType);
-
 
 protected:
 	//Camera

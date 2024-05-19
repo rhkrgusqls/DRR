@@ -170,9 +170,22 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 }
 
+bool APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot)
+{
+
+
+	return false;
+}
+
+bool APlayerCharacterBase::WeaponUnEquip(uint8 slot)
+{
+	return false;
+}
+
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+	CDisplayLog::Log(TEXT("PlayerPawnBeginPlay"));
 	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
 	if (PlayerController != nullptr&&GetGameInstance()->GetFirstLocalPlayerController()==PlayerController)
 	{
@@ -333,6 +346,7 @@ void APlayerCharacterBase::IsDead()
 void APlayerCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	CDisplayLog::Log(TEXT("Possesed"));
 
 	SetCharacterControl(ECharacterControlType::Quater);
 }

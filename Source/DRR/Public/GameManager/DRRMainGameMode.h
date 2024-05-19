@@ -27,6 +27,8 @@ public:
 
 	FORCEINLINE UUserWidget* GetLodingScreenWidget() { return LodingScreenWidget; }
 	
+	UFUNCTION(Exec)
+	void CMDGameStart();
 
 	//UFUNCTION(BlueprintCallable, Category = Widget)
 	//void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass); // Widget change function

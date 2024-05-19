@@ -37,7 +37,9 @@ public:
 	UFUNCTION(Exec)
 	void JoinSession(uint32 RoomNum);
 
-	
+
+	UFUNCTION(Exec)
+	void LeaveSession();
 
 protected:
 	void FindFinish(const class TArray<FOnlineSessionSearchResult>& SessionResults, bool bwasSuccessful);
