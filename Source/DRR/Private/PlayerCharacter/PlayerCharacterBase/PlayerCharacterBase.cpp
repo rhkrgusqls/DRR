@@ -329,6 +329,15 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		}
 	}
 
+	if (Weapon != nullptr)
+	{
+		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+		WeaponRef->AttachToActor(this, AttachmentRules);
+				
+	}
+	
+
 }
 
 void APlayerCharacterBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

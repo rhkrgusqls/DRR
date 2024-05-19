@@ -144,7 +144,7 @@ protected:
 	TObjectPtr<class UInputAction> ActRightPressAction;
 
 	//TestWeapon
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TSubclassOf<class ADRRWeaponBase> Weapon;
 	TObjectPtr<class ADRRWeaponBase> WeaponRef;
 
