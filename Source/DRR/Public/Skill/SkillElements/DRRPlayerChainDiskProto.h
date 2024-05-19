@@ -55,6 +55,7 @@ protected:
 
 	TObjectPtr<class ACharacterBase> User;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TargetCheck)
 	TObjectPtr<class AActor> Target;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
@@ -63,16 +64,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
 	float DetectRadius;
 
-	uint8 CurTargetCount;
-	TArray<AActor*> Targeted;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
 	float ArriveThreshold=5.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
+	float DeadTime = 3.0f;
+
+	uint8 CurTargetCount;
+
+	TArray<AActor*> Targeted;
 
 	EDiskState DiskState;
 
 	float Damage;
 
-	float DeadTime = 3.0f;
+
 	float curDeadTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))

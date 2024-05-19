@@ -30,15 +30,16 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(DiskMesh);
+    ProjectileMovement->SetUpdatedComponent(Trigger);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
+    ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->ProjectileGravityScale = 0.0f;
     DiskState = EDiskState::Init;
     DetectRadius = 600.0f;
     MaxTargetCount = 6;
-    
+    ArriveThreshold = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -54,7 +55,6 @@ void ADRRPlayerChainDiskProto::BeginPlay()
 void ADRRPlayerChainDiskProto::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
     switch (DiskState)
     {
     case EDiskState::Init :
@@ -96,10 +96,16 @@ void ADRRPlayerChainDiskProto::NoTargetDead(float delta)
 
 bool ADRRPlayerChainDiskProto::CheckArrive()
 {
-    bool Result = FVector::Distance(this->GetActorLocation(), Target->GetActorLocation()) < ArriveThreshold;
-
-    if (Result)
+    if (Target == nullptr)
     {
+        DiskState = EDiskState::NoTarget;
+        return false;
+    }
+    float dist=(this->GetActorLocation() - Target->GetActorLocation()).Size() ;
+    bool Result = dist < ArriveThreshold;
+    if (Result==true)
+    {
+        CDisplayLog::Log(TEXT("Arrive"));
         Cast<ACharacterBase>(Target)->ReciveAttack(Damage);
         DiskState = EDiskState::NoTarget;
         CurTargetCount++;
@@ -118,19 +124,20 @@ void ADRRPlayerChainDiskProto::CheckExpire()
 
 void ADRRPlayerChainDiskProto::Guide()
 {
-    if (Target)
+    if (Target!=nullptr)
     {
         // 타겟의 위치를 얻어옵니다.
         FVector TargetLocation = Target->GetActorLocation();
 
         // 투사체의 위치를 얻어옵니다.
-        FVector ProjectileLocation = GetActorLocation();
+        FVector ProjectileLocation = this->GetActorLocation();
 
         // 타겟 방향 벡터를 얻습니다.
         FVector Direction = (TargetLocation - ProjectileLocation).GetSafeNormal();
 
         // 투사체에 방향 벡터를 적용하여 이동합니다.
-        ProjectileMovement->Velocity = Direction * ProjectileMovement->GetMaxSpeed();
+        ProjectileMovement->Velocity = Direction * ProjectileMovement->MaxSpeed;
+        CLog::Log(ProjectileMovement->Velocity);
     }
     else
     {
@@ -142,11 +149,9 @@ void ADRRPlayerChainDiskProto::Guide()
 bool ADRRPlayerChainDiskProto::FindTarget()
 {
 
-    ACharacterBase* UserChar = Cast<ACharacterBase>(User);
-
 
     //충돌에 이름을 붙임,무시할 액터:this를 넣어 자신이 충돌되는걸 방지
-    FCollisionQueryParams collisionParams(SCENE_QUERY_STAT(FindTarget), false, UserChar);
+    FCollisionQueryParams collisionParams(SCENE_QUERY_STAT(FindTarget), false, this);
 
     FHitResult outHitResult;
     TArray<FHitResult> outHitResults;
@@ -165,7 +170,7 @@ bool ADRRPlayerChainDiskProto::FindTarget()
     FVector capsulePosition = start + (end - start) / 2.0f;
 
 
-    isHit = GetWorld()->SweepMultiByProfile(outHitResults, start, end, FQuat::Identity,TEXT("PlayerAttack"), FCollisionShape::MakeSphere(detectRadius), collisionParams);
+    isHit = GetWorld()->SweepMultiByChannel(outHitResults, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(detectRadius), collisionParams);
     
 
 
@@ -188,6 +193,11 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 
         float MinDistance;
 
+
+        AActor* NewMinActor = nullptr;
+
+        float NewMinDistance;
+
         for (auto& i : outHitResults)
         {
             ACharacterBase* Temp;
@@ -195,50 +205,32 @@ bool ADRRPlayerChainDiskProto::FindTarget()
             {
                 if (i.GetActor() == Target)
                     continue;
-                if (Targeted.Contains(i.GetActor()))
-                    continue;
+                
                 Temp = Cast< ACharacterBase>(i.GetActor());
                 if (Temp != nullptr)
                 {
 
-                    if (MinActor == nullptr)
-
-
-
+                    if (!Targeted.Contains(i.GetActor()))
                     {
-                        MinActor = i.GetActor();
-                        MinDistance = FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation());
+                        if (NewMinActor == nullptr)
+                        {
+                            NewMinActor = i.GetActor();
+                            NewMinDistance= FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation());
+
+                        }
+                        else
+                        {
+                            if (NewMinDistance > FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation()))
+                            {
+
+                                NewMinActor = i.GetActor();
+
+                                NewMinDistance = FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation());
+                            }
+                        }
                     }
                     else
                     {
-                        if (MinDistance > FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation()))
-                        {
-
-                            MinActor = i.GetActor();
-
-                            MinDistance = FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation());
-                        }
-                    }
-
-
-
-
-                }
-            }
-        }
-        if (MinActor == nullptr)
-        {
-            for (auto& i : outHitResults)
-            {
-                ACharacterBase* Temp;
-                if (i.GetActor())
-                {
-                    if (i.GetActor() == Target)
-                        continue;
-                    Temp = Cast< ACharacterBase>(i.GetActor());
-                    if (Temp != nullptr)
-                    {
-
                         if (MinActor == nullptr)
                         {
                             MinActor = i.GetActor();
@@ -254,15 +246,24 @@ bool ADRRPlayerChainDiskProto::FindTarget()
                                 MinDistance = FVector::Distance(i.GetActor()->GetActorLocation(), this->GetActorLocation());
                             }
                         }
-
-
-
-
                     }
+                    
+
+
+
+
                 }
             }
         }
-        if (MinActor!=nullptr)
+        if (NewMinActor!=nullptr)
+        {
+            Target = NewMinActor;
+            DiskState = EDiskState::FindTarget;
+
+            return true;
+
+        }
+        else if (MinActor != nullptr)
         {
             Target = MinActor;
             DiskState = EDiskState::FindTarget;
@@ -282,9 +283,9 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 void ADRRPlayerChainDiskProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     CDisplayLog::Log(TEXT("DiskCollide"));
+    DiskState = EDiskState::FindTarget;
     Target = OtherActor;
     Trigger->SetCollisionProfileName(TEXT("NoCollision"));
-    DiskState = EDiskState::FindTarget;
 
 }
 
