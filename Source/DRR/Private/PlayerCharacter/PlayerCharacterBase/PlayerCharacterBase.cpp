@@ -10,7 +10,7 @@
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
 #include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
-
+#include "Skill/DRRActUnitBase.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -33,11 +33,22 @@
 #include "Net/UnrealNetwork.h"
 #include"Utilities/UtilityList.h"
 
+#include "Components/BoxComponent.h"
+
 APlayerCharacterBase::APlayerCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->InitBoxExtent(FVector(10.0f, 10.0f, 10.0f));
+	BoxComponent->SetCollisionProfileName(TEXT("Trigger"));
+
+	BoxComponent->OnComponentHit.AddDynamic(this, &APlayerCharacterBase::OnHit);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacterBase::OnOverlapEnd);
+
+	BoxComponent->SetupAttachment(RootComponent);
+	BoxComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	// Create Capsule
 	GetCapsuleComponent()->InitCapsuleSize(40.0f, 100.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
@@ -136,6 +147,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	}
 
 
+
 	// UI Widget
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
 	ActComponent = CreateDefaultSubobject<UDRRActComponent>(TEXT("Act"));
@@ -219,6 +231,10 @@ void APlayerCharacterBase::BeginPlay()
 	WeaponRefs.Add(nullptr);
 	WeaponRefs.Add(nullptr);
 	WeaponRefs.Add(nullptr);
+
+	FVector NewLocation = GetActorLocation() + FVector(0, 0, 500);
+	BoxComponent->SetWorldLocation(NewLocation);
+
 	//SetHUDWidgets(GetGameInstance()->GetFirstLocalPlayerController());
 
 	SetMaxHP(100.0f);
@@ -249,15 +265,16 @@ void APlayerCharacterBase::BeginPlay()
 		
 	}
 
-	for (int i=0;i<3;i++)
+	for (int i=0;i<MaxWeaponNum;i++)
 	{
+		if (i == Weapons.Num())
+			break;
 		if (Weapons[i] != nullptr)
 		{
 			WeaponEquip(Weapons[i], i);
 		}
 
 	}
-
 }
 
 AActor* HitedActor;
@@ -266,7 +283,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetupCharacterWidget2(HUDWidget);
-	return;
+
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
 
@@ -292,37 +309,75 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		if (bHit)
 		{
 			AActor* HitActor = OutHitResult.GetActor();
-
-			CDisplayLog::Log(TEXT("%s"),*GetController()->GetName());
-
-			if (HitActor)
+			bool IsWall = false;
+			CDisplayLog::Log(TEXT("%s"), *GetController()->GetName());
+			TArray<UPrimitiveComponent*> Components;
+			OutHitResult.GetActor()->GetComponents<UPrimitiveComponent>(Components);
+			for (UPrimitiveComponent* Component : Components)
 			{
-				CDisplayLog::Log(TEXT("%s"),*HitActor->GetName());
-				HitActor->SetActorHiddenInGame(true);
-				if (HitedActor)
+				if (Component->GetCollisionProfileName() == TEXT("Wall"))
 				{
+					IsWall = true;
+				}
+			}
+
+			if (IsWall)
+			{
+				if (HitActor)
+				{
+					HitActor->SetActorHiddenInGame(true);
 					if (HitedActor != HitActor)
 					{
-						//HitedActor->SetActorHiddenInGame(false);
+						if (HitedActor != nullptr)
+						{
+							HitedActor->SetActorHiddenInGame(false);
+						}
 						HitedActor = HitActor;
 					}
+					else
+					{
+						return;
+					}
 				}
-				else
+			}
+			else
+			{
+				if (HitedActor != nullptr)
 				{
-					HitedActor = HitActor;
+					HitedActor->SetActorHiddenInGame(false);
+					return;
 				}
 			}
 		}
 		else
 		{
-			if (HitedActor)
+			if (HitedActor!=nullptr)
 			{
-				//HitedActor->SetActorHiddenInGame(false);
+				HitedActor->SetActorHiddenInGame(false);
+				return;
 			}
 		}
 	}
 
 }
+
+
+void APlayerCharacterBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor && OtherActor != this)
+	{
+		OtherActor->SetActorHiddenInGame(true);
+	}
+}
+
+void APlayerCharacterBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this)
+	{
+		OtherActor->SetActorHiddenInGame(false);
+	}
+}
+
 
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
@@ -432,10 +487,10 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(WeaponChangeAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::ChangeWeapon);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAct);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftActRelease);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAct);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightActRelease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
 }
 
@@ -493,138 +548,46 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
-bool APlayerCharacterBase::ServerLeftAct_Validate()
-{
-	return true;
-}
-void APlayerCharacterBase::ServerLeftAct_Implementation()
-{
-	MulticastLeftAct();
-}
-void APlayerCharacterBase::MulticastLeftAct_Implementation()
-{
-	WeaponLeftAct();
-
-}
-
-bool APlayerCharacterBase::ServerLeftActRelease_Validate()
-{
-	return true;
-}
-void APlayerCharacterBase::ServerLeftActRelease_Implementation()
-{
-	MulticastLeftActRelease();
-}
-void APlayerCharacterBase::MulticastLeftActRelease_Implementation()
-{
-	WeaponLeftActRelease();
-
-}
-
-bool APlayerCharacterBase::ServerRightAct_Validate()
-{
-	return true;
-}
-void APlayerCharacterBase::ServerRightAct_Implementation()
-{
-	MulticastRightAct();
-}
-void APlayerCharacterBase::MulticastRightAct_Implementation()
-{
-	WeaponRightAct();
-}
-
-bool APlayerCharacterBase::ServerRightActRelease_Validate()
-{
-	return true;
-}
-void APlayerCharacterBase::ServerRightActRelease_Implementation()
-{
-	MulticastRightActRelease();
-}
-void APlayerCharacterBase::MulticastRightActRelease_Implementation()
-{
-	WeaponRightActRelease();
-}
-
-void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
-{
-
-	if (WeaponRefs[CurWeaponNum] == nullptr)
-	{
-		return;
-	}
-	ServerLeftAct();
-	
-}
-
-void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
-{
-	if (WeaponRefs[CurWeaponNum] == nullptr)
-	{
-		return;
-	}
-	ServerRightAct();
-}
-
-void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
-{
-	if (WeaponRefs[CurWeaponNum] == nullptr)
-	{
-		return;
-	}
-	ServerLeftActRelease();
-}
-
-void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
-{
-	if (WeaponRefs[CurWeaponNum] == nullptr)
-	{
-		return;
-	}
-	ServerRightActRelease();
-}
-
 void APlayerCharacterBase::WeaponLeftAct()
 {
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetFirstAct();
+	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
 	if (Temp)
 	{
 		CLog::Log("LeftPress");
-		ActComponent->Act(Temp);
+		ServerAct(Temp);
 	}
 }
 
 void APlayerCharacterBase::WeaponLeftActRelease()
 {
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetFirstAct();
+	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
 	if (Temp)
 	{
 
-		ActComponent->ActRelease(Temp);
+		ServerActRelease(Temp);
 	}
 }
 
 void APlayerCharacterBase::WeaponRightAct()
 {
 
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
+	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
 	if (Temp)
 	{
 		CLog::Log("RightPress");
 
-		ActComponent->Act(Temp);
+		ServerAct(Temp);
 	}
 }
 
 void APlayerCharacterBase::WeaponRightActRelease()
 {
 
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
+	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
 	if (Temp)
 	{
 
-		ActComponent->ActRelease(Temp);
+		ServerActRelease(Temp);
 	}
 }
 

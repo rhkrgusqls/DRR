@@ -35,6 +35,7 @@ ADRRPlayerMagicArrowProto::ADRRPlayerMagicArrowProto()
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->ProjectileGravityScale = 0.0f;
 
+
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +52,11 @@ void ADRRPlayerMagicArrowProto::BeginPlay()
     ProjectileMovement->MaxSpeed = 0.0f;
     ProjectileMovement->InitialSpeed = 0.0f;
     ProjectileMovement->Velocity=FVector::ZeroVector;
+    if (HasAuthority())
+    {
+        SetReplicates(true);
+        SetReplicateMovement(true);
+    }
 }
 
 // Called every frame

@@ -23,14 +23,20 @@ ADRRPlayerStonePillarProto::ADRRPlayerStonePillarProto()
     PillarMesh->SetVisibility(false);
     // Bind hit event
     OnActorBeginOverlap.AddDynamic(this, &ADRRPlayerStonePillarProto::OnPillarHit);
-    
+ 
+
+
 }
 
 // Called when the game starts or when spawned
 void ADRRPlayerStonePillarProto::BeginPlay()
 {
 	Super::BeginPlay();
-
+    if (HasAuthority())
+    {
+        SetReplicates(true);
+        SetReplicateMovement(true);
+    }
     SetFloor();
     SetTimer();
 }

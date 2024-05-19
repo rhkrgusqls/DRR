@@ -21,7 +21,7 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
 
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
-    Trigger->SetCollisionProfileName(TEXT("PlayerAttack"));
+    Trigger->SetCollisionProfileName(TEXT("NoCollision"));
     Trigger->SetSphereRadius(50.0f);
 
 	RootComponent = Trigger;
@@ -37,13 +37,18 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->ProjectileGravityScale = 0.0f;
 
+
 }
 
 // Called when the game starts or when spawned
 void ADRRPlayerProjectileProto::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    if (HasAuthority())
+    {
+        SetReplicates(true);
+        SetReplicateMovement(true);
+    }
 }
 
 // Called every frame
@@ -55,19 +60,28 @@ void ADRRPlayerProjectileProto::Tick(float DeltaTime)
 
 void ADRRPlayerProjectileProto::Init(AActor* user, float damage)
 {
-    User = Cast<ACharacterBase>(user);
-    Damage = damage;
+    if (HasAuthority())
+    {
+        User = Cast<ACharacterBase>(user);
+        Damage = damage;
+        Trigger->SetCollisionProfileName(TEXT("PlayerAttack"));
+
+    }
 }
 
 void ADRRPlayerProjectileProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    ACharacterBase* Temp = Cast<ACharacterBase>(OtherActor);
-    Temp->ReciveAttack(Damage);
+    if (HasAuthority())
+    {
+        ACharacterBase* Temp = Cast<ACharacterBase>(OtherActor);
+        Temp->ReciveAttack(Damage);
 
-    CLog::Log("MissileDestroy");
-    CLog::Log(OtherActor->GetName());
+        CLog::Log("MissileDestroy");
+        CLog::Log(OtherActor->GetName());
 
-    Destroy();
+        Destroy();
+
+    }
 }
 
 

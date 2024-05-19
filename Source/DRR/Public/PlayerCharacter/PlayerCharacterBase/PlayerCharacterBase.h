@@ -66,11 +66,7 @@ private:
 	void Sit(const FInputActionValue& Value);
 	void SetCharacterControl(ECharacterControlType ControlType);
 
-
-	void WeaponLeftAttackPress(const FInputActionValue& Value);
-	void WeaponRightAttackPress(const FInputActionValue& Value);
-	void WeaponLeftAttackRelaease(const FInputActionValue& Value);
-	void WeaponRightAttackRelaease(const FInputActionValue& Value);
+	
 	
 	void WeaponLeftAct();
 	void WeaponLeftActRelease();
@@ -79,29 +75,6 @@ private:
 
 	void ChangeWeapon(const FInputActionValue& Value);
 
-	UFUNCTION(Server,Reliable,WithValidation,Category="RPC_Character")
-	void ServerLeftAct();
-
-	UFUNCTION(NetMulticast,Unreliable,Category="RPC_Character")
-	void MulticastLeftAct();
-
-	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
-	void ServerLeftActRelease();
-
-	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
-	void MulticastLeftActRelease();
-
-	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
-	void ServerRightAct();
-
-	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
-	void MulticastRightAct();
-
-	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
-	void ServerRightActRelease();
-
-	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
-	void MulticastRightActRelease();
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

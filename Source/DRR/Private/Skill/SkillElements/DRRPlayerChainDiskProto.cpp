@@ -40,6 +40,7 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
     DetectRadius = 600.0f;
     MaxTargetCount = 6;
     ArriveThreshold = 5.0f;
+
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +49,11 @@ void ADRRPlayerChainDiskProto::BeginPlay()
     Super::BeginPlay();
     DiskState = EDiskState::Init;
     curDeadTime = 0.0f;
-
+    if (HasAuthority())
+    {
+        SetReplicates(true);
+        SetReplicateMovement(true);
+    }
 }
 
 // Called every frame
