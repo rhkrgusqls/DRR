@@ -34,7 +34,7 @@ ADRRMainGameMode::ADRRMainGameMode()
 	
 	PlayerStateClass=ADRRPlayerState::StaticClass();
 	//
-	//GameStateClass = ADRRGameState::StaticClass();
+	GameStateClass = ADRRGameState::StaticClass();
 }
 
 
