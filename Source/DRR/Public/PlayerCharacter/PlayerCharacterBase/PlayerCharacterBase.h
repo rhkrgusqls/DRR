@@ -9,6 +9,7 @@
 
 #include "Interface/DRRActableInterface.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
+#include "Interface/DRRGetItem.h"
 #include "Components/ProgressBar.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -17,16 +18,18 @@
 #include "PlayerCharacterBase.generated.h"
 
 UCLASS()
-class DRR_API APlayerCharacterBase : public ACharacterBase, public IDRRCharacterWidgetInterface
+class DRR_API APlayerCharacterBase : public ACharacterBase, public IDRRCharacterWidgetInterface, public IDRRGetItem
 {
 	GENERATED_BODY()
 
 public:
 	APlayerCharacterBase();
 
-	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;
+	virtual void SetupCharacterWidget(class UDRRUserWidget* InUserWidget) override;	
 	void SetupCharacterWidget2(class UDRRUserWidget* InUserWidget);
 
+	virtual void TakeItem(class UDA_ItemData* ItemData) override;
+	
 	virtual void IsDead() override;
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -35,6 +38,8 @@ public:
 	FORCEINLINE UUserWidget* GetMainHUDWidget() { return MainHUDWidget; }
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
+
+
 
 	bool WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot);
 	bool WeaponUnEquip(uint8 slot);
@@ -102,10 +107,10 @@ private:
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
+	
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	
+
 
 protected:
 	//Camera
@@ -154,14 +159,12 @@ protected:
 	TSubclassOf<UUserWidget> ItemCardWidgetClass;
 	UUserWidget* ItemCardWidget;
 
-
 private:
 	ECharacterControlType CurrentCharacterControlType;
 
 	TObjectPtr<class UDRRUserWidget> HUDWidget;
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* BoxComponent;
-
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))

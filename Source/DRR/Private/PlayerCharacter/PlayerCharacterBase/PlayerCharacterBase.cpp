@@ -67,6 +67,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.0f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0f;
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	//Set Rotation Remit
 	bUseControllerRotationPitch = false;
@@ -150,10 +151,8 @@ APlayerCharacterBase::APlayerCharacterBase()
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
 	{
-
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
-		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
+		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);		
 	}
 
 	// MainWidget
@@ -330,7 +329,6 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 
 }
 
-
 void APlayerCharacterBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor && OtherActor != this)
@@ -379,6 +377,11 @@ void APlayerCharacterBase::SetupCharacterWidget2(UDRRUserWidget* InUserWidget)
 		InUserWidget->GetGoldAmount()->SetText(FText::AsNumber(CurrentGold));
 		InUserWidget->UpdateGold(CurrentGold);
 	}
+}
+
+void APlayerCharacterBase::TakeItem(UDA_ItemData* ItemData)
+{
+
 }
 
 void APlayerCharacterBase::IsDead()
