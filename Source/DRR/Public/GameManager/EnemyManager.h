@@ -19,8 +19,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void Logpat();
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,20 +27,19 @@ public:
 
 	void NullGroup(int32 MonsterNumber);
 
-	void SetDeadMonster(int32 MonsterNumber);
+	bool IsLeader(int32 MonsterNumber);
 
-	void SetPatrolPoint(AActor* self);
+	void SetDeadMonster(int32 MonsterNumber);
 
 	FVector GetPatrolPoint(int32 PatrolUnitNum);
 
 	FVector FPatrolPoint;
 
 	int32 SetMonsterNum(AActor* Self);
-	TArray<TArray<AActor*>> ClosestPatrolPoints;
+
 	TArray<bool> IsDeadMonster;
 	TArray<AActor*> PatrolPoint;
 	TArray<AActor*> ArrayPatrolUnit;
 	//MonsterNumber, GroupNumber
 	TMap<int32, int32> MonsterNum;
-	TMap<int32, int32> PatrolIndex;
 };

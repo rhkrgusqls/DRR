@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Public/GameManager/EnemyManager.h"
 #include "PatrolPoint.generated.h"
 
 UCLASS()
@@ -19,10 +18,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void SettingPT();
 
 public:	
-	TObjectPtr<class UBoxComponent> Body;
-	AEnemyManager* Manager;
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 };
