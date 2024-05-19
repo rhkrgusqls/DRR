@@ -19,6 +19,8 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+
+#include "UI/DRRUserWidget.h"
 // Sets default values
 ACharacterBase::ACharacterBase()
 {

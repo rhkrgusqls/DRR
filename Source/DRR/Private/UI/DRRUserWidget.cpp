@@ -13,6 +13,7 @@ void UDRRUserWidget::UpdateHP(float NewHP)
 	if (PlayerHPBar)
 	{
 		PlayerHPBar->SetPercent(NewHP / MaxHP);
+		PlayAnimationByName(TEXT("HPChangedAnim"));
 	}
 	/*
 	if (EnemyHPProgressBar)

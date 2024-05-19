@@ -197,7 +197,7 @@ void APlayerCharacterBase::BeginPlay()
 	Super::BeginPlay();
 	CDisplayLog::Log(TEXT("PlayerPawnBeginPlay"));
 	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
-	if (PlayerController != nullptr&&GetGameInstance()->GetFirstLocalPlayerController()==PlayerController)
+	if (PlayerController != nullptr && GetGameInstance()->GetFirstLocalPlayerController() == PlayerController)
 	{
 		SetCharacterControl(ECharacterControlType::Quater);
 		SetHUDWidgets(PlayerController);
@@ -243,6 +243,7 @@ void APlayerCharacterBase::BeginPlay()
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
 		WeaponRef->AttachToActor(this, AttachmentRules);
 	}
+	SetupCharacterWidget2(HUDWidget);
 }
 
 AActor* HitedActor;
@@ -250,7 +251,8 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetupCharacterWidget2(HUDWidget);
+	//OnHPChanged.BindUObject(SetupCharacterWidget2);
+	
 
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
@@ -395,6 +397,11 @@ void APlayerCharacterBase::IsDead()
 		CurrentController->RespawnPlayer();
 	}
 
+	if (HUDWidget)
+	{
+		HUDWidget->RemoveFromParent();
+	}
+
 }
 
 void APlayerCharacterBase::PossessedBy(AController* NewController)
@@ -403,6 +410,13 @@ void APlayerCharacterBase::PossessedBy(AController* NewController)
 	CDisplayLog::Log(TEXT("Possesed"));
 
 	SetCharacterControl(ECharacterControlType::Quater);
+}
+
+void APlayerCharacterBase::ReciveAttack(float physicsDamage)
+{
+	Super::ReciveAttack(physicsDamage);
+
+	SetupCharacterWidget2(HUDWidget);
 }
 
 void APlayerCharacterBase::SetMaxHP(float NewHP)
@@ -498,6 +512,19 @@ void APlayerCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(APlayerCharacterBase, CurrentHP);
 }
 
+void APlayerCharacterBase::SetHUD()
+{
+	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
+	if (PlayerController != nullptr && GetGameInstance()->GetFirstLocalPlayerController() == PlayerController)
+	{
+		SetCharacterControl(ECharacterControlType::Quater);
+		SetHUDWidgets(PlayerController);
+		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
+		SetupCharacterWidget(HUDWidget);
+		SetupCharacterWidget2(HUDWidget);
+	}
+}
+
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -505,7 +532,6 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	float MovementVectorsizeSquared = MovementVector.SquaredLength();
 	if (MovementVectorsizeSquared > 1.0f)
 	{
-		//ũ�⸦ 1�� ����
 		MovementVector.Normalize();
 		MovementVectorsizeSquared = 1.0f;
 	}
@@ -719,7 +745,6 @@ void APlayerCharacterBase::SetHUDWidgets(APlayerController* Player)
 
 
 }
-
 
 //float APlayerCharacterBase::ApplyDamage(float InDamage)
 //{
