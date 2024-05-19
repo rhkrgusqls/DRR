@@ -31,7 +31,7 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(Trigger);
+    ProjectileMovement->SetUpdatedComponent(MissileMesh);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bShouldBounce = false;

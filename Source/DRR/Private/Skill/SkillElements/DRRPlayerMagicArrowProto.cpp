@@ -29,7 +29,7 @@ ADRRPlayerMagicArrowProto::ADRRPlayerMagicArrowProto()
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(Trigger);
+    ProjectileMovement->SetUpdatedComponent(MissileMesh);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bShouldBounce = false;
@@ -47,10 +47,12 @@ void ADRRPlayerMagicArrowProto::BeginPlay()
 
     ArrowInitialSpeed = ProjectileMovement->InitialSpeed;
     ArrowMaxSpeed = ProjectileMovement->MaxSpeed;
+    ArrowVelocity = ProjectileMovement->Velocity;
 
-    ProjectileMovement->MaxSpeed = 0.0f;
     ProjectileMovement->InitialSpeed = 0.0f;
+    ProjectileMovement->MaxSpeed = 0.0f;
     ProjectileMovement->Velocity=FVector::ZeroVector;
+
 }
 
 // Called every frame
@@ -66,12 +68,6 @@ void ADRRPlayerMagicArrowProto::Init(AActor* user, float damage)
 {
     User = Cast<ACharacterBase>(user);
     Damage = damage;
-}
-
-void ADRRPlayerMagicArrowProto::SetDelay(float delay)
-{
-    FireDelay = delay;
-    SetTimer();
 }
 
 void ADRRPlayerMagicArrowProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -95,23 +91,19 @@ void ADRRPlayerMagicArrowProto::SetTimer()
         //타이머 설정: (타임핸들러, 객체, 실행할 함수,지연시간, 루프 여부)
         GetWorld()->GetTimerManager().SetTimer(TimeHandler, this, &ADRRPlayerMagicArrowProto::Eject, fireTime, false);
     }
-    else
-    {
-        Eject();
-    }
 
 }
 
 void ADRRPlayerMagicArrowProto::Eject()
 {
-    CDisplayLog::Log(TEXT("Eject"));
-    ArrowState = EArrowState::Eject;
+
+    ArrowState = EArrowState::Init;
 
     Trigger->SetCollisionProfileName(TEXT("PlayerAttack"));
 
     ProjectileMovement->InitialSpeed = ArrowInitialSpeed;
     ProjectileMovement->MaxSpeed = ArrowMaxSpeed;
-    ProjectileMovement->Velocity = GetActorForwardVector()*3000;
+    ProjectileMovement->Velocity = ArrowVelocity;
 }
 
 
