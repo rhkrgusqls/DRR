@@ -76,20 +76,10 @@ void AAB_ItemBox::PostInitializeComponents()
 
 	int ID = FMath::RandRange(10, 15);
 	int Amount = FMath::RandRange(10, 15);
-
-	UAssetManager& Manager = UAssetManager::Get();
-	TArray<FPrimaryAssetId> AssetIds;
-	Manager.GetPrimaryAssetIdList(TEXT("DA_ItemData"), AssetIds);
-
-	ensure(AssetIds.Num() > 0);
-
 	int32 RandomIndex = FMath::RandRange(0, 15);
-	FSoftObjectPtr AssetPtr(Manager.GetPrimaryAssetPath(AssetIds[RandomIndex]));
-	if (AssetPtr.IsPending())
-	{
-		AssetPtr.LoadSynchronous();
-	}
-	ItemData = Cast<UDA_ItemData>(AssetPtr.Get());
+
+
+
 
 }
 
@@ -97,6 +87,8 @@ void AAB_ItemBox::PostInitializeComponents()
 void AAB_ItemBox::BeginPlay()
 {
 	Super::BeginPlay();
+
+
 }
 
 // Called every frame

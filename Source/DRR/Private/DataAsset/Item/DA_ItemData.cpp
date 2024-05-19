@@ -3,7 +3,12 @@
 
 #include "DataAsset/Item/DA_ItemData.h"
 
-FPrimaryAssetId UDA_ItemData::GetPrimaryAssetId() const
+void UDA_ItemData::GetID()
 {
-    return FPrimaryAssetId("DA_ItemData", GetFName());
+	
+}
+
+void UDA_ItemData::GetAmount()
+{
+	
 }

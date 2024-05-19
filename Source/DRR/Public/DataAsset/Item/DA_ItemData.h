@@ -18,10 +18,14 @@ class DRR_API UDA_ItemData : public UPrimaryDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	
-	int32 ID;
+	int32 ID = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	
-	int32 Amount;
+	int32 Amount = 0;
 
-	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
+	UFUNCTION()
+	void GetID() ;
+
+	UFUNCTION()
+	void GetAmount() ;
 };
