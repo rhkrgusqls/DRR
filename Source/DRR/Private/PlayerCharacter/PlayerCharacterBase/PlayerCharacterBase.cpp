@@ -467,6 +467,7 @@ void APlayerCharacterBase::SetHUD()
 		SetHUDWidgets(PlayerController);
 		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
 		SetupCharacterWidget(HUDWidget);
+		SetupCharacterWidget2(HUDWidget);
 	}
 }
 
