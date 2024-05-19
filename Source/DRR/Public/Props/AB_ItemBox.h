@@ -15,6 +15,31 @@ public:
 	// Sets default values for this actor's properties
 	AAB_ItemBox();
 
+	FORCEINLINE class UBoxComponent* GetTrigger() { return Trigger; }
+
+protected:
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//UFUNCTION()
+	//void OnEffectFinished(UParticleSystemComponent* Psystem);
+
+protected:
+	virtual void PostInitializeComponents() override;
+
+	UPROPERTY(VisibleAnywhere, Category = Box)
+	TObjectPtr<class UBoxComponent> Trigger;
+
+	UPROPERTY(VisibleAnywhere, Category = Box)
+	TObjectPtr<class UStaticMeshComponent> Mesh;
+
+	UPROPERTY(VisibleAnywhere, Category = Box)
+	TObjectPtr<class UParticleSystemComponent> Effect;
+
+	UPROPERTY(EditAnywhere, Category = Item)
+	TObjectPtr<class UDA_ItemData> ItemData;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
