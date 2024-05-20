@@ -6,18 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "DRRPlayerStonePillarProto.generated.h"
 
-UENUM()
-enum class EPillarState : uint8
-{
-	Init,
-	Ambush,
-	Rising,
-	Stay,
-	Expire,
-	Max
-};
-
-
 UCLASS()
 class DRR_API ADRRPlayerStonePillarProto : public AActor
 {
@@ -36,41 +24,24 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Init(AActor* user, float damage);
-
-protected:
-
-	void SetRisingTimer();
-	void SetExpireTimer();
+	void SetTimer();
 	void Arise();
-	void Rising(float delta);
-
-
 	void Expire();
-	void Expiring(float delta);
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	void OnPillarHit(AActor* SelfActor, AActor* OtherActor);
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DelayTime)
 	float DelayTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DelayTime)
-	float RisingTime;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DelayTime)
 	float ExpireTime;
 
 	float Damage;
 	TObjectPtr<class AActor> User;
 
-	EPillarState PillarState;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
 	TObjectPtr<class UStaticMesh> Mesh;
-
-	UPROPERTY(VisibleAnywhere, Category = Trigger)
-	TObjectPtr<class UBoxComponent> Trigger;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> PillarMesh;
@@ -79,8 +50,6 @@ protected:
 
 	FString CollisionChannelName;
 	struct FTimerHandle RiseupTimerHandle;
-
-	FVector OriginPos;
 	
 
 };

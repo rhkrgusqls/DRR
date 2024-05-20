@@ -27,21 +27,6 @@ IDRRActableInterface* ADRRWeaponBase::GetSecondAct()
 	return Cast<IDRRActableInterface>(SecondActRef);
 }
 
-bool ADRRWeaponBase::UnEquip()
-{
-	if (FirstActRef != nullptr)
-	{
-		FirstActRef->ActDestroy();
-	}
-
-	if (SecondActRef != nullptr)
-	{
-		SecondActRef->ActDestroy();
-	}
-	Destroy();
-	return true;
-}
-
 // Called when the game starts or when spawned
 void ADRRWeaponBase::BeginPlay()
 {

@@ -50,29 +50,29 @@ void ADRRPlayerActUnitProto4::Func1(AActor* User)
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
 	const float attackRange = 600.0f;
-	const float attackRadius = 500.0f;
+	const float capsuleRadius = 200.0f;
 	bool isHit;
 
-
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
-	const FVector center = this->GetActorLocation()+User->GetActorForwardVector()*attackRange;
-	const FVector start = center + attackRadius * FVector::ForwardVector;
-	const FVector end = center + attackRadius * FVector::BackwardVector;
+	const FVector start = UserChar->GetActorLocation() + UserChar->GetActorForwardVector() * UserChar->GetCapsuleComponent()->GetScaledCapsuleRadius();
 
+	FVector end;
 
 
 	//캡슐의 중앙위치
 	FVector capsulePosition = start + (end - start) / 2.0f;
 
+	float halfHeight = attackRange / 2.0f;
 
-	isHit = GetWorld()->OverlapMultiByProfile(outOverlapResults, center, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(attackRadius), collisionParams);
+	end = start + UserChar->GetActorForwardVector() * attackRange;
+	isHit = GetWorld()->SweepMultiByChannel(outHitResults, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
 
 
 
 	//DebugDraw
 	bool isRemaining = false;
 	FColor Color = isHit ? FColor::Green : FColor::Red;
-	DrawDebugSphere(GetWorld(), center, attackRadius, 16, Color, isRemaining, 3.0f);
+	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(UserChar->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
 
 
 
@@ -80,18 +80,21 @@ void ADRRPlayerActUnitProto4::Func1(AActor* User)
 	if (isHit)
 	{
 
-		CDisplayLog::Log(TEXT("Collide"));
-		for (auto& i : outOverlapResults)
+		FDamageEvent damageEvent;
+
+		//충돌대상의 액터 가져와 피해를 입히는 함수 호출
+		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
+		//피해, 이벤트, 나의컨트롤러,가해자 액터
+
+		for (auto& i : outHitResults)
 		{
+			ACharacterBase* Temp;
 			if (i.GetActor())
 			{
-
-				ACharacterBase* Temp = Cast< ACharacterBase>(i.GetActor());
+				Temp = Cast< ACharacterBase>(i.GetActor());
 				if (Temp != nullptr)
 				{
-
-					float defaultDamage = 6.0f;
-					float damageResult = defaultDamage*GetActData()->SkillCoefficient * UserChar->physicsAttack;
+					float damageResult = GetActData()->SkillCoefficient * UserChar->physicsAttack;
 
 
 
@@ -100,13 +103,13 @@ void ADRRPlayerActUnitProto4::Func1(AActor* User)
 					ADRRPlayerStonePillarProto* Pillar = GetWorld()->SpawnActor<ADRRPlayerStonePillarProto>(StonePillar, Temp->GetActorLocation(), Temp->GetActorRotation());
 					Pillar->Init(User, damageResult);
 
-				}
 
+				}
 			}
 		}
+
+		
 	}
-
-
 
 	//드로우 디버그 가능한 상태일때만
 	//디버그 용 코드를 출시할때 영향을 주지 않도록 테스트용 빌드에서만 작동하게함

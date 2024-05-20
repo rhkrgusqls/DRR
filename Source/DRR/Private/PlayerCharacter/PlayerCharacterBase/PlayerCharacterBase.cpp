@@ -10,7 +10,7 @@
 #include "Components/CapsuleComponent.h" 
 #include "Animation/PlayerAnim/DRRAnimInstance.h"
 #include "PlayerCharacter/PlayerCharacterBase/ABPlayerController.h"
-#include "Skill/DRRActUnitBase.h"
+
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -67,6 +67,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.0f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0f;
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	//Set Rotation Remit
 	bUseControllerRotationPitch = false;
@@ -140,11 +141,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		ActRightPressAction = InputActionRightPressRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> WeaponChangeUpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_WeaponChange.IA_WeaponChange'"));
-	if (WeaponChangeUpRef.Object)
-	{
-		WeaponChangeAction = WeaponChangeUpRef.Object;
-	}
 
 
 
@@ -155,10 +151,8 @@ APlayerCharacterBase::APlayerCharacterBase()
 	static ConstructorHelpers::FClassFinder<UUserWidget> PlayerHUDRef(TEXT("/Game/Asset/UI/WBP_MainHUD.WBP_MainHUD_C"));
 	if (PlayerHUDRef.Class)
 	{
-
 		PlayerHUD->SetWidgetClass(PlayerHUDRef.Class);
-		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
+		PlayerHUD->SetCollisionEnabled(ECollisionEnabled::NoCollision);		
 	}
 
 	// MainWidget
@@ -183,38 +177,19 @@ APlayerCharacterBase::APlayerCharacterBase()
 	}
 
 	//OnHPZero.AddUObject(this, &ACharacterBase::SetDead();		//Please Make SetDead() Function in this .cpp
-	MaxWeaponNum = 3;
+
 }
 
 bool APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot)
 {
-	if (slot >= MaxWeaponNum)
-		return false;
 
-	if (WeaponRefs[slot] != nullptr)
-		WeaponUnEquip(slot);
-	if (WeaponClass != nullptr)
-	{
-		WeaponRefs[slot] = GetWorld()->SpawnActor<ADRRWeaponBase>(WeaponClass);
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
-		WeaponRefs[slot]->AttachToActor(this, AttachmentRules);
-		return true;
-	}
 
 	return false;
 }
 
 bool APlayerCharacterBase::WeaponUnEquip(uint8 slot)
 {
-	if (slot >= MaxWeaponNum)
-		return false;
-	if(WeaponRefs[slot]==nullptr)
-		return false;
-
-	WeaponRefs[slot]->UnEquip();
-	WeaponRefs[slot] = nullptr;
-
-	return true;
+	return false;
 }
 
 void APlayerCharacterBase::BeginPlay()
@@ -222,16 +197,13 @@ void APlayerCharacterBase::BeginPlay()
 	Super::BeginPlay();
 	CDisplayLog::Log(TEXT("PlayerPawnBeginPlay"));
 	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
-	if (PlayerController != nullptr&&GetGameInstance()->GetFirstLocalPlayerController()==PlayerController)
+	if (PlayerController != nullptr && GetGameInstance()->GetFirstLocalPlayerController() == PlayerController)
 	{
 		SetCharacterControl(ECharacterControlType::Quater);
 		SetHUDWidgets(PlayerController);
 		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
 		SetupCharacterWidget(HUDWidget);
 	}
-	WeaponRefs.Add(nullptr);
-	WeaponRefs.Add(nullptr);
-	WeaponRefs.Add(nullptr);
 
 	FVector NewLocation = GetActorLocation() + FVector(0, 0, 500);
 	BoxComponent->SetWorldLocation(NewLocation);
@@ -265,17 +237,13 @@ void APlayerCharacterBase::BeginPlay()
 		}*/
 		
 	}
-
-	for (int i=0;i<MaxWeaponNum;i++)
+	if (Weapon != nullptr)
 	{
-		if (i == Weapons.Num())
-			break;
-		if (Weapons[i] != nullptr)
-		{
-			WeaponEquip(Weapons[i], i);
-		}
-
+		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+		WeaponRef->AttachToActor(this, AttachmentRules);
 	}
+	SetupCharacterWidget2(HUDWidget);
 }
 
 AActor* HitedActor;
@@ -283,7 +251,8 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetupCharacterWidget2(HUDWidget);
+	//OnHPChanged.BindUObject(SetupCharacterWidget2);
+	
 
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
@@ -360,8 +329,16 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		}
 	}
 
-}
+	if (Weapon != nullptr)
+	{
+		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+		WeaponRef->AttachToActor(this, AttachmentRules);
+				
+	}
+	
 
+}
 
 void APlayerCharacterBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -378,7 +355,6 @@ void APlayerCharacterBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AAc
 		OtherActor->SetActorHiddenInGame(false);
 	}
 }
-
 
 void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 {
@@ -413,6 +389,11 @@ void APlayerCharacterBase::SetupCharacterWidget2(UDRRUserWidget* InUserWidget)
 	}
 }
 
+void APlayerCharacterBase::TakeItem(UDA_ItemData* ItemData)
+{
+
+}
+
 void APlayerCharacterBase::IsDead()
 {
 
@@ -425,6 +406,11 @@ void APlayerCharacterBase::IsDead()
 		CurrentController->RespawnPlayer();
 	}
 
+	if (HUDWidget)
+	{
+		HUDWidget->RemoveFromParent();
+	}
+
 }
 
 void APlayerCharacterBase::PossessedBy(AController* NewController)
@@ -433,6 +419,13 @@ void APlayerCharacterBase::PossessedBy(AController* NewController)
 	CDisplayLog::Log(TEXT("Possesed"));
 
 	SetCharacterControl(ECharacterControlType::Quater);
+}
+
+void APlayerCharacterBase::ReciveAttack(float physicsDamage)
+{
+	Super::ReciveAttack(physicsDamage);
+
+	SetupCharacterWidget2(HUDWidget);
 }
 
 void APlayerCharacterBase::SetMaxHP(float NewHP)
@@ -486,12 +479,11 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked <UEnhancedInputComponent>(PlayerInputComponent);	
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	EnhancedInputComponent->BindAction(WeaponChangeAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::ChangeWeapon);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAct);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftActRelease);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAct);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightActRelease);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
 }
 
@@ -529,6 +521,19 @@ void APlayerCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(APlayerCharacterBase, CurrentHP);
 }
 
+void APlayerCharacterBase::SetHUD()
+{
+	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
+	if (PlayerController != nullptr && GetGameInstance()->GetFirstLocalPlayerController() == PlayerController)
+	{
+		SetCharacterControl(ECharacterControlType::Quater);
+		SetHUDWidgets(PlayerController);
+		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
+		SetupCharacterWidget(HUDWidget);
+		SetupCharacterWidget2(HUDWidget);
+	}
+}
+
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -536,7 +541,6 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	float MovementVectorsizeSquared = MovementVector.SquaredLength();
 	if (MovementVectorsizeSquared > 1.0f)
 	{
-		//ũ�⸦ 1�� ����
 		MovementVector.Normalize();
 		MovementVectorsizeSquared = 1.0f;
 	}
@@ -549,67 +553,140 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
+bool APlayerCharacterBase::ServerLeftAct_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerLeftAct_Implementation()
+{
+	MulticastLeftAct();
+}
+void APlayerCharacterBase::MulticastLeftAct_Implementation()
+{
+	WeaponLeftAct();
+
+}
+
+bool APlayerCharacterBase::ServerLeftActRelease_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerLeftActRelease_Implementation()
+{
+	MulticastLeftActRelease();
+}
+void APlayerCharacterBase::MulticastLeftActRelease_Implementation()
+{
+	WeaponLeftActRelease();
+
+}
+
+bool APlayerCharacterBase::ServerRightAct_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerRightAct_Implementation()
+{
+	MulticastRightAct();
+}
+void APlayerCharacterBase::MulticastRightAct_Implementation()
+{
+	WeaponRightAct();
+}
+
+bool APlayerCharacterBase::ServerRightActRelease_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerRightActRelease_Implementation()
+{
+	MulticastRightActRelease();
+}
+void APlayerCharacterBase::MulticastRightActRelease_Implementation()
+{
+	WeaponRightActRelease();
+}
+
+void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
+{
+
+	if (Weapon == nullptr||WeaponRef==nullptr)
+	{
+		return;
+	}
+	ServerLeftAct();
+	
+}
+
+void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr || WeaponRef == nullptr)
+	{
+		return;
+	}
+	ServerRightAct();
+}
+
+void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr || WeaponRef == nullptr)
+	{
+		return;
+	}
+	ServerLeftActRelease();
+}
+
+void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
+{
+	if (Weapon == nullptr || WeaponRef == nullptr)
+	{
+		return;
+	}
+	ServerRightActRelease();
+}
+
 void APlayerCharacterBase::WeaponLeftAct()
 {
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
+	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
 	if (Temp)
 	{
 		CLog::Log("LeftPress");
-		ServerAct(Temp);
+		ActComponent->Act(Temp);
 	}
 }
 
 void APlayerCharacterBase::WeaponLeftActRelease()
 {
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
+	IDRRActableInterface* Temp = WeaponRef->GetFirstAct();
 	if (Temp)
 	{
 
-		ServerActRelease(Temp);
+		ActComponent->ActRelease(Temp);
 	}
 }
 
 void APlayerCharacterBase::WeaponRightAct()
 {
 
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
+	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
 	{
 		CLog::Log("RightPress");
 
-		ServerAct(Temp);
+		ActComponent->Act(Temp);
 	}
 }
 
 void APlayerCharacterBase::WeaponRightActRelease()
 {
 
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
+	IDRRActableInterface* Temp = WeaponRef->GetSecondAct();
 	if (Temp)
 	{
 
-		ServerActRelease(Temp);
+		ActComponent->ActRelease(Temp);
 	}
 }
-
-void APlayerCharacterBase::ChangeWeapon(const FInputActionValue& Value)
-{
-
-	uint8 Temp;
-	if (Value.Get<float>() > 0.0f)
-	{
-		Temp = (CurWeaponNum + MaxWeaponNum + 1) % MaxWeaponNum;
-
-	}
-	else if (Value.Get<float>() < 0.0f)
-	{
-		Temp = (CurWeaponNum + MaxWeaponNum -1) % MaxWeaponNum;
-
-	}
-	CurWeaponNum = Temp;
-	CDisplayLog::Log(TEXT("WeaponChange : %d"),Temp);
-}
-
 
 void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 	
@@ -677,7 +754,6 @@ void APlayerCharacterBase::SetHUDWidgets(APlayerController* Player)
 
 
 }
-
 
 //float APlayerCharacterBase::ApplyDamage(float InDamage)
 //{
