@@ -36,7 +36,9 @@ public:
 	FORCEINLINE UUserWidget* GetItemListWidget() { return ItemListWidget; }
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	bool WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot);
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	bool WeaponUnEquip(uint8 slot);
 
 protected:
