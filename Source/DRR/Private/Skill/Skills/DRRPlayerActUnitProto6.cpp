@@ -42,7 +42,7 @@ void ADRRPlayerActUnitProto6::Func1(AActor* User)
 	{
 		ADRRPlayerMagicArrowProto* Temp = GetWorld()->SpawnActor<ADRRPlayerMagicArrowProto>(Projectile, RandomArrowLocSet(User->GetActorLocation() + Loc, LocRandomRadius), RandomArrowRotSet(User->GetActorRotation() + Rot, RotRandomRange));
 		float defaultDamage=10.0f;
-		float result = Cast<ACharacterBase>(User)->physicsAttack * GetActData()->SkillCoefficient+defaultDamage;
+		float result = Cast<ACharacterBase>(User)->physicsAttack * GetActData()->SkillCoefficient*defaultDamage;
 		
 		Temp->Init(User, result);
 		Temp->SetDelay(FMath::RandRange(ArrowShotDelay/2.0f, ArrowShotDelay));

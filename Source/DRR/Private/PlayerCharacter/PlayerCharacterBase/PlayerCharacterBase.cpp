@@ -211,6 +211,7 @@ bool APlayerCharacterBase::WeaponUnEquip(uint8 slot)
 	if(WeaponRefs[slot]==nullptr)
 		return false;
 
+	WeaponRefs[slot]->UnEquip();
 	WeaponRefs[slot] = nullptr;
 
 	return true;

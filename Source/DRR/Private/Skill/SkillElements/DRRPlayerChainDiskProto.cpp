@@ -21,7 +21,7 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
 
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
-    Trigger->SetCollisionProfileName(TEXT("PlayerAttack"));
+    Trigger->SetCollisionProfileName(TEXT("NoCollision"));
     Trigger->SetSphereRadius(DetectRadius);
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerChainDiskProto::OnOverlapBegin);
     RootComponent = Trigger;
@@ -87,6 +87,7 @@ void ADRRPlayerChainDiskProto::Init(AActor* user, float damage)
 {
     User = Cast<ACharacterBase>(user);
     Damage = damage;
+    Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
 }
 
 void ADRRPlayerChainDiskProto::NoTargetDead(float delta)
@@ -111,7 +112,11 @@ bool ADRRPlayerChainDiskProto::CheckArrive()
     if (Result==true)
     {
         CDisplayLog::Log(TEXT("Arrive"));
-        Cast<ACharacterBase>(Target)->ReciveAttack(Damage);
+        if (HasAuthority())
+        {
+            Cast<ACharacterBase>(Target)->ReciveAttack(Damage);
+
+        }
         DiskState = EDiskState::NoTarget;
         CurTargetCount++;
     }
@@ -175,7 +180,7 @@ bool ADRRPlayerChainDiskProto::FindTarget()
     FVector capsulePosition = start + (end - start) / 2.0f;
 
 
-    isHit = GetWorld()->SweepMultiByChannel(outHitResults, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(detectRadius), collisionParams);
+    isHit = GetWorld()->OverlapMultiByProfile(outOverlapResults, center, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(detectRadius), collisionParams);
     
 
 
@@ -203,13 +208,17 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 
         float NewMinDistance;
 
-        for (auto& i : outHitResults)
+        for (auto& i : outOverlapResults)
         {
             ACharacterBase* Temp;
             if (i.GetActor())
             {
                 if (i.GetActor() == Target)
                     continue;
+
+                if (i.GetActor() == User)
+                    continue;
+
                 
                 Temp = Cast< ACharacterBase>(i.GetActor());
                 if (Temp != nullptr)
