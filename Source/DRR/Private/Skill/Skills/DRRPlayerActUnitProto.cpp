@@ -57,29 +57,27 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
 	const float attackRange = 150.0f;
-	const float capsuleRadius = 50.0f;
+	const float attackRadius = 50.0f;
 	bool isHit;
 
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
-	const FVector start = UserChar->GetActorLocation() + UserChar->GetActorForwardVector() * UserChar->GetCapsuleComponent()->GetScaledCapsuleRadius();
-
-	FVector end;
+	const FVector center = UserChar->GetActorLocation() + UserChar->GetActorForwardVector() * attackRange;
+	const FVector start = center + FVector::ForwardVector * attackRadius;
+	const FVector end= center + FVector::BackwardVector * attackRadius;
 
 
 	//캡슐의 중앙위치
 	FVector capsulePosition = start + (end - start) / 2.0f;
 
-	float halfHeight = attackRange / 2.0f;
 
-	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->SweepSingleByProfile(outHitResult, start, end, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(attackRadius), collisionParams);
 	
 
 
 	//DebugDraw
 	bool isRemaining = false;
 	FColor Color = isHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(UserChar->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
+	DrawDebugSphere(GetWorld(), center, attackRadius,16,  Color, isRemaining, 3.0f);
 
 
 
@@ -98,7 +96,7 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
 			if (Temp != nullptr)
 			{
-				const float defaultDamage = 10.0f;
+				const float defaultDamage = 3.0f;
 				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
 
 				Temp->ReciveAttack(damageResult);

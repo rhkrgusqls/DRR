@@ -7,7 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Engine/DamageEvents.h"
 #include "CharacterBase/CharacterBase.h"
-
+#include "PhysicsEngine/PhysicsSettings.h"
 #include "Utilities/CLog.h"
 ADRRPlayerActUnitProto3::ADRRPlayerActUnitProto3()
 {
@@ -50,30 +50,27 @@ void ADRRPlayerActUnitProto3::Func1(AActor* User)
 	FHitResult outHitResult;
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
-	const float attackRange = 0;
-	const float capsuleRadius = 150.0f;
+	const float attackRange = 50;
+	const float attackRadius = 150.0f;
 	bool isHit;
 
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
-	const FVector start = UserChar->GetActorLocation()+capsuleRadius*UserChar->GetActorForwardVector();
+	const FVector center = UserChar->GetActorLocation()+UserChar->GetActorForwardVector()* attackRange;
+	const FVector start = center+FVector::ForwardVector* attackRadius;
+	const FVector end = center+FVector::BackwardVector* attackRadius;
 
-	FVector end= UserChar->GetActorLocation() - capsuleRadius * UserChar->GetActorForwardVector();
 
 
-	//캡슐의 중앙위치
-	FVector capsulePosition = UserChar->GetActorLocation();
 
-	float halfHeight = capsuleRadius;
 
-	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->OverlapMultiByProfile(outOverlapResults, center,FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(attackRadius), collisionParams);
 
 
 
 	//DebugDraw
 	bool isRemaining = false;
 	FColor Color = isHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(UserChar->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
+	DrawDebugSphere(GetWorld(), center, attackRadius, 16, Color, isRemaining, 3.0f);
 
 
 
@@ -87,24 +84,31 @@ void ADRRPlayerActUnitProto3::Func1(AActor* User)
 		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
 		//피해, 이벤트, 나의컨트롤러,가해자 액터
 		ACharacterBase* Temp;
-		if (outHitResult.GetActor())
+
+		for (auto& i : outOverlapResults)
 		{
-			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
-			if (Temp != nullptr)
+			if (i.GetActor()!=nullptr)
 			{
+				Temp = Cast< ACharacterBase>(i.GetActor());
+				if (Temp != nullptr)
+				{
 
-				const float defaultDamage = 10.0f;
-				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
-
-				Temp->ReciveAttack(damageResult);
+					
 
 
+
+
+					const float defaultDamage = 4.0f;
+					float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
+
+					Temp->ReciveAttack(damageResult);
+
+
+				}
 			}
 		}
-	}
 
-	//드로우 디버그 가능한 상태일때만
-	//디버그 용 코드를 출시할때 영향을 주지 않도록 테스트용 빌드에서만 작동하게함
+	}
 
 }
 
@@ -121,30 +125,27 @@ void ADRRPlayerActUnitProto3::Func2(AActor* User)
 	FHitResult outHitResult;
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
-	const float attackRange = 0;
-	const float capsuleRadius = 200.0f;
+	const float attackRange = 50;
+	const float attackRadius = 200.0f;
 	bool isHit;
 
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
-	const FVector start = UserChar->GetActorLocation() + capsuleRadius * UserChar->GetActorForwardVector();
+	const FVector center = UserChar->GetActorLocation() + UserChar->GetActorForwardVector() * attackRange;
+	const FVector start = center + FVector::ForwardVector * attackRadius;
+	const FVector end = center + FVector::BackwardVector * attackRadius;
 
-	FVector end = UserChar->GetActorLocation() - capsuleRadius * UserChar->GetActorForwardVector();
 
 
-	//캡슐의 중앙위치
-	FVector capsulePosition = UserChar->GetActorLocation();
 
-	float halfHeight = capsuleRadius;
 
-	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->OverlapMultiByProfile(outOverlapResults, center, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(attackRadius), collisionParams);
 
 
 
 	//DebugDraw
 	bool isRemaining = false;
 	FColor Color = isHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(UserChar->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
+	DrawDebugSphere(GetWorld(), center, attackRadius, 16, Color, isRemaining, 3.0f);
 
 
 
@@ -158,20 +159,26 @@ void ADRRPlayerActUnitProto3::Func2(AActor* User)
 		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
 		//피해, 이벤트, 나의컨트롤러,가해자 액터
 		ACharacterBase* Temp;
-		if (outHitResult.GetActor())
+
+		for (auto& i : outOverlapResults)
 		{
-			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
-			if (Temp != nullptr)
+			if (i.GetActor() != nullptr)
 			{
+				Temp = Cast< ACharacterBase>(i.GetActor());
+				if (Temp != nullptr)
+				{
+					
 
-				const float defaultDamage = 15.0f;
-				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
+					const float defaultDamage = 6.0f;
+					float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
 
-				Temp->ReciveAttack(damageResult);
+					Temp->ReciveAttack(damageResult);
 
 
+				}
 			}
 		}
+
 	}
 
 }
@@ -189,30 +196,27 @@ void ADRRPlayerActUnitProto3::Func3(AActor* User)
 	FHitResult outHitResult;
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
-	const float attackRange = 0;
-	const float capsuleRadius = 250.0f;
+	const float attackRange = 50;
+	const float attackRadius = 250.0f;
 	bool isHit;
 
 	//액터의 현재 위치, 액터의 정면백터, 캡슐컴포넌트의 반지름크기
-	const FVector start = UserChar->GetActorLocation() + capsuleRadius * UserChar->GetActorForwardVector();
+	const FVector center = UserChar->GetActorLocation() + UserChar->GetActorForwardVector() * attackRange;
+	const FVector start = center + FVector::ForwardVector * attackRadius;
+	const FVector end = center + FVector::BackwardVector * attackRadius;
 
-	FVector end = UserChar->GetActorLocation() - capsuleRadius * UserChar->GetActorForwardVector();
 
 
-	//캡슐의 중앙위치
-	FVector capsulePosition = UserChar->GetActorLocation();
 
-	float halfHeight = capsuleRadius;
 
-	end = start + UserChar->GetActorForwardVector() * attackRange;
-	isHit = GetWorld()->SweepSingleByChannel(outHitResult, start, end, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(capsuleRadius * 2), collisionParams);
+	isHit = GetWorld()->OverlapMultiByProfile(outOverlapResults, center, FQuat::Identity, TEXT("PlayerAttack"), FCollisionShape::MakeSphere(attackRadius), collisionParams);
 
 
 
 	//DebugDraw
 	bool isRemaining = false;
 	FColor Color = isHit ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), end, halfHeight, capsuleRadius * 2, FRotationMatrix::MakeFromZ(UserChar->GetActorForwardVector()).ToQuat(), Color, isRemaining, 3.0f);
+	DrawDebugSphere(GetWorld(), center, attackRadius, 16, Color, isRemaining, 3.0f);
 
 
 
@@ -226,20 +230,36 @@ void ADRRPlayerActUnitProto3::Func3(AActor* User)
 		//언리얼에서 만들어둔 모든 액터들은 데미지를 입는다는 가정하에 만든함수
 		//피해, 이벤트, 나의컨트롤러,가해자 액터
 		ACharacterBase* Temp;
-		if (outHitResult.GetActor())
+
+		for (auto& i : outOverlapResults)
 		{
-			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
-			if (Temp != nullptr)
+			if (i.GetActor() != nullptr)
 			{
+				Temp = Cast< ACharacterBase>(i.GetActor());
+				if (Temp != nullptr)
+				{
+					UPrimitiveComponent* OverlappedComponent = Cast<UPrimitiveComponent>(i.GetComponent());
+					if (OverlappedComponent && OverlappedComponent->IsSimulatingPhysics())
+					{
+						FVector PushDirection = Temp->GetActorLocation() - center;
+						PushDirection.Normalize();
+						float PushStrength = 1000.0f;
 
-				const float defaultDamage = 20.0f;
-				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
+						FVector Impulse = PushDirection * PushStrength;
 
-				Temp->ReciveAttack(damageResult);
+						OverlappedComponent->AddImpulse(Impulse);
+					}
+
+					const float defaultDamage = 8.0f;
+					float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
+
+					Temp->ReciveAttack(damageResult);
 
 
+				}
 			}
 		}
+
 	}
 
 }
