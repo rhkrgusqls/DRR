@@ -130,6 +130,12 @@ APlayerCharacterBase::APlayerCharacterBase()
 		SitAction = InputActionSitRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionchangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
+	if (InputActionchangeRef.Object)
+	{
+		ChangeAction = InputActionchangeRef.Object;
+	}
+
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction'"));
 	if (InputActionLeftPressRef.Object)
 	{
@@ -145,8 +151,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 	{
 		WeaponChangeAction = WeaponChangeUpRef.Object;
 	}
-
-
 
 	// UI Widget
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerHUD"));
@@ -265,17 +269,8 @@ void APlayerCharacterBase::BeginPlay()
 		}*/
 		
 	}
-
-	for (int i=0;i<MaxWeaponNum;i++)
-	{
-		if (i == Weapons.Num())
-			break;
-		if (Weapons[i] != nullptr)
-		{
-			WeaponEquip(Weapons[i], i);
-		}
-
-	}
+	
+	SetupCharacterWidget2(HUDWidget);
 }
 
 AActor* HitedActor;
@@ -359,9 +354,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 			}
 		}
 	}
-
 }
-
 
 void APlayerCharacterBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -493,6 +486,7 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
 	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
+	EnhancedInputComponent->BindAction(ChangeAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Change);
 }
 
 void APlayerCharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* CharacterControlData)
@@ -773,6 +767,16 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 		IsSit = true;		
 		Crouch();
 	}	
+}
+
+void APlayerCharacterBase::Change(const FInputActionValue& Value)
+{
+	if (Weapon != nullptr)
+	{
+		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+		WeaponRef->AttachToActor(this, AttachmentRules);
+	}
 }
 
 

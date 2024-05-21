@@ -66,7 +66,11 @@ protected:
 private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Sit(const FInputActionValue& Value);
+	
 	void SetCharacterControl(ECharacterControlType ControlType);
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void Change(const FInputActionValue& Value);
 
 
 	void WeaponLeftAttackPress(const FInputActionValue& Value);
@@ -144,6 +148,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SitAction;	
 	bool IsSit = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ChangeAction;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ItemUseAction;
