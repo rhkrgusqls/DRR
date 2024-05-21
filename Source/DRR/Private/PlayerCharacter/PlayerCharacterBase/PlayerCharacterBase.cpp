@@ -130,12 +130,6 @@ APlayerCharacterBase::APlayerCharacterBase()
 		SitAction = InputActionSitRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionchangeRef(TEXT("/Game/Asset/Character/CharacterControlData/Action/IA_Change.IA_Change"));
-	if (InputActionchangeRef.Object)
-	{
-		ChangeAction = InputActionchangeRef.Object;
-	}
-
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLeftPressRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Asset/Character/CharacterControlData/Action/IA_PressLeftFireAction.IA_PressLeftFireAction'"));
 	if (InputActionLeftPressRef.Object)
 	{
@@ -196,9 +190,27 @@ void APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponC
 	{
 		WeaponRefs[slot] = GetWorld()->SpawnActor<ADRRWeaponBase>(WeaponClass);
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
-		WeaponRefs[slot]->AttachToActor(this, AttachmentRules);
-		
+		WeaponRefs[slot]->AttachToActor(this, AttachmentRules);		
+		//return true;
 	}	
+	//return false;
+}
+
+void APlayerCharacterBase::WeaponUnEquip(int slot)
+{
+	//if (WeaponRefs[slot] != nullptr)
+	//	WeaponUnEquip(slot);
+
+	if (slot >= MaxWeaponNum)
+		//return false;
+	if (WeaponRefs[slot] == nullptr)
+		//return false;
+
+	WeaponRefs[slot]->UnEquip();
+	WeaponRefs[slot] = nullptr;
+
+	//return true;
+
 }
 
 void APlayerCharacterBase::BeginPlay()
