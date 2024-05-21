@@ -39,8 +39,15 @@ IDRRActableInterface* ADRRActUnitBase::IsAchieveCondition(float Threshold)
 
 void ADRRActUnitBase::ActDestroy()
 {
+	if (GetWorld()!=nullptr)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ExpireHandle, this, &ADRRActUnitBase::Expire, 5.0f, false);
 
-	GetWorld()->GetTimerManager().SetTimer(ExpireHandle, this, &ADRRActUnitBase::Expire, 5.0f, false);
+	}
+	else
+	{
+		Destroy();
+	}
 }
 
 void ADRRActUnitBase::Expire()
