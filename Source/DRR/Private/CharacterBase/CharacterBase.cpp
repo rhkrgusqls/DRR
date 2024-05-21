@@ -7,7 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Effect/DRRAutomaticRecoveryEffect.h"
-
+#include "Interface/DRRActableInterface.h"
+#include "Skill/DRRActUnitBase.h"
 #include "CharacterBase/DRRActComponent.h"
 #include "CharacterBase/DRRPassiveActComponent.h"
 #include "Utilities/UtilityList.h"
@@ -38,6 +39,11 @@ void ACharacterBase::BeginPlay()
 		CLog::Log("AddAutomaticRecovery");
 		PassiveComponent->AddEffect(AutomaticRecovery, this);
 	}
+	if (HasAuthority())
+	{
+		SetReplicates(true);
+		SetReplicateMovement(true);
+	}
 }
 
 void ACharacterBase::ActFunc()
@@ -66,6 +72,38 @@ void ACharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 	DOREPLIFETIME(ACharacterBase, CurrentHP);
 
+}
+
+void ACharacterBase::Act(ADRRActUnitBase* Temp)
+{
+	if (Temp == nullptr)
+	{
+		return;
+	}
+	ServerAct(Temp);
+
+	if (!HasAuthority())
+	{
+		ActComponent->Act(Temp);
+		
+	}
+}
+
+void ACharacterBase::ActRelease(ADRRActUnitBase* Temp)
+{
+	if (Temp == nullptr)
+	{
+		return;
+	}
+	ServerActRelease(Temp);
+
+	if (!HasAuthority())
+	{
+		if (Temp)
+		{
+			ActComponent->ActRelease(Temp);
+		}
+	}
 }
 
 
@@ -192,4 +230,44 @@ void ACharacterBase::IsDead()
 void ACharacterBase::DestroySelf()
 {
 	Destroy();
+}
+
+
+bool ACharacterBase::ServerAct_Validate(class ADRRActUnitBase* Temp)
+{
+	if (Temp != nullptr)
+		return true;
+	else
+		return false;
+}
+void ACharacterBase::ServerAct_Implementation(class ADRRActUnitBase* Temp)
+{
+	MulticastAct(Temp);
+}
+void ACharacterBase::MulticastAct_Implementation(class ADRRActUnitBase* Temp)
+{
+	if (Temp)
+	{
+		ActComponent->Act(Temp);
+	}
+
+}
+bool ACharacterBase::ServerActRelease_Validate(class ADRRActUnitBase* Temp)
+{
+	if (Temp != nullptr)
+		return true;
+	else
+		return false;
+}
+void ACharacterBase::ServerActRelease_Implementation(class ADRRActUnitBase* Temp)
+{
+	MulticastActRelease(Temp);
+}
+void ACharacterBase::MulticastActRelease_Implementation(class ADRRActUnitBase* Temp)
+{
+	if (Temp)
+	{
+		ActComponent->ActRelease(Temp);
+	}
+
 }

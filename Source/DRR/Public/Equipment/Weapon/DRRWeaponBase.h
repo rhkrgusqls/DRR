@@ -20,6 +20,8 @@ public:
 	virtual class IDRRActableInterface* GetSecondAct() ;
 
 	class UDA_WeaponData* GetWeaponData() { return WeaponData; }
+	bool UnEquip();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

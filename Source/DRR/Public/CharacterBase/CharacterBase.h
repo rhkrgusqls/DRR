@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
 #include "Interface/DRRActorInterface.h"
+#include "Interface/DRRActableInterface.h"
 #include "Interface/DRRCharacterWidgetInterface.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -42,7 +43,22 @@ protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray < FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void Act(class ADRRActUnitBase* Temp);
+	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
+	void ServerAct(class ADRRActUnitBase* Temp);
+
+	UFUNCTION(NetMulticast, Reliable, Category = "RPC_Character")
+	void MulticastAct(class ADRRActUnitBase* Temp);
 	
+
+	void ActRelease(class ADRRActUnitBase* Temp);
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
+	void ServerActRelease(class ADRRActUnitBase* Temp);
+
+	UFUNCTION(NetMulticast, Reliable, Category = "RPC_Character")
+	void MulticastActRelease(class ADRRActUnitBase* Temp);
+
 
 protected:
 	TMap< ECharacterControlType, class UPlayerControlDataAsset*> CharacterControlManager; // 생성자가 호출될떄 같이 메모리 할당
