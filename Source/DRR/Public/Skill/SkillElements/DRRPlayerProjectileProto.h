@@ -30,10 +30,6 @@ public:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
-	void Explosion();
-
-
-protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TObjectPtr<class UStaticMesh> Mesh;
 

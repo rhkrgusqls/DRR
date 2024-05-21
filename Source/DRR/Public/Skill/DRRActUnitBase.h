@@ -23,10 +23,6 @@ public:
 	virtual void EndFunc(AActor* User) override;
 
 	virtual IDRRActableInterface* IsAchieveCondition(float Threshold) override;
-
-	void ActDestroy();
-
-	void Expire();
 protected:
 	virtual void BeginPlay() override;
 
@@ -45,7 +41,6 @@ protected:
 	TArray<TSubclassOf<class ADRRActUnitBase>> NextActClass;
 
 	TArray<TObjectPtr<class ADRRActUnitBase>> NextActUnit;
-	
-	FTimerHandle ExpireHandle;
+
 
 };

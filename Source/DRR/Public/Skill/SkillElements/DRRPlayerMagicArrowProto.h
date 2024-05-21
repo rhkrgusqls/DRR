@@ -40,10 +40,9 @@ public:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	void SetTimer();
-	
 protected:
 	void Eject();
-	void Explosion();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TObjectPtr<class UStaticMesh> Mesh;

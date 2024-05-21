@@ -2,9 +2,8 @@
 
 
 #include "Skill/Skills/DRRPlayerActUnitProto6.h"
-#include "CharacterBase/CharacterBase.h"
+
 #include "Skill/SkillElements/DRRPlayerMagicArrowProto.h"
-#include "DataAsset/DA_ActData.h"
 #include "Utilities/UtilityList.h"
 ADRRPlayerActUnitProto6::ADRRPlayerActUnitProto6()
 {
@@ -41,11 +40,8 @@ void ADRRPlayerActUnitProto6::Func1(AActor* User)
 	for (int i = 0; i < ArrowCount; i++)
 	{
 		ADRRPlayerMagicArrowProto* Temp = GetWorld()->SpawnActor<ADRRPlayerMagicArrowProto>(Projectile, RandomArrowLocSet(User->GetActorLocation() + Loc, LocRandomRadius), RandomArrowRotSet(User->GetActorRotation() + Rot, RotRandomRange));
-		float defaultDamage=10.0f;
-		float result = Cast<ACharacterBase>(User)->physicsAttack * GetActData()->SkillCoefficient*defaultDamage;
-		
-		Temp->Init(User, result);
-		Temp->SetDelay(FMath::RandRange(ArrowShotDelay/2.0f, ArrowShotDelay));
+		Temp->Init(User, 15.0f);
+		Temp->SetDelay(FMath::RandRange(0.6f, ArrowShotDelay));
 	}
 }
 
