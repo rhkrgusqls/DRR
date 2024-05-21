@@ -37,9 +37,7 @@ public:
 	FORCEINLINE UUserWidget* GetItemCardWidget() { return ItemCardWidget; }
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	bool WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, uint8 slot);
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	bool WeaponUnEquip(uint8 slot);
+	void WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot);
 
 protected:
 	// Called when the game starts or when spawned
@@ -68,10 +66,6 @@ private:
 	void Sit(const FInputActionValue& Value);
 	
 	void SetCharacterControl(ECharacterControlType ControlType);
-
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void Change(const FInputActionValue& Value);
-
 
 	void WeaponLeftAttackPress(const FInputActionValue& Value);
 	void WeaponRightAttackPress(const FInputActionValue& Value);
@@ -149,10 +143,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SitAction;	
 	bool IsSit = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> ChangeAction;
-	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ItemUseAction;
