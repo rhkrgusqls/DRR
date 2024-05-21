@@ -85,6 +85,10 @@ void ADRRPlayerMagicArrowProto::SetDelay(float delay)
 
 void ADRRPlayerMagicArrowProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    if (OverlappedComponent && OverlappedComponent->GetCollisionProfileName() == TEXT("Player"))
+    {
+        return;
+    }
     Explosion();
 
 
@@ -159,8 +163,18 @@ void ADRRPlayerMagicArrowProto::Explosion()
         CDisplayLog::Log(TEXT("Collide"));
         for (auto& i : outOverlapResults)
         {
+
+            if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+            {
+                continue;
+            }
+
+
             if (i.GetActor())
             {
+
+
+
 
                 ACharacterBase* Temp = Cast< ACharacterBase>(i.GetActor());
                 

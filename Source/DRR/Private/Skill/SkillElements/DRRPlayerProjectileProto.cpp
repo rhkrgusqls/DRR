@@ -31,7 +31,7 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(MissileMesh);
+    ProjectileMovement->SetUpdatedComponent(Trigger);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bShouldBounce = false;
@@ -60,24 +60,17 @@ void ADRRPlayerProjectileProto::Tick(float DeltaTime)
 
 void ADRRPlayerProjectileProto::Init(AActor* user, float damage)
 {
-    if (HasAuthority())
-    {
-        User = Cast<ACharacterBase>(user);
-        Damage = damage;
-        Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
 
-    }
+    User = Cast<ACharacterBase>(user)==nullptr? Cast<ACharacterBase>(user):nullptr;
+    Damage = damage;
+    Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
 }
 
 void ADRRPlayerProjectileProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-    if (HasAuthority())
-    {
-        Explosion();
-        Destroy();
-
-    }
+    
+    Explosion();
 }
 
 void ADRRPlayerProjectileProto::Explosion()
@@ -121,13 +114,23 @@ void ADRRPlayerProjectileProto::Explosion()
         CDisplayLog::Log(TEXT("Collide"));
         for (auto& i : outOverlapResults)
         {
+            if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+            {
+                continue;
+            }
+
+
             if (i.GetActor())
             {
 
                 ACharacterBase* Temp=Cast< ACharacterBase>(i.GetActor());
                 if (Temp != nullptr)
                 {
-                    Temp->ReciveAttack(Damage);
+                    if (HasAuthority())
+                    {
+
+                        Temp->ReciveAttack(Damage);
+                    }
                 }
                 
             }

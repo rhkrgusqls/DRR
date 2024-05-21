@@ -84,6 +84,7 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 
 	if (isHit)
 	{
+		
 
 		FDamageEvent damageEvent;
 
@@ -93,13 +94,21 @@ void ADRRPlayerActUnitProto::Func1(AActor* User)
 		ACharacterBase* Temp;
 		if (outHitResult.GetActor())
 		{
+			if (outHitResult.GetComponent() && outHitResult.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+			{
+				return;
+			}
+
+
 			Temp = Cast< ACharacterBase>(outHitResult.GetActor());
 			if (Temp != nullptr)
 			{
 				const float defaultDamage = 3.0f;
 				float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
-
-				Temp->ReciveAttack(damageResult);
+				if (Temp != nullptr)
+				{
+					Temp->ReciveAttack(damageResult);
+				}
 
 			}
 		}

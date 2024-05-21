@@ -68,6 +68,10 @@ void ACharacterBase::SetCharacterControlData(const UPlayerControlDataAsset* Char
 void ACharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+
+	DOREPLIFETIME(ACharacterBase, CurrentHP);
+
 }
 
 void ACharacterBase::Act(ADRRActUnitBase* Temp)

@@ -87,6 +87,12 @@ void ADRRPlayerActUnitProto3::Func1(AActor* User)
 
 		for (auto& i : outOverlapResults)
 		{
+
+			if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+			{
+				continue;
+			}
+
 			if (i.GetActor()!=nullptr)
 			{
 				Temp = Cast< ACharacterBase>(i.GetActor());
@@ -100,8 +106,10 @@ void ADRRPlayerActUnitProto3::Func1(AActor* User)
 
 					const float defaultDamage = 4.0f;
 					float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
-
-					Temp->ReciveAttack(damageResult);
+					if (Temp != nullptr)
+					{
+						Temp->ReciveAttack(damageResult);
+					}
 
 
 				}
@@ -162,6 +170,10 @@ void ADRRPlayerActUnitProto3::Func2(AActor* User)
 
 		for (auto& i : outOverlapResults)
 		{
+			if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+			{
+				continue;
+			}
 			if (i.GetActor() != nullptr)
 			{
 				Temp = Cast< ACharacterBase>(i.GetActor());
@@ -171,8 +183,10 @@ void ADRRPlayerActUnitProto3::Func2(AActor* User)
 
 					const float defaultDamage = 6.0f;
 					float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
-
-					Temp->ReciveAttack(damageResult);
+					if (Temp != nullptr)
+					{
+						Temp->ReciveAttack(damageResult);
+					}
 
 
 				}
@@ -233,6 +247,10 @@ void ADRRPlayerActUnitProto3::Func3(AActor* User)
 
 		for (auto& i : outOverlapResults)
 		{
+			if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+			{
+				continue;
+			}
 			if (i.GetActor() != nullptr)
 			{
 				Temp = Cast< ACharacterBase>(i.GetActor());
@@ -252,8 +270,10 @@ void ADRRPlayerActUnitProto3::Func3(AActor* User)
 
 					const float defaultDamage = 8.0f;
 					float damageResult = GetActData()->SkillCoefficient * defaultDamage * UserChar->physicsAttack;
-
-					Temp->ReciveAttack(damageResult);
+					if (Temp != nullptr)
+					{
+						Temp->ReciveAttack(damageResult);
+					}
 
 
 				}

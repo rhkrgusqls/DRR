@@ -66,7 +66,7 @@ protected:
 	uint8 CurTargetCount;
 	TArray<AActor*> Targeted;
 	
-	float ArriveThreshold=5.0f;
+	float ArriveThreshold=100.0f;
 
 	EDiskState DiskState;
 

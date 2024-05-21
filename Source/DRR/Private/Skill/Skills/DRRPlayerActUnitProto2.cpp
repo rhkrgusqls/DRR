@@ -30,11 +30,11 @@ void ADRRPlayerActUnitProto2::EndFunc(AActor* User)
 void ADRRPlayerActUnitProto2::Func1(AActor* User)
 {
 	CLog::Log("ProjectileTest");
-	ADRRPlayerProjectileProto* Temp= GetWorld()->SpawnActor<ADRRPlayerProjectileProto>(Projectile, User->GetActorLocation(), User->GetActorRotation());
 
 	ACharacterBase* user = Cast< ACharacterBase>(User);
 	const float defaultDamage = 5.0f;
 	float damageResult = GetActData()->SkillCoefficient * defaultDamage * user->physicsAttack;
 
+	ADRRPlayerProjectileProto* Temp= GetWorld()->SpawnActor<ADRRPlayerProjectileProto>(Projectile, User->GetActorLocation(), User->GetActorRotation());
 	Temp->Init(User, damageResult);
 }

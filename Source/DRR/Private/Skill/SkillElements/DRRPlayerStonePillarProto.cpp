@@ -202,6 +202,11 @@ void ADRRPlayerStonePillarProto::OnOverlapBegin(UPrimitiveComponent* OverlappedC
     ACharacterBase* Temp = Cast<ACharacterBase>(OtherActor);
     if (OtherActor == User)
         return;
+
+    if (OverlappedComponent && OverlappedComponent->GetCollisionProfileName() == TEXT("Player"))
+    {
+        return;
+    }
     if (Temp != nullptr)
     {
         CDisplayLog::Log(TEXT("Hitted : %s"), *(OtherActor->GetName()));
@@ -212,7 +217,12 @@ void ADRRPlayerStonePillarProto::OnOverlapBegin(UPrimitiveComponent* OverlappedC
 
         const float defaultDamage = 15.0f;
         float damageResult = defaultDamage * Damage;
-        Temp->ReciveAttack(damageResult);
+
+        if (HasAuthority())
+        {
+            Temp->ReciveAttack(damageResult);
+
+        }
         Hitted.Add(OtherActor);
        
     }

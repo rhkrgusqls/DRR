@@ -102,21 +102,26 @@ void ADRRPlayerChainDiskProto::NoTargetDead(float delta)
 
 bool ADRRPlayerChainDiskProto::CheckArrive()
 {
-    if (Target == nullptr)
+    if (Target == nullptr||!IsValid(Target))
     {
         DiskState = EDiskState::NoTarget;
         return false;
     }
-    float dist=(this->GetActorLocation() - Target->GetActorLocation()).Size() ;
+    float dist=(this->GetActorLocation() - Target->GetActorLocation()).SizeSquared() ;
     bool Result = dist < ArriveThreshold;
     if (Result==true)
     {
         CDisplayLog::Log(TEXT("Arrive"));
-        if (HasAuthority())
+        ACharacterBase* Temp = Cast<ACharacterBase>(Target);
+        if (Temp != nullptr)
         {
-            Cast<ACharacterBase>(Target)->ReciveAttack(Damage);
+            if (HasAuthority())
+            {
+                Temp->ReciveAttack(Damage);
 
+            }
         }
+        
         DiskState = EDiskState::NoTarget;
         CurTargetCount++;
     }
@@ -210,13 +215,19 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 
         for (auto& i : outOverlapResults)
         {
+
+            if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+            {
+                continue;
+            }
+
             ACharacterBase* Temp;
             if (i.GetActor())
             {
                 if (i.GetActor() == Target)
                     continue;
 
-                if (i.GetActor() == User)
+                if (i.GetActor() == Cast<AActor>(User))
                     continue;
 
                 
@@ -296,6 +307,10 @@ bool ADRRPlayerChainDiskProto::FindTarget()
 
 void ADRRPlayerChainDiskProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    if (OverlappedComponent && OverlappedComponent->GetCollisionProfileName() == TEXT("Player"))
+    {
+        return;
+    }
     CDisplayLog::Log(TEXT("DiskCollide"));
     DiskState = EDiskState::FindTarget;
     Target = OtherActor;

@@ -311,7 +311,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		{
 			AActor* HitActor = OutHitResult.GetActor();
 			bool IsWall = false;
-			CDisplayLog::Log(TEXT("%s"), *GetController()->GetName());
+			//CDisplayLog::Log(TEXT("%s"), *GetController()->GetName());
 			TArray<UPrimitiveComponent*> Components;
 			OutHitResult.GetActor()->GetComponents<UPrimitiveComponent>(Components);
 			for (UPrimitiveComponent* Component : Components)
@@ -488,10 +488,10 @@ void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(WeaponChangeAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::ChangeWeapon);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterBase::QuaterMove);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAct);
-	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftActRelease);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAct);
-	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed , this, &APlayerCharacterBase::WeaponRightActRelease);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponLeftAttackPress);
+	EnhancedInputComponent->BindAction(ActLeftPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponLeftAttackRelaease);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Started, this, &APlayerCharacterBase::WeaponRightAttackPress);
+	EnhancedInputComponent->BindAction(ActRightPressAction, ETriggerEvent::Completed, this, &APlayerCharacterBase::WeaponRightAttackRelaease);
 	EnhancedInputComponent->BindAction(SitAction, ETriggerEvent::Started, this, &APlayerCharacterBase::Sit);
 }
 
@@ -526,7 +526,7 @@ void APlayerCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(APlayerCharacterBase, CurrentHP);
+	DOREPLIFETIME(APlayerCharacterBase, CurWeaponNum);
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -549,13 +549,127 @@ void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection, MovementVectorsizeSquared);
 }
 
+
+
+
+
+
+
+
+
+
+
+bool APlayerCharacterBase::ServerLeftAct_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerLeftAct_Implementation()
+{
+	MulticastLeftAct();
+}
+void APlayerCharacterBase::MulticastLeftAct_Implementation()
+{
+	WeaponLeftAct();
+
+}
+
+bool APlayerCharacterBase::ServerLeftActRelease_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerLeftActRelease_Implementation()
+{
+	MulticastLeftActRelease();
+}
+void APlayerCharacterBase::MulticastLeftActRelease_Implementation()
+{
+	WeaponLeftActRelease();
+
+}
+
+bool APlayerCharacterBase::ServerRightAct_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerRightAct_Implementation()
+{
+	MulticastRightAct();
+}
+void APlayerCharacterBase::MulticastRightAct_Implementation()
+{
+	WeaponRightAct();
+}
+
+bool APlayerCharacterBase::ServerRightActRelease_Validate()
+{
+	return true;
+}
+void APlayerCharacterBase::ServerRightActRelease_Implementation()
+{
+	MulticastRightActRelease();
+}
+void APlayerCharacterBase::MulticastRightActRelease_Implementation()
+{
+	WeaponRightActRelease();
+}
+
+
+
+void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
+{
+
+	if (WeaponRefs[CurWeaponNum] == nullptr)
+	{
+		return;
+	}
+	ServerLeftAct();
+
+}
+
+void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
+{
+	if (WeaponRefs[CurWeaponNum] == nullptr)
+	{
+		return;
+	}
+	ServerRightAct();
+}
+
+void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
+{
+	if (WeaponRefs[CurWeaponNum] == nullptr)
+	{
+		return;
+	}
+	ServerLeftActRelease();
+}
+
+void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
+{
+	if ( WeaponRefs[CurWeaponNum] == nullptr)
+	{
+		return;
+	}
+	ServerRightActRelease();
+}
+
+
+
+
+
+
+
+
+
+
 void APlayerCharacterBase::WeaponLeftAct()
 {
 	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
 	if (Temp)
 	{
 		CLog::Log("LeftPress");
-		ServerAct(Temp);
+		//ServerAct(Temp);
+		ActComponent->Act(Temp);
 	}
 }
 
@@ -565,7 +679,8 @@ void APlayerCharacterBase::WeaponLeftActRelease()
 	if (Temp)
 	{
 
-		ServerActRelease(Temp);
+		//ServerActRelease(Temp);
+		ActComponent->ActRelease(Temp);
 	}
 }
 
@@ -577,7 +692,8 @@ void APlayerCharacterBase::WeaponRightAct()
 	{
 		CLog::Log("RightPress");
 
-		ServerAct(Temp);
+		//ServerAct(Temp);
+		ActComponent->Act(Temp);
 	}
 }
 
@@ -588,26 +704,61 @@ void APlayerCharacterBase::WeaponRightActRelease()
 	if (Temp)
 	{
 
-		ServerActRelease(Temp);
+		//ServerActRelease(Temp);
+		ActComponent->ActRelease(Temp);
 	}
 }
 
 void APlayerCharacterBase::ChangeWeapon(const FInputActionValue& Value)
 {
 
-	uint8 Temp;
 	if (Value.Get<float>() > 0.0f)
 	{
-		Temp = (CurWeaponNum + MaxWeaponNum + 1) % MaxWeaponNum;
-
+		ServerChangeWeaponUp();
 	}
 	else if (Value.Get<float>() < 0.0f)
 	{
-		Temp = (CurWeaponNum + MaxWeaponNum -1) % MaxWeaponNum;
 
+		ServerChangeWeaponDown();
 	}
+}
+
+void APlayerCharacterBase::ChangeWeaponUp()
+{
+
+	uint8 Temp = CurWeaponNum;
+	Temp = (CurWeaponNum + MaxWeaponNum + 1) % MaxWeaponNum;
+	CDisplayLog::Log(TEXT("WeaponChange : %d"), Temp);
 	CurWeaponNum = Temp;
-	CDisplayLog::Log(TEXT("WeaponChange : %d"),Temp);
+}
+
+void APlayerCharacterBase::ChangeWeaponDown()
+{
+	uint8 Temp = CurWeaponNum;
+	Temp = (CurWeaponNum + MaxWeaponNum - 1) % MaxWeaponNum;
+	CDisplayLog::Log(TEXT("WeaponChange : %d"), Temp);
+	CurWeaponNum = Temp;
+}
+
+
+bool APlayerCharacterBase::ServerChangeWeaponUp_Validate()
+{
+	
+	return true;
+}
+void APlayerCharacterBase::ServerChangeWeaponUp_Implementation()
+{
+	ChangeWeaponUp();
+}
+
+bool APlayerCharacterBase::ServerChangeWeaponDown_Validate()
+{
+
+	return true;
+}
+void APlayerCharacterBase::ServerChangeWeaponDown_Implementation()
+{
+	ChangeWeaponDown();
 }
 
 

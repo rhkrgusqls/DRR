@@ -83,6 +83,10 @@ void ADRRPlayerActUnitProto4::Func1(AActor* User)
 		CDisplayLog::Log(TEXT("Collide"));
 		for (auto& i : outOverlapResults)
 		{
+			if (i.GetComponent() && i.GetComponent()->GetCollisionProfileName() == TEXT("Player"))
+			{
+				continue;
+			}
 			if (i.GetActor())
 			{
 
