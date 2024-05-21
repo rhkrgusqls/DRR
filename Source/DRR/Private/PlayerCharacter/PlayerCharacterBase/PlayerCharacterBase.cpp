@@ -771,12 +771,7 @@ void APlayerCharacterBase::Sit(const FInputActionValue& Value) {
 
 void APlayerCharacterBase::Change(const FInputActionValue& Value)
 {
-	if (Weapon != nullptr)
-	{
-		WeaponRef = GetWorld()->SpawnActor<ADRRWeaponBase>(Weapon);
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
-		WeaponRef->AttachToActor(this, AttachmentRules);
-	}
+
 }
 
 
