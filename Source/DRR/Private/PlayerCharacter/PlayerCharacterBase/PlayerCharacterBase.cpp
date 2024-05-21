@@ -186,32 +186,32 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 void APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot)
 {
+	if (slot >= MaxWeaponNum)
+		return ;
+
+	if (WeaponRefs[slot] != nullptr)
+		WeaponUnEquip(slot);
 	if (WeaponClass != nullptr)
 	{
 		WeaponRefs[slot] = GetWorld()->SpawnActor<ADRRWeaponBase>(WeaponClass);
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
 		WeaponRefs[slot]->AttachToActor(this, AttachmentRules);		
-		//return true;
+		
 	}	
-	//return false;
 }
 
 void APlayerCharacterBase::WeaponUnEquip(int slot)
 {
-	//if (WeaponRefs[slot] != nullptr)
-	//	WeaponUnEquip(slot);
-
 	if (slot >= MaxWeaponNum)
-		//return false;
+		return ;
 	if (WeaponRefs[slot] == nullptr)
-		//return false;
+		return ;
 
 	WeaponRefs[slot]->UnEquip();
 	WeaponRefs[slot] = nullptr;
 
-	//return true;
-
 }
+
 
 void APlayerCharacterBase::BeginPlay()
 {
@@ -263,6 +263,15 @@ void APlayerCharacterBase::BeginPlay()
 	}
 	
 	SetupCharacterWidget2(HUDWidget);
+}
+
+void APlayerCharacterBase::BeginDestroy()
+{
+	Super::BeginDestroy();
+	for (int i=0;i< WeaponRefs.Num();i++)
+	{
+		WeaponUnEquip(i);
+	}
 }
 
 AActor* HitedActor;

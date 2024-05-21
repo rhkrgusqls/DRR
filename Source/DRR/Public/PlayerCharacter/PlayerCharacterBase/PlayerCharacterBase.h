@@ -38,13 +38,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot);
-
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void WeaponUnEquip(int slot);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
 	virtual void Tick(float Deltatime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void SetCharacterControlData(const class UPlayerControlDataAsset* CharacterControlData) override;
