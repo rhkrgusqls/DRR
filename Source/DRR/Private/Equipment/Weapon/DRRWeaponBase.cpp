@@ -46,20 +46,13 @@ bool ADRRWeaponBase::UnEquip()
 void ADRRWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FirstActRef = Cast<ADRRActUnitBase>(GetWorld()->SpawnActor(FirstAct));
+	SecondActRef = Cast<ADRRActUnitBase>(GetWorld()->SpawnActor(SecondAct));
+
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
-	if (FirstAct != nullptr)
-	{
-		FirstActRef = Cast<ADRRActUnitBase>(GetWorld()->SpawnActor(FirstAct));
-		FirstActRef->AttachToActor(this, AttachmentRules);
-
-	}
-	if (SecondAct != nullptr)
-	{
-		SecondActRef = Cast<ADRRActUnitBase>(GetWorld()->SpawnActor(SecondAct));
-		SecondActRef->AttachToActor(this, AttachmentRules);
-
-	}
-
+	FirstActRef->AttachToActor(this, AttachmentRules);
+	SecondActRef->AttachToActor(this, AttachmentRules);
 	
 }
 
