@@ -39,7 +39,8 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
     DiskState = EDiskState::Init;
     DetectRadius = 600.0f;
     MaxTargetCount = 6;
-    ArriveThreshold = 5.0f;
+    ArriveThreshold = 200.0f;
+    SetActorEnableCollision(false);
 
 }
 
@@ -88,6 +89,7 @@ void ADRRPlayerChainDiskProto::Init(AActor* user, float damage)
     User = Cast<ACharacterBase>(user);
     Damage = damage;
     Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
+    SetActorEnableCollision(true);
 }
 
 void ADRRPlayerChainDiskProto::NoTargetDead(float delta)

@@ -49,7 +49,6 @@ void AABPlayerController::RespawnPlayer()
 
     if (GM)
     {
-        // Find PlayerStart actor in the level
         APlayerStart* PlayerStart = nullptr;
         for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
         {
@@ -67,7 +66,6 @@ void AABPlayerController::RespawnPlayer()
             APlayerCharacterBase* SpawnedCharacter = GetWorld()->SpawnActor<APlayerCharacterBase>(GM->DefaultPawnClass, SpawnLoc, FRotator::ZeroRotator, SpawnParams);
             Possess(SpawnedCharacter);
 
-            SpawnedCharacter->SetHUDWidgets(this);
         }
         else
         {

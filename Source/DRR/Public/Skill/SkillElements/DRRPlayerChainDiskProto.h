@@ -65,8 +65,9 @@ protected:
 
 	uint8 CurTargetCount;
 	TArray<AActor*> Targeted;
-	
-	float ArriveThreshold=100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DiskSetting)
+	float ArriveThreshold=200.0f;
 
 	EDiskState DiskState;
 

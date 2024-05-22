@@ -28,7 +28,6 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
     MissileMesh->SetupAttachment(Trigger);
 
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerProjectileProto::OnOverlapBegin);
-
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
     ProjectileMovement->SetUpdatedComponent(Trigger);
@@ -37,6 +36,7 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->ProjectileGravityScale = 0.0f;
 
+    SetActorEnableCollision(false);
 
 }
 
@@ -64,6 +64,7 @@ void ADRRPlayerProjectileProto::Init(AActor* user, float damage)
     User = Cast<ACharacterBase>(user)==nullptr? Cast<ACharacterBase>(user):nullptr;
     Damage = damage;
     Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
+    SetActorEnableCollision(true);
 }
 
 void ADRRPlayerProjectileProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

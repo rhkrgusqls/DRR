@@ -37,6 +37,7 @@ ADRRPlayerMagicArrowProto::ADRRPlayerMagicArrowProto()
     ProjectileMovement->ProjectileGravityScale = 0.0f;
 
 
+    SetActorEnableCollision(false);
 }
 
 // Called when the game starts or when spawned
@@ -75,6 +76,7 @@ void ADRRPlayerMagicArrowProto::Init(AActor* user, float damage)
 {
     User = Cast<ACharacterBase>(user);
     Damage = damage;
+    SetActorEnableCollision(true);
 }
 
 void ADRRPlayerMagicArrowProto::SetDelay(float delay)
