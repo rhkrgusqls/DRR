@@ -186,6 +186,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 void APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot)
 {
+	CDisplayLog::Log(TEXT("WeaponEquip"));
 	if (slot >= MaxWeaponNum)
 		return ;
 
@@ -200,6 +201,24 @@ void APlayerCharacterBase::WeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponC
 	}	
 }
 
+bool APlayerCharacterBase::ServerWeaponEquip_Validate(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot)
+{
+	if (slot >= MaxWeaponNum)
+		return false;
+	
+
+	return true;
+}
+void APlayerCharacterBase::ServerWeaponEquip_Implementation(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot)
+{
+	MulticastWeaponEquip(WeaponClass,slot);
+}
+void APlayerCharacterBase::MulticastWeaponEquip_Implementation(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot)
+{
+	WeaponEquip(WeaponClass,slot);
+}
+
+
 void APlayerCharacterBase::WeaponUnEquip(int slot)
 {
 	if (slot >= MaxWeaponNum)
@@ -211,6 +230,24 @@ void APlayerCharacterBase::WeaponUnEquip(int slot)
 	WeaponRefs[slot] = nullptr;
 
 }
+
+bool APlayerCharacterBase::ServerWeaponUnEquip_Validate(int slot)
+{
+	if (slot >= MaxWeaponNum)
+		return false;
+
+	return true;
+}
+void APlayerCharacterBase::ServerWeaponUnEquip_Implementation(int slot)
+{
+	//MulticastWeaponUnEquip(slot);
+	WeaponUnEquip(slot);
+}
+void APlayerCharacterBase::MulticastWeaponUnEquip_Implementation(int slot)
+{
+	WeaponUnEquip(slot);
+}
+
 
 
 void APlayerCharacterBase::BeginPlay()
@@ -520,6 +557,7 @@ void APlayerCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(APlayerCharacterBase, CurWeaponNum);
+	DOREPLIFETIME(APlayerCharacterBase, WeaponRefs);
 }
 
 void APlayerCharacterBase::QuaterMove(const FInputActionValue& Value)
@@ -651,7 +689,9 @@ void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Va
 
 void APlayerCharacterBase::WeaponLeftAct()
 {
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
+
+
+	IDRRActableInterface* Temp =WeaponRefs[CurWeaponNum]->GetFirstAct();
 	if (Temp)
 	{
 		CLog::Log("LeftPress");
@@ -662,7 +702,7 @@ void APlayerCharacterBase::WeaponLeftAct()
 
 void APlayerCharacterBase::WeaponLeftActRelease()
 {
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetFirstAct();
 	if (Temp)
 	{
 
@@ -674,7 +714,7 @@ void APlayerCharacterBase::WeaponLeftActRelease()
 void APlayerCharacterBase::WeaponRightAct()
 {
 
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
 	if (Temp)
 	{
 		CLog::Log("RightPress");
@@ -687,7 +727,7 @@ void APlayerCharacterBase::WeaponRightAct()
 void APlayerCharacterBase::WeaponRightActRelease()
 {
 
-	ADRRActUnitBase* Temp = Cast< ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
+	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
 	if (Temp)
 	{
 

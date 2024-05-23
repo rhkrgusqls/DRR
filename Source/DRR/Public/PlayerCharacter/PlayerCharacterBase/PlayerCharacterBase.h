@@ -118,6 +118,20 @@ private:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "RPC_Character")
 	void ServerChangeWeaponDown();
 
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "RPC_Weapon")
+	void ServerWeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot);
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Weapon")
+	void MulticastWeaponEquip(TSubclassOf<class ADRRWeaponBase> WeaponClass, int slot);
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "RPC_Weapon")
+	void ServerWeaponUnEquip(int slot);
+
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Weapon")
+	void MulticastWeaponUnEquip(int slot);
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
@@ -160,6 +174,8 @@ protected:
 	//TestWeapon
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TArray<TSubclassOf<class ADRRWeaponBase>> Weapons;
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TArray<TObjectPtr<class ADRRWeaponBase>> WeaponRefs;
 
 

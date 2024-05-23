@@ -9,6 +9,7 @@
 // Sets default values
 ADRRActUnitBase::ADRRActUnitBase()
 {
+	bReplicates = true;
 
 }
 
