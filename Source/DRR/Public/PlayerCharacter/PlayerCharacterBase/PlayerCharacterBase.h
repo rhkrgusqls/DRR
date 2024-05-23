@@ -178,6 +178,7 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));
 	TArray<TObjectPtr<class ADRRWeaponBase>> WeaponRefs;
 
+	TObjectPtr<AActor> HitedActor;
 
 
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Weapon, Meta = (AllowPrivateAccess = "true"));

@@ -311,7 +311,6 @@ void APlayerCharacterBase::BeginDestroy()
 	}
 }
 
-AActor* HitedActor;
 void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
