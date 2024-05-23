@@ -307,7 +307,7 @@ void APlayerCharacterBase::BeginDestroy()
 	Super::BeginDestroy();
 	for (int i=0;i< WeaponRefs.Num();i++)
 	{
-		WeaponUnEquip(i);
+		ServerWeaponUnEquip(i);
 	}
 }
 
@@ -362,7 +362,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 					HitActor->SetActorHiddenInGame(true);
 					if (HitedActor != HitActor)
 					{
-						if (HitedActor != nullptr)
+						if (HitedActor != nullptr && IsValid(HitedActor))
 						{
 							HitedActor->SetActorHiddenInGame(false);
 						}
@@ -376,7 +376,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 			}
 			else
 			{
-				if (HitedActor != nullptr)
+				if (HitedActor != nullptr && IsValid(HitedActor))
 				{
 					HitedActor->SetActorHiddenInGame(false);
 					return;
@@ -385,7 +385,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 		}
 		else
 		{
-			if (HitedActor!=nullptr)
+			if (HitedActor!=nullptr&&IsValid(HitedActor))
 			{
 				HitedActor->SetActorHiddenInGame(false);
 				return;
@@ -649,7 +649,7 @@ void APlayerCharacterBase::MulticastRightActRelease_Implementation()
 void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 {
 
-	if (WeaponRefs[CurWeaponNum] == nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr||IsValid(WeaponRefs[CurWeaponNum])==false)
 	{
 		return;
 	}
@@ -659,7 +659,7 @@ void APlayerCharacterBase::WeaponLeftAttackPress(const FInputActionValue& Value)
 
 void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value)
 {
-	if (WeaponRefs[CurWeaponNum] == nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr || IsValid(WeaponRefs[CurWeaponNum]) == false)
 	{
 		return;
 	}
@@ -668,7 +668,7 @@ void APlayerCharacterBase::WeaponRightAttackPress(const FInputActionValue& Value
 
 void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Value)
 {
-	if (WeaponRefs[CurWeaponNum] == nullptr)
+	if (WeaponRefs[CurWeaponNum] == nullptr || IsValid(WeaponRefs[CurWeaponNum]) == false)
 	{
 		return;
 	}
@@ -677,7 +677,7 @@ void APlayerCharacterBase::WeaponLeftAttackRelaease(const FInputActionValue& Val
 
 void APlayerCharacterBase::WeaponRightAttackRelaease(const FInputActionValue& Value)
 {
-	if ( WeaponRefs[CurWeaponNum] == nullptr)
+	if ( WeaponRefs[CurWeaponNum] == nullptr || IsValid(WeaponRefs[CurWeaponNum]) == false)
 	{
 		return;
 	}
@@ -691,8 +691,8 @@ void APlayerCharacterBase::WeaponLeftAct()
 {
 
 
-	IDRRActableInterface* Temp =WeaponRefs[CurWeaponNum]->GetFirstAct();
-	if (Temp)
+	ADRRActUnitBase* Temp =Cast<ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
+	if (Temp!=nullptr&&IsValid(Temp))
 	{
 		CLog::Log("LeftPress");
 		//ServerAct(Temp);
@@ -702,8 +702,8 @@ void APlayerCharacterBase::WeaponLeftAct()
 
 void APlayerCharacterBase::WeaponLeftActRelease()
 {
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetFirstAct();
-	if (Temp)
+	ADRRActUnitBase* Temp = Cast<ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetFirstAct());
+	if (Temp != nullptr && IsValid(Temp))
 	{
 
 		//ServerActRelease(Temp);
@@ -714,8 +714,8 @@ void APlayerCharacterBase::WeaponLeftActRelease()
 void APlayerCharacterBase::WeaponRightAct()
 {
 
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
-	if (Temp)
+	ADRRActUnitBase* Temp = Cast<ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
+	if (Temp != nullptr && IsValid(Temp))
 	{
 		CLog::Log("RightPress");
 
@@ -727,8 +727,8 @@ void APlayerCharacterBase::WeaponRightAct()
 void APlayerCharacterBase::WeaponRightActRelease()
 {
 
-	IDRRActableInterface* Temp = WeaponRefs[CurWeaponNum]->GetSecondAct();
-	if (Temp)
+	ADRRActUnitBase* Temp = Cast<ADRRActUnitBase>(WeaponRefs[CurWeaponNum]->GetSecondAct());
+	if (Temp != nullptr && IsValid(Temp))
 	{
 
 		//ServerActRelease(Temp);
