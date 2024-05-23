@@ -41,6 +41,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void WeaponUnEquip(int slot);
 
+	void CreateHUD();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

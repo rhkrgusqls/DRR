@@ -231,6 +231,18 @@ void APlayerCharacterBase::WeaponUnEquip(int slot)
 
 }
 
+void APlayerCharacterBase::CreateHUD()
+{
+	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
+	if (PlayerController != nullptr && GetGameInstance()->GetFirstLocalPlayerController() == PlayerController)
+	{
+		SetCharacterControl(ECharacterControlType::Quater);
+		SetHUDWidgets(PlayerController);
+		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
+		SetupCharacterWidget(HUDWidget);
+	}
+}
+
 bool APlayerCharacterBase::ServerWeaponUnEquip_Validate(int slot)
 {
 	if (slot >= MaxWeaponNum)
@@ -254,14 +266,7 @@ void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	CDisplayLog::Log(TEXT("PlayerPawnBeginPlay"));
-	AABPlayerController* PlayerController = Cast<AABPlayerController>(GetController());
-	if (PlayerController != nullptr&&GetGameInstance()->GetFirstLocalPlayerController()==PlayerController)
-	{
-		SetCharacterControl(ECharacterControlType::Quater);
-		SetHUDWidgets(PlayerController);
-		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
-		SetupCharacterWidget(HUDWidget);
-	}
+	CreateHUD();
 	WeaponRefs.Add(nullptr);
 	WeaponRefs.Add(nullptr);
 	WeaponRefs.Add(nullptr);
@@ -453,7 +458,11 @@ void APlayerCharacterBase::IsDead()
 	{
 		CurrentController->RespawnPlayer();
 	}
-
+	if (HUDWidget)
+	{
+		HUDWidget->RemoveFromViewport();
+		HUDWidget = nullptr;
+	}
 }
 
 void APlayerCharacterBase::PossessedBy(AController* NewController)
