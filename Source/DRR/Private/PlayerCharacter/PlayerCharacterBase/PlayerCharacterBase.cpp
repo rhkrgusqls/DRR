@@ -242,6 +242,7 @@ void APlayerCharacterBase::CreateHUD()
 		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
 		SetupCharacterWidget(HUDWidget);
 	}
+	SetupCharacterWidget2(HUDWidget);
 }
 
 bool APlayerCharacterBase::ServerWeaponUnEquip_Validate(int slot)
