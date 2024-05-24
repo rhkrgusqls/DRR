@@ -78,7 +78,7 @@ void ABaseAIController::OnPerception(AActor* Actor, FAIStimulus Stimulus)
     UWorld* World = GetWorld();
     EnemyCharacter = Cast<APlayerCharacterBase>(Actor);
     FName STag = Stimulus.Tag;
-
+   // Character = GetPawn();
         // Handle noise perception
         if (STag == TEXT("Noise"))
         {
@@ -151,6 +151,12 @@ void ABaseAIController::OnPossess(APawn* InPawn)
     Super::OnPossess(InPawn);
     AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::OnPerception);
     RunAI();
+ 
+    Character = Cast<AEnemyCharacterBase>(GetPawn());
+    if (Character)
+    {
+        Agent = Character;
+    }
 }
 
 // Run the AI behavior tree
