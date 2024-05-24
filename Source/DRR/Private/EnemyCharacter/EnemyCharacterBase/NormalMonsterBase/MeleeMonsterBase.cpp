@@ -43,7 +43,7 @@ void AMeleeMonsterBase::MeleeAttack(FVector TargetLocation)
     // Execute a random attack based on the index
     switch (RandomIndex) {
     case 0:
-        ComboAttack();
+        MulticastMeleeAttack();
         break;
     case 1:
         StrongAttack();
@@ -55,7 +55,10 @@ void AMeleeMonsterBase::MeleeAttack(FVector TargetLocation)
         break;
     }
 }
-
+void AMeleeMonsterBase::MulticastMeleeAttack_Implementation()
+{
+    ComboAttack();
+}
 void AMeleeMonsterBase::CreateHitBoxBetweenBones(FName RightBoneName1, FName RightBoneName2, FName LeftBoneName1, FName LeftBoneName2)
 {
     // Reference to Skeletal Mesh Component
@@ -286,8 +289,12 @@ void AMeleeMonsterBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* 
             }
             else
             {
-                HitPlayer->ReciveAttack(physicsAttack);
-                HitedActor.Add(HitPlayer);
+                if (HasAuthority())
+                {
+                    HitPlayer->ReciveAttack(physicsAttack);
+                    HitedActor.Add(HitPlayer);
+
+                }
             }
         }
 }

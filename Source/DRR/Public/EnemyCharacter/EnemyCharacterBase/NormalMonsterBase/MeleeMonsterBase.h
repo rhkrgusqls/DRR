@@ -26,6 +26,12 @@ public:
 
 	virtual void MeleeAttack(FVector TargetLocation)override;
 
+
+
+	UFUNCTION(NetMulticast, Unreliable, Category = "RPC_Character")
+	void MulticastMeleeAttack();
+
+
 	virtual void MiddleAttack(FVector TargetLocation)override;
 
 	virtual void LongAttack(FVector TargetLocation)override;
