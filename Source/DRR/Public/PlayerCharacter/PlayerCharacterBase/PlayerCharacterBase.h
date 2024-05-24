@@ -28,6 +28,7 @@ public:
 	void SetupCharacterWidget2(class UDRRUserWidget* InUserWidget);
 
 	virtual void IsDead() override;
+	virtual void ReciveAttack(float physicsDamage) override;
 	virtual void PossessedBy(AController* NewController) override;
 
 	void SetHUDWidgets(APlayerController* Player);
