@@ -242,7 +242,13 @@ void APlayerCharacterBase::CreateHUD()
 		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
 		SetupCharacterWidget(HUDWidget);
 	}
-	SetupCharacterWidget2(HUDWidget);
+	if (GetController() == nullptr)
+		return;
+	if (GetController() == GetGameInstance()->GetFirstLocalPlayerController())
+	{
+		SetupCharacterWidget2(HUDWidget);
+
+	}
 }
 
 bool APlayerCharacterBase::ServerWeaponUnEquip_Validate(int slot)
@@ -305,8 +311,13 @@ void APlayerCharacterBase::BeginPlay()
 		}*/
 		
 	}
-	
-	SetupCharacterWidget2(HUDWidget);
+	if (GetController() == nullptr)
+		return;
+	if (GetController() == GetGameInstance()->GetFirstLocalPlayerController())
+	{
+		SetupCharacterWidget2(HUDWidget);
+
+	}
 }
 
 void APlayerCharacterBase::BeginDestroy()
@@ -322,7 +333,6 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//SetupCharacterWidget2(HUDWidget);
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
 	AABPlayerController* pc = Cast<AABPlayerController>(this -> GetController());
@@ -440,8 +450,17 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 void APlayerCharacterBase::ReciveAttack(float physicsDamage)
 {
 	Super::ReciveAttack(physicsDamage);
+	if (HasAuthority())
+	{
+		if (GetController() == nullptr)
+			return;
+		if (GetController() == GetGameInstance()->GetFirstLocalPlayerController())
+		{
+			SetupCharacterWidget2(HUDWidget);
 
-	SetupCharacterWidget2(HUDWidget);
+		}
+
+	}
 }
 
 void APlayerCharacterBase::SetupCharacterWidget2(UDRRUserWidget* InUserWidget)
@@ -489,6 +508,9 @@ void APlayerCharacterBase::PossessedBy(AController* NewController)
 	CDisplayLog::Log(TEXT("Possesed"));
 
 	SetCharacterControl(ECharacterControlType::Quater);
+
+
+	
 }
 
 void APlayerCharacterBase::SetMaxHP(float NewHP)
@@ -534,6 +556,18 @@ void APlayerCharacterBase::SetGold(int NewGold)
 {
 	CurrentGold = FMath::Clamp(NewGold, 0, 999999);
 	OnGoldChanged.Broadcast(CurrentGold);
+}
+
+void APlayerCharacterBase::OnRep_Health()
+{
+	Super::OnRep_Health();
+	if (GetController() == nullptr)
+		return;
+	if (GetController() == GetGameInstance()->GetFirstLocalPlayerController())
+	{
+		SetupCharacterWidget2(HUDWidget);
+
+	}
 }
 
 void APlayerCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

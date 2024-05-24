@@ -66,6 +66,7 @@ protected:
 	void SetMaxGold(int NewGold);
 	void SetGold(int NewGold);
 
+	virtual void OnRep_Health() override;
 private:
 	void QuaterMove(const FInputActionValue& Value);
 	void Sit(const FInputActionValue& Value);

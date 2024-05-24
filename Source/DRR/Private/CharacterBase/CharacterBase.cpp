@@ -232,6 +232,11 @@ void ACharacterBase::DestroySelf()
 	Destroy();
 }
 
+void ACharacterBase::OnRep_Health()
+{
+
+}
+
 
 bool ACharacterBase::ServerAct_Validate(class ADRRActUnitBase* Temp)
 {

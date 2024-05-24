@@ -94,8 +94,10 @@ public:
 
 	float DotDamage;
 
-	UPROPERTY( Replicated,EditAnywhere, BlueprintReadWrite, Category = "State")
+	UPROPERTY( Replicated, ReplicatedUsing = OnRep_Health,EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentHP;
+	UFUNCTION()
+	virtual void OnRep_Health();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxMP;
