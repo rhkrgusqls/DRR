@@ -321,7 +321,7 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetupCharacterWidget2(HUDWidget);
+	//SetupCharacterWidget2(HUDWidget);
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
 	AABPlayerController* pc = Cast<AABPlayerController>(this -> GetController());
@@ -434,6 +434,13 @@ void APlayerCharacterBase::SetupCharacterWidget(UDRRUserWidget* InUserWidget)
 		
 		//OnGoldChanged.AddUObject(InUserWidget, &UDRRUserWidget::UpdateGold);		<-AddUObject makes error and I don't know why
 	}
+}
+
+void APlayerCharacterBase::ReciveAttack(float physicsDamage)
+{
+	Super::ReciveAttack(physicsDamage);
+
+	SetupCharacterWidget2(HUDWidget);
 }
 
 void APlayerCharacterBase::SetupCharacterWidget2(UDRRUserWidget* InUserWidget)
