@@ -53,6 +53,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	GetCapsuleComponent()->InitCapsuleSize(40.0f, 100.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
+	RootComponent = GetCapsuleComponent();
 	// Set Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -321,9 +322,18 @@ void APlayerCharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetupCharacterWidget2(HUDWidget);
-
 	if (this->GetController() != GetGameInstance()->GetFirstLocalPlayerController())
 		return;
+	AABPlayerController* pc = Cast<AABPlayerController>(this -> GetController());
+	if (pc == nullptr)
+	{
+		return;
+	}
+	if (pc->IsWallInVisibility() == false)
+	{
+		return;
+	}
+
 
 	UWorld* World = GetController()->GetWorld();
 	
