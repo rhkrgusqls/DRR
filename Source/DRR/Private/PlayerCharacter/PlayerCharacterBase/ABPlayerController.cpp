@@ -67,6 +67,7 @@ void AABPlayerController::RespawnPlayer()
             SpawnParams.Owner = this;
             APlayerCharacterBase* SpawnedCharacter = GetWorld()->SpawnActor<APlayerCharacterBase>(GM->DefaultPawnClass, SpawnLoc, FRotator::ZeroRotator, SpawnParams);
             Possess(SpawnedCharacter);
+            SpawnedCharacter->CreateHUD();
         }
         else
         {

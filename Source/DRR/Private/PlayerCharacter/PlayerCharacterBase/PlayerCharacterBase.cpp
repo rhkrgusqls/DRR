@@ -242,13 +242,7 @@ void APlayerCharacterBase::CreateHUD()
 		HUDWidget = Cast<UDRRUserWidget>(GetMainHUDWidget());
 		SetupCharacterWidget(HUDWidget);
 	}
-	if (GetController() == nullptr)
-		return;
-	if (GetController() == GetGameInstance()->GetFirstLocalPlayerController())
-	{
-		SetupCharacterWidget2(HUDWidget);
-
-	}
+	SetupCharacterWidget2(HUDWidget);
 }
 
 bool APlayerCharacterBase::ServerWeaponUnEquip_Validate(int slot)
@@ -311,13 +305,7 @@ void APlayerCharacterBase::BeginPlay()
 		}*/
 		
 	}
-	if (GetController() == nullptr)
-		return;
-	if (GetController() == GetGameInstance()->GetFirstLocalPlayerController())
-	{
-		SetupCharacterWidget2(HUDWidget);
-
-	}
+	SetupCharacterWidget2(HUDWidget);
 }
 
 void APlayerCharacterBase::BeginDestroy()
