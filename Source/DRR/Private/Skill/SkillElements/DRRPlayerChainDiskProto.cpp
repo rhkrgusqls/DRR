@@ -17,20 +17,23 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
     PrimaryActorTick.bCanEverTick = true;
     DiskMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MissileMesh"));
     DiskMesh->SetStaticMesh(Mesh);
-    DiskMesh->SetCollisionProfileName(TEXT("NoCollision"));
+    DiskMesh->SetCollisionProfileName(TEXT("FindWall"));
+    DiskMesh->OnComponentHit.AddDynamic(this, &ADRRPlayerChainDiskProto::OnStaticMeshHit);
+    DiskMesh->SetEnableGravity(false);
 
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
-    Trigger->SetCollisionProfileName(TEXT("NoCollision"));
+    Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
     Trigger->SetSphereRadius(DetectRadius);
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerChainDiskProto::OnOverlapBegin);
-    RootComponent = Trigger;
-    DiskMesh->SetupAttachment(Trigger);
+
+    RootComponent = DiskMesh;
+    Trigger->SetupAttachment(RootComponent);
     
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(Trigger);
+    ProjectileMovement->SetUpdatedComponent(DiskMesh);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bRotationFollowsVelocity = true;
@@ -39,7 +42,8 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
     DiskState = EDiskState::Init;
     DetectRadius = 600.0f;
     MaxTargetCount = 6;
-    ArriveThreshold = 200.0f;
+    ArriveThreshold = 1000.0f;
+
     SetActorEnableCollision(false);
 
 }
@@ -50,11 +54,9 @@ void ADRRPlayerChainDiskProto::BeginPlay()
     Super::BeginPlay();
     DiskState = EDiskState::Init;
     curDeadTime = 0.0f;
-    if (HasAuthority())
-    {
-        SetReplicates(true);
-        SetReplicateMovement(true);
-    }
+    SetReplicates(true);
+    SetReplicateMovement(true);
+    
 }
 
 // Called every frame
@@ -88,7 +90,7 @@ void ADRRPlayerChainDiskProto::Init(AActor* user, float damage)
 {
     User = Cast<ACharacterBase>(user);
     Damage = damage;
-    Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
+
     SetActorEnableCollision(true);
 }
 
@@ -318,6 +320,16 @@ void ADRRPlayerChainDiskProto::OnOverlapBegin(UPrimitiveComponent* OverlappedCom
     Target = OtherActor;
     Trigger->SetCollisionProfileName(TEXT("NoCollision"));
 
+    DiskMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+}
+
+void ADRRPlayerChainDiskProto::OnStaticMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    if (DiskState == EDiskState::Init)
+    {
+        Destroy();
+    }
 }
 
 

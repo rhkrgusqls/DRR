@@ -18,6 +18,7 @@
 
 AABPlayerController::AABPlayerController()
 {
+    WallInvisibility = false;
 }
 
 void AABPlayerController::BeginPlay()
@@ -34,9 +35,10 @@ void AABPlayerController::BeginPlay()
 
         MultiPlayManager = NewObject<UDRRMultiplayerManager>();
         MultiPlayManager->SetMultiSubsystem(GetGameInstance()->GetSubsystem<UCMultiplaySubsystem>());
+        
     }
-    Possess(GetPawn());
-    
+    //Possess(GetPawn());
+    SetWallInvisibilityTimer();
 
 
     
@@ -116,5 +118,23 @@ void AABPlayerController::JoinSession(uint32 RoomNum)
 
     MultiPlayManager->JoinSession(RoomNum);
 
+}
+
+bool AABPlayerController::IsWallInVisibility()
+{
+    return WallInvisibility;
+}
+
+void AABPlayerController::SetWallInvisibilityTimer()
+{
+    
+    //타이머 설정: (타임핸들러, 객체, 실행할 함수,지연시간, 루프 여부)
+    GetWorld()->GetTimerManager().SetTimer(WallInvisibilityTimerHandle, this, &AABPlayerController::SetWallInvisibility, 5.0f, false);
+   
+}
+
+void AABPlayerController::SetWallInvisibility()
+{
+    WallInvisibility = true;
 }
 

@@ -17,7 +17,10 @@ ADRRPlayerMagicArrowProto::ADRRPlayerMagicArrowProto()
     PrimaryActorTick.bCanEverTick = true;
     MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MissileMesh"));
     MissileMesh->SetStaticMesh(Mesh);
-    MissileMesh->SetCollisionProfileName(TEXT("NoCollision"));
+    MissileMesh->SetCollisionProfileName(TEXT("FindWall"));
+    MissileMesh->OnComponentHit.AddDynamic(this, &ADRRPlayerMagicArrowProto::OnStaticMeshHit);
+    MissileMesh->SetEnableGravity(false);
+
 
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
@@ -25,12 +28,12 @@ ADRRPlayerMagicArrowProto::ADRRPlayerMagicArrowProto()
     Trigger->SetSphereRadius(50.0f);
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerMagicArrowProto::OnOverlapBegin);
     
-    RootComponent = Trigger;
-    MissileMesh->SetupAttachment(Trigger);
+    RootComponent = MissileMesh;
+    Trigger->SetupAttachment(RootComponent);
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(Trigger);
+    ProjectileMovement->SetUpdatedComponent(RootComponent);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bShouldBounce = false;
@@ -94,7 +97,11 @@ void ADRRPlayerMagicArrowProto::OnOverlapBegin(UPrimitiveComponent* OverlappedCo
     Explosion();
 
 
-    Destroy();
+}
+
+void ADRRPlayerMagicArrowProto::OnStaticMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    Explosion();
 }
 
 void ADRRPlayerMagicArrowProto::SetTimer()

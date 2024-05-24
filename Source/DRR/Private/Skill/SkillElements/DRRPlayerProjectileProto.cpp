@@ -17,20 +17,23 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
 	PrimaryActorTick.bCanEverTick = true;
 	MissileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MissileMesh"));
     MissileMesh->SetStaticMesh(Mesh);
-    MissileMesh->SetCollisionProfileName(TEXT("NoCollision"));
-
+    //MissileMesh->SetCollisionProfileName(TEXT("FindWall"));
+    MissileMesh->SetCollisionProfileName(TEXT("FindWall"));
+    MissileMesh->OnComponentHit.AddDynamic(this, &ADRRPlayerProjectileProto::OnStaticMeshHit);
+    MissileMesh->SetEnableGravity(false);
+    
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
-    Trigger->SetCollisionProfileName(TEXT("NoCollision"));
+    Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
     Trigger->SetSphereRadius(50.0f);
 
-	RootComponent = Trigger;
-    MissileMesh->SetupAttachment(Trigger);
+	RootComponent = MissileMesh;
+    Trigger->SetupAttachment(MissileMesh);
 
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerProjectileProto::OnOverlapBegin);
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->SetUpdatedComponent(Trigger);
+    ProjectileMovement->SetUpdatedComponent(RootComponent);
     ProjectileMovement->InitialSpeed = 3000.0f;
     ProjectileMovement->MaxSpeed = 3000.0f;
     ProjectileMovement->bShouldBounce = false;
@@ -44,11 +47,9 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
 void ADRRPlayerProjectileProto::BeginPlay()
 {
 	Super::BeginPlay();
-    if (HasAuthority())
-    {
-        SetReplicates(true);
-        SetReplicateMovement(true);
-    }
+    SetReplicates(true);
+    SetReplicateMovement(true);
+    
 }
 
 // Called every frame
@@ -63,13 +64,28 @@ void ADRRPlayerProjectileProto::Init(AActor* user, float damage)
 
     User = Cast<ACharacterBase>(user)==nullptr? Cast<ACharacterBase>(user):nullptr;
     Damage = damage;
-    Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
+    //Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
+    //MissileMesh->SetCollisionProfileName(TEXT("FindWall"));
     SetActorEnableCollision(true);
 }
 
 void ADRRPlayerProjectileProto::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
+    
+    Explosion();
+}
+
+void ADRRPlayerProjectileProto::OnStaticMeshHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+    Explosion();
+
+}
+
+void ADRRPlayerProjectileProto::OnStaticMeshOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    CDisplayLog::Log(TEXT("Overlap %s"),*(OtherActor->GetName()));
+    CDisplayLog::Log(TEXT("Overlap %s"),*(OtherComp->GetName()));
     
     Explosion();
 }

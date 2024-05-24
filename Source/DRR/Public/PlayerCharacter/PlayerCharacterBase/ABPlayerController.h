@@ -41,12 +41,16 @@ public:
 	void JoinSession(uint32 RoomNum);
 
 
+	bool IsWallInVisibility();
 
 protected:
 		
+	void SetWallInvisibilityTimer();
+	void SetWallInvisibility();
 
 protected:
 	UPROPERTY()
 	TObjectPtr<class UDRRMultiplayerManager> MultiPlayManager;
-
+	bool WallInvisibility = false;
+	struct FTimerHandle WallInvisibilityTimerHandle;
 };
