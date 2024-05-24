@@ -129,7 +129,7 @@ void AABPlayerController::SetWallInvisibilityTimer()
 {
     
     //타이머 설정: (타임핸들러, 객체, 실행할 함수,지연시간, 루프 여부)
-    GetWorld()->GetTimerManager().SetTimer(WallInvisibilityTimerHandle, this, &AABPlayerController::SetWallInvisibility, 5.0f, false);
+    GetWorld()->GetTimerManager().SetTimer(WallInvisibilityTimerHandle, this, &AABPlayerController::SetWallInvisibility, 10.0f, false);
    
 }
 
