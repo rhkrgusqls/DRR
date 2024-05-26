@@ -6,6 +6,8 @@
 #include "CharacterBase/CharacterBase.h"
 #include "Perception/AiPerceptionComponent.h"
 #include "GameManager/EnemyManager.h"
+#include "Engine/DataTable.h"
+#include "UObject/ConstructorHelpers.h"
 #include "EnemyCharacterBase.generated.h"
 
 
@@ -15,6 +17,8 @@
 
 //DECLARE_MULTICAST_DELEGATE(FOnHPZeroDelegate);
 //DECLARE_MULTICAST_DELEGATE_OneParam(FOnHPChangeDelegate, float /*CurrentHP*/);
+
+
 
 UCLASS()
 class AEnemyCharacterBase : public ACharacterBase
@@ -116,6 +120,9 @@ public:
 	bool IsSetMonsterNum = false;
 
 	AEnemyCharacterBase* ColleagueCharacter;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DataTable")
+	UDataTable* ItemDataTable;
 	// UI Widget Component
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	//TObjectPtr<class UWidgetComponent> EnemyHPBar;
