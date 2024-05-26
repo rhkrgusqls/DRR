@@ -11,5 +11,7 @@ public class DRRTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
 		ExtraModuleNames.Add("DRR");
-	}
+
+        bUsesSteam = true;
+    }
 }
