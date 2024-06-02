@@ -199,10 +199,14 @@ void ADRRPlayerMagicArrowProto::Explosion()
             }
         }
     }
-
+    ExplosionEffect();
     //드로우 디버그 가능한 상태일때만
     //디버그 용 코드를 출시할때 영향을 주지 않도록 테스트용 빌드에서만 작동하게함
     Destroy();
+}
+
+void ADRRPlayerMagicArrowProto::ExplosionEffect()
+{
 }
 
 

@@ -21,15 +21,26 @@ ADRRPlayerChainDiskProto::ADRRPlayerChainDiskProto()
     DiskMesh->OnComponentHit.AddDynamic(this, &ADRRPlayerChainDiskProto::OnStaticMeshHit);
     DiskMesh->SetEnableGravity(false);
 
+    DiskMesh->SetVisibility(false);
     Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
 
     Trigger->SetCollisionProfileName(TEXT("PlayerProjectile"));
     Trigger->SetSphereRadius(DetectRadius);
     Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADRRPlayerChainDiskProto::OnOverlapBegin);
 
+    EffectMesh= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectMesh"));
+
+
     RootComponent = DiskMesh;
     Trigger->SetupAttachment(RootComponent);
-    
+
+
+    EffectMesh->SetStaticMesh(Mesh);
+    EffectMesh->SetCollisionProfileName(TEXT("NoCollision"));
+    EffectMesh->SetEnableGravity(false);
+    EffectMesh->SetupAttachment(RootComponent);
+    EffectMesh->SetVisibility(true);
+    EffectRotateSpeed = FRotator(10.0f, 10.0f, 10.0f);
 
     // Create a projectile movement component
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
@@ -83,6 +94,8 @@ void ADRRPlayerChainDiskProto::Tick(float DeltaTime)
         break;
 
     }
+    MeshRotateEffect(DeltaTime);
+
 
 }
 
@@ -124,6 +137,7 @@ bool ADRRPlayerChainDiskProto::CheckArrive()
                 Temp->ReciveAttack(Damage);
 
             }
+            TargetAttackEffect();
         }
         
         DiskState = EDiskState::NoTarget;
@@ -328,8 +342,26 @@ void ADRRPlayerChainDiskProto::OnStaticMeshHit(UPrimitiveComponent* HitComponent
 {
     if (DiskState == EDiskState::Init)
     {
+
+
+        CollideWallEffect();
+
         Destroy();
     }
+}
+
+void ADRRPlayerChainDiskProto::MeshRotateEffect(float delta)
+{
+    FRotator NewRotation = EffectMesh->GetRelativeRotation() + (EffectRotateSpeed * delta);
+    EffectMesh->SetRelativeRotation(NewRotation);
+}
+
+void ADRRPlayerChainDiskProto::TargetAttackEffect()
+{
+}
+
+void ADRRPlayerChainDiskProto::CollideWallEffect()
+{
 }
 
 

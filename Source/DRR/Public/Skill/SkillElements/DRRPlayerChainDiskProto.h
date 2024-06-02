@@ -25,16 +25,16 @@ class DRR_API ADRRPlayerChainDiskProto : public AActor
 public:
 	// Sets default values for this actor's properties
 	ADRRPlayerChainDiskProto();
+	void Init(AActor* user, float damage);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Init(AActor* user, float damage);
 	void NoTargetDead(float delta);
 	bool CheckArrive();
 	void CheckExpire();
@@ -46,6 +46,12 @@ public:
 
 	UFUNCTION()
 	void OnStaticMeshHit(class UPrimitiveComponent* HitComponent, AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
+	void MeshRotateEffect(float delta);
+	
+	void TargetAttackEffect();
+	void CollideWallEffect();
+
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
@@ -82,8 +88,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> DiskMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UStaticMeshComponent> EffectMesh;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UProjectileMovementComponent> ProjectileMovement;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EffectSetting)
+	FRotator EffectRotateSpeed;
 
 };

@@ -40,7 +40,7 @@ public:
 protected:
 	void Explosion();
 
-
+	void ExplosionEffect();
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TObjectPtr<class UStaticMesh> Mesh;
