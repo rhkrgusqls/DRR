@@ -207,6 +207,7 @@ void ADRRPlayerMagicArrowProto::Explosion()
 
 void ADRRPlayerMagicArrowProto::ExplosionEffect()
 {
+
 }
 
 
