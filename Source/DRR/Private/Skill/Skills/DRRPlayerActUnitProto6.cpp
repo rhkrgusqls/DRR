@@ -40,7 +40,7 @@ void ADRRPlayerActUnitProto6::Func1(AActor* User)
 	CLog::Log("ProjectileTest");
 	for (int i = 0; i < ArrowCount; i++)
 	{
-		ADRRPlayerMagicArrowProto* Temp = GetWorld()->SpawnActor<ADRRPlayerMagicArrowProto>(Projectile, RandomArrowLocSet(User->GetActorLocation() + Loc, LocRandomRadius), RandomArrowRotSet(User->GetActorRotation() + Rot, RotRandomRange));
+		ADRRPlayerMagicArrowProto* Temp = GetWorld()->SpawnActor<ADRRPlayerMagicArrowProto>(Projectile, RandomArrowLocSet(FVector(User->GetActorLocation().X+Loc.X*User->GetActorForwardVector().X, Loc.Y+User->GetActorLocation().Y + Loc.X * User->GetActorForwardVector().Y, Loc.Z + User->GetActorLocation().Z), LocRandomRadius), RandomArrowRotSet(User->GetActorRotation() + Rot, RotRandomRange));
 		float defaultDamage=10.0f;
 		float result = Cast<ACharacterBase>(User)->physicsAttack * GetActData()->SkillCoefficient*defaultDamage;
 		
