@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DRRPlayerStonePillarProto.generated.h"
+#include "DRRPlayerStoneWallProto.generated.h"
+
 
 UENUM()
-enum class EPillarState : uint8
+enum class EWallState : uint8
 {
 	Init,
 	Ambush,
@@ -19,19 +20,19 @@ enum class EPillarState : uint8
 
 
 UCLASS()
-class DRR_API ADRRPlayerStonePillarProto : public AActor
+class DRR_API ADRRPlayerStoneWallProto : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ADRRPlayerStonePillarProto();
+	ADRRPlayerStoneWallProto();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void SetFloor();
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -63,12 +64,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DelayTime)
 	float ExpireTime;
 
-
 	float Damage;
 	TObjectPtr<class AActor> User;
 
-	EPillarState PillarState;
-	
+	EWallState WallState;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
 	TObjectPtr<class UStaticMesh> Mesh;
 
@@ -84,6 +84,5 @@ protected:
 	struct FTimerHandle RiseupTimerHandle;
 
 	FVector OriginPos;
-	
 
 };

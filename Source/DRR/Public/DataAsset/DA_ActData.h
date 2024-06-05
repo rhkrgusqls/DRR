@@ -25,7 +25,14 @@ enum class EActCycleType : uint8
 	Constant,
 	End
 };
-
+UENUM()
+enum class EActCostType : uint8
+{
+	NoCost,
+	OnlyFirst,
+	EveryTime,
+	End
+};
 /**
  * 
  */
@@ -74,5 +81,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
 	uint8 HasAnotherAct : 1;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cost)
+	EActCostType CostType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cost)
+	TArray<float> CostMana;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Cost)
+	TArray<float> CostStamina;
 
 };

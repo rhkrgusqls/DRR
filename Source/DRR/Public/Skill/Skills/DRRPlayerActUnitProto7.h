@@ -4,18 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Skill/DRRActUnitBase.h"
-#include "DRRPlayerActUnitProto4.generated.h"
+#include "DRRPlayerActUnitProto7.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DRR_API ADRRPlayerActUnitProto4 : public ADRRActUnitBase
+class DRR_API ADRRPlayerActUnitProto7 : public ADRRActUnitBase
 {
 	GENERATED_BODY()
-
 public:
-	ADRRPlayerActUnitProto4();
+	ADRRPlayerActUnitProto7();
 
 	virtual TArray<FOnActFuncDelegate> GetActFunc() override;
 
@@ -28,15 +27,9 @@ protected:
 private:
 	void Func1(AActor* User);
 
-protected:
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
-	TSubclassOf<class ADRRPlayerStonePillarProto> StonePillar;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackRange)
-	float AttackRange;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackRange)
-	float AttackRadius;
+	TSubclassOf<class ADRRPlayerMiniProjectileProto> Projectile;
 
 };

@@ -71,6 +71,8 @@ void ACharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 
 	DOREPLIFETIME(ACharacterBase, CurrentHP);
+	DOREPLIFETIME(ACharacterBase, CurrentMP);
+	DOREPLIFETIME(ACharacterBase, CurrentST);
 
 }
 
@@ -141,14 +143,70 @@ void ACharacterBase::Tick(float DeltaTime)
 //Call Hit Event
 void ACharacterBase::ReciveAttack(float physicsDamage/*, float MagicDamage*/)
 {
-	CurrentHP = CurrentHP - physicsDamage/ physicsDef/*-MagicDamage/MagicDef*/;
+
+	if (HasAuthority())
+	{
+		CurrentHP = CurrentHP - physicsDamage / physicsDef/*-MagicDamage/MagicDef*/;
+	}
 	OnHPChanged.Broadcast(CurrentHP);
 }
 
 void ACharacterBase::ReciveRecovery(float physicsDamage)
 {
-	CurrentHP = FMath::Min(CurrentHP + physicsDamage,MaxHP) ;
-	OnHPChanged.Broadcast(CurrentHP);
+	{
+		CurrentHP = FMath::Min(CurrentHP + physicsDamage, MaxHP);
+		OnHPChanged.Broadcast(CurrentHP);
+	}
+}
+
+void ACharacterBase::ReciveSTRecovery(float st)
+{
+	if (HasAuthority())
+	{
+		CurrentST = FMath::Min(CurrentST + st, MaxST);
+
+		OnHPChanged.Broadcast(CurrentST);
+	}
+}
+
+void ACharacterBase::ReciveMPRecovery(float mp)
+{
+	if (HasAuthority())
+	{
+		CurrentMP = FMath::Min(CurrentMP + mp, MaxMP);
+		OnHPChanged.Broadcast(CurrentMP);
+
+	}
+}
+
+bool ACharacterBase::UseStamina(float cost)
+{
+	if(CurrentST<cost)
+		return false;
+	else
+	{
+		if (HasAuthority())
+		{
+			CurrentST -= cost;
+
+		}
+		return true;
+	}
+}
+
+bool ACharacterBase::UseMana(float cost)
+{
+	if (CurrentMP < cost)
+		return false;
+	else
+	{
+		if (HasAuthority())
+		{
+			CurrentMP -= cost;
+
+		}
+		return true;
+	}
 }
 
 //Call DotDamage
@@ -235,6 +293,14 @@ void ACharacterBase::DestroySelf()
 void ACharacterBase::OnRep_Health()
 {
 
+}
+
+void ACharacterBase::OnRep_MP()
+{
+}
+
+void ACharacterBase::OnRep_Stamina()
+{
 }
 
 

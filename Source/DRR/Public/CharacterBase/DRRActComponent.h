@@ -69,7 +69,10 @@ protected:
 	void EndTimer();
 	void CheckAct();
 	void EndAct(UAnimMontage* targetMontage, bool isInteruped);
+	void CancelAct();
 	void ClearMontageAct();
+	
+	bool PayCost(float mana,float stamina);
 	
 
 	virtual void BeginDestroy() override;

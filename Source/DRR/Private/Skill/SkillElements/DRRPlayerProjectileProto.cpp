@@ -40,7 +40,6 @@ ADRRPlayerProjectileProto::ADRRPlayerProjectileProto()
     ProjectileMovement->ProjectileGravityScale = 0.0f;
 
     SetActorEnableCollision(false);
-
 }
 
 // Called when the game starts or when spawned

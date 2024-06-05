@@ -10,4 +10,6 @@ void ADRRAutomaticRecoveryEffect::UpdateFunc(AActor* target)
 	CLog::Log("AutomaticHealUpdate");
 	ACharacterBase* Temp = Cast<ACharacterBase>(target);
 	Temp->ReciveRecovery(Temp->HPRegenSpeed);
+	Temp->ReciveSTRecovery(Temp->STRegenSpeed);
+	Temp->ReciveMPRecovery(Temp->MPRegenSpeed);
 }

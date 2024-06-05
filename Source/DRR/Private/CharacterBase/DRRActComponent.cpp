@@ -2,6 +2,7 @@
 
 
 #include "CharacterBase/DRRActComponent.h"
+#include "CharacterBase/CharacterBase.h"
 #include "GameFramework/Character.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "DataAsset/DA_ActData.h"
@@ -84,7 +85,15 @@ void UDRRActComponent::Act(IDRRActableInterface* Actable)
 		CLog::Log("NewAct");
 		SetActor(Actable);
 		Actor->SetActor(Actable);
-		BeginAct();
+		if (PayCost(Actor->CheckManaCost(), Actor->CheckStaminaCost()))
+		{
+			BeginAct();
+
+		}
+		else
+		{
+			CancelAct();
+		}
 		return;
 	}
 
@@ -226,13 +235,14 @@ void UDRRActComponent::CheckAct()
 	CLog::Log("UDRRActComponent::CheckAct");
 	
 
-	if (hasNextAct)
+	uint8 curActCount = Actor->NextAct();
+
+	if (hasNextAct&& PayCost(Actor->CheckManaCost(), Actor->CheckStaminaCost()))
 	{
 		CLog::Log("ActNextMotion");
 		
 		Actor->IncreaseThreshold();
 
-		uint8 curActCount=Actor->NextAct();
 
 		UAnimInstance* animInstance = Cast<ACharacter>(GetOwner())->GetMesh()->GetAnimInstance();
 		//실행할 색션이름 지정 포맷 FString 앞에는 *을 꼭붙여줘야함
@@ -289,10 +299,39 @@ void UDRRActComponent::EndAct(UAnimMontage* targetMontage, bool isInteruped)
 
 }
 
+void UDRRActComponent::CancelAct()
+{
+	if (Actor != nullptr)
+	{
+		Actor->EndAct();
+		delete(Actor);
+		Actor = nullptr;
+	}
+}
+
 void UDRRActComponent::ClearMontageAct()
 {
 	EndTimer();
 	
+}
+
+bool UDRRActComponent::PayCost(float mana, float stamina)
+{
+	ACharacterBase* Temp = Cast<ACharacterBase>(GetOwner());
+	if (Temp == nullptr)
+		return false;
+	if (mana > Temp->CurrentMP || stamina > Temp->CurrentST)
+	{
+
+		return false;
+	}
+	else
+	{
+		Temp->UseMana(mana);
+		Temp->UseStamina(stamina);
+		return true;
+	}
+	return false;
 }
 
 void UDRRActComponent::BeginDestroy()

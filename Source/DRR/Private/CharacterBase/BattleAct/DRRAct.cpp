@@ -140,6 +140,64 @@ void DRRAct::IncreaseThreshold()
 	}
 }
 
+float DRRAct::CheckManaCost( )
+{
+
+	switch (CurAct->CostType)
+	{
+	case EActCostType::OnlyFirst:
+		if (curActCount == 0)
+		{
+			return CurAct->CostMana[curActCount];
+		}
+		else
+		{
+			return 0.0f;
+		}
+
+		break;
+	case EActCostType::EveryTime:
+		return CurAct->CostMana[curActCount];
+		break;
+
+	case EActCostType::NoCost:
+	default:
+		return 0.0f;
+		break;
+	}
+	
+
+	
+}
+
+float DRRAct::CheckStaminaCost()
+{
+
+	switch (CurAct->CostType)
+	{
+	case EActCostType::OnlyFirst:
+		if (curActCount == 0)
+		{
+			return CurAct->CostStamina[curActCount];
+		}
+		else
+		{
+			return 0.0f;
+		}
+
+		break;
+	case EActCostType::EveryTime:
+		return CurAct->CostStamina[curActCount];
+		break;
+
+	case EActCostType::NoCost:
+	default:
+		return 0.0f;
+		break;
+	}
+
+}
+
 
 bool DRRAct::AfterAct()
 {

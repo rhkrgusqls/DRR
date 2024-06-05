@@ -38,6 +38,9 @@ public:
 
 	void IncreaseThreshold();
 
+	float CheckManaCost();
+	float CheckStaminaCost();
+
 protected:
 	bool IsLastNumAct();
 	

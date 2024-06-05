@@ -80,7 +80,12 @@ public:
 
 	virtual void ReciveAttack(float physicsDamage/*, float MagicDamage*/);
 	void ReciveRecovery(float physicsDamage/*, float MagicDamage*/);
+	void ReciveSTRecovery(float st/*, float MagicDamage*/);
+	void ReciveMPRecovery(float mp/*, float MagicDamage*/);
 
+	bool UseStamina(float cost);
+	bool UseMana(float cost);
+	
 	void SetDotDamage(float TickDamage, float DurationTime);
 
 	void RemoveDotDamage(float TickDamage);
@@ -99,16 +104,21 @@ public:
 	UFUNCTION()
 	virtual void OnRep_Health();
 
+	UFUNCTION()
+	virtual void OnRep_MP();
+
+	UFUNCTION()
+	virtual void OnRep_Stamina();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxMP;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_MP, EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentMP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float MaxST;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Stamina, EditAnywhere, BlueprintReadWrite, Category = "State")
 	float CurrentST;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
@@ -131,7 +141,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	float HPRegenSpeed;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float MPRegenSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	float STRegenSpeed;
 	float HPRegenHandle;
 
 

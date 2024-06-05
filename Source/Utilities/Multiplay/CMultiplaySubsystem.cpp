@@ -75,7 +75,7 @@ void UCMultiplaySubsystem::CreateSession(int32 NumPublicConnections, FString Mat
 
 	// Create Session
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *LastSessionSettings))
+	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), *RoomName, *LastSessionSettings))
 	{
 		// Remove the delegate from the delegate list using the handle.
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);

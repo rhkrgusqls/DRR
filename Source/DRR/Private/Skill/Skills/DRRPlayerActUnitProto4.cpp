@@ -12,6 +12,8 @@
 #include "Utilities/UtilityList.h"
 ADRRPlayerActUnitProto4::ADRRPlayerActUnitProto4()
 {
+	AttackRange = 600.0f;
+	AttackRadius = 500.0f;
 }
 
 TArray<FOnActFuncDelegate> ADRRPlayerActUnitProto4::GetActFunc()
@@ -49,8 +51,8 @@ void ADRRPlayerActUnitProto4::Func1(AActor* User)
 	FHitResult outHitResult;
 	TArray<FHitResult> outHitResults;
 	TArray<FOverlapResult> outOverlapResults;
-	const float attackRange = 600.0f;
-	const float attackRadius = 500.0f;
+	const float attackRange = AttackRange;
+	const float attackRadius = AttackRadius;
 	bool isHit;
 
 
